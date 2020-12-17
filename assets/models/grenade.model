@@ -1,0 +1,12 @@
+# Made using Asset Forge (2.1.1)
+
+:materials
+
+[name:Dark_Olive;color:RGBA(0.740, 0.125, 0.125, 1.000);scale:(1.0, 1.0);shader:Default;valueA:0.5;valueB:0;]
+[name:Gold;color:RGBA(0.804, 0.698, 0.094, 1.000);scale:(1.0, 1.0);shader:Default;valueA:0.5;valueB:0;]
+[name:Gray8;color:RGBA(0.267, 0.267, 0.267, 1.000);scale:(1.0, 1.0);shader:Default;valueA:0.5;valueB:0;]
+[name:Gray5;color:RGBA(0.529, 0.529, 0.529, 1.000);scale:(1.0, 1.0);shader:Default;valueA:0.5;valueB:0;]
+
+:models
+
+[name:;collection:kenney_weapon_pack;type:grenade;position:(1.0000, 0.0000, 0.0000);rotation:(0.0000, 0.0000, 0.0000);scale:(20.0000, 20.0000, 20.0000);group:;locked:False;hidden:False;materials:Dark_Olive+Gold+Gray8+Gray5;]

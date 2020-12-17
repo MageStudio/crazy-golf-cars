@@ -5,6 +5,8 @@ const assets = {
     models: {
         'car': 'assets/models/buggy.gltf',
         'wheel': 'assets/models/wheel.gltf',
+        'rocket': 'assets/models/rocket.glb',
+        'grenade': 'assets/models/grenade.glb'
     },
     cubetextures: {
         'stars': [
