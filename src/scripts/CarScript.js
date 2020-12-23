@@ -31,6 +31,7 @@ export default class CarScript extends BaseScript {
         this.direction = undefined;
 
         this.car.setPosition({ y: 14 });
+        //this.car.setRotation({ y: Math.PI });
 
         const wheels = [
             this.createWheel(1),
@@ -44,31 +45,31 @@ export default class CarScript extends BaseScript {
 
         this.car.addScript('BaseCar', {
             wheels,
-            mass: 800,
+            mass: 1000,
             debug: true,
             friction: 5,
-            steeringIncrement: .06,
-            maxEngineForce: 4000,
+            steeringIncrement: .04,
+            maxEngineForce: 3500,
             maxBreakingForce: 100,
             wheelsOptions: {
                 back: {
-                    axisPosition: -1.25,
+                    axisPosition: -0.9,
                     radius: .35,
-                    halfTrack: 1,
-                    axisHeight: 0
+                    halfTrack: .6,
+                    axisHeight: .1
                 },
                 front: {
-                    axisPosition: 1.2,
+                    axisPosition: 1.1,
                     radius: .35,
-                    halfTrack: 1,
-                    axisHeight: 0
+                    halfTrack: .6,
+                    axisHeight: .1
                 }
             },
             suspensions: {
                 stiffness: 20.0,
                 damping: 2.3,
                 compression: 4.4,
-                restLength: 0.6
+                restLength: 0.8
             }
         });
 

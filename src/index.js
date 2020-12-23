@@ -5,19 +5,24 @@ const assets = {
     models: {
         'car': 'assets/models/buggy.gltf',
         'wheel': 'assets/models/wheel.gltf',
+        'wheel_new': 'assets/models/wheel_new.glb',
         'rocket': 'assets/models/rocket.glb',
-        'grenade': 'assets/models/grenade.glb'
+        'grenade': 'assets/models/grenade.glb',
+        'police_car': 'assets/models/police_car.glb'
     },
-    cubetextures: {
-        'stars': [
-            'assets/textures/cube/dark-s_px.jpg',
-            'assets/textures/cube/dark-s_nx.jpg',
-            'assets/textures/cube/dark-s_py.jpg',
-            'assets/textures/cube/dark-s_ny.jpg',
-            'assets/textures/cube/dark-s_pz.jpg',
-            'assets/textures/cube/dark-s_nz.jpg'
-        ]
-    }
+    textures: {
+        'dot': 'assets/textures/dot.png'
+    },
+    // cubetextures: {
+    //     'stars': [
+    //         'assets/textures/cube/dark-s_px.jpg',
+    //         'assets/textures/cube/dark-s_nx.jpg',
+    //         'assets/textures/cube/dark-s_py.jpg',
+    //         'assets/textures/cube/dark-s_ny.jpg',
+    //         'assets/textures/cube/dark-s_pz.jpg',
+    //         'assets/textures/cube/dark-s_nz.jpg'
+    //     ]
+    // }
 }
 
 const config = {

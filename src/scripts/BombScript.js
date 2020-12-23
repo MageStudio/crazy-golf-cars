@@ -30,13 +30,10 @@ export default class BombScript extends BaseScript {
     }
 
     explode = () => {
-         Particles.addParticleEmitter(PARTICLES.EXPLOSION, {
-            sparks: { size: 0.3, system: { particlesCount: 200 } },
-            explosion: { size: 0.3, system: { particlesCount: 500 } },
-            debris: { size: 0.3, velocity: 12, system: { particlesCount: 300 } },
-        })
-        .setPosition(this.bomb.getPosition())
-        .start();
+        Particles
+            .addParticleEmitter(PARTICLES.EXPLOSION, { texture: 'dot' })
+            .setPosition(this.bomb.getPosition())
+            .start('once');
     }
 
     destroyBomb = () => {
