@@ -26,7 +26,7 @@ export default class Intro extends Level {
         this.sunlight = new SunLight({
             color: WHITE,
             intensity: .8,
-            position: { x: 20, y: 10, z: 20 }
+            position: { x: 20, y: 40, z: 20 }
         });
     }
 
@@ -37,19 +37,24 @@ export default class Intro extends Level {
         return car;
     }
 
-    createFloor() {
-        const floor = new Box(50, 1, 50, 0xffffff);
-        floor.setMaterialFromName(constants.MATERIALS.STANDARD)
-        floor.setPosition({ y: -1 });
-        floor.enablePhysics({ mass: 0, debug: true });
+    createCourse() {
+        const course =  Models.getModel('course');
+        course.enablePhysics({ mass: 0 });
     }
 
-    createWall() {
-        const wall = new Box(50, 25, 1, 0xeeeeee);
-        wall.setMaterialFromName(constants.MATERIALS.STANDARD)
-        wall.setPosition({ z: -25, y: 0 });
-        wall.enablePhysics({ mass: 0, debug: true });
-    }
+    // createFloor() {
+    //     const floor = new Box(50, 1, 50, 0xffffff);
+    //     floor.setMaterialFromName(constants.MATERIALS.STANDARD)
+    //     floor.setPosition({ y: -1 });
+    //     floor.enablePhysics({ mass: 0, debug: true });
+    // }
+
+    // createWall() {
+    //     const wall = new Box(50, 25, 1, 0xeeeeee);
+    //     wall.setMaterialFromName(constants.MATERIALS.STANDARD)
+    //     wall.setPosition({ z: -25, y: 0 });
+    //     wall.enablePhysics({ mass: 0, debug: true });
+    // }
 
     onCreate() {
         this.addAmbientLight();
@@ -59,15 +64,18 @@ export default class Intro extends Level {
         Scripts.create('CarScript', CarScript);
         Scripts.create('BombScript', BombScript);
 
-        this.createFloor();
-        this.createWall();
+        // this.createFloor();
+        // this.createWall();
+        this.createCourse();
         const car = this.createCar('first');
+
+        Scene.getCamera().setPosition({ y: 10 });
 
         Scene
             .getCamera()
             .addScript('SmoothCarFollow', {
                 target: car,
-                offset: { x: 7, y: 7, z: 7 }
+                offset: { x: 0, y: 7, z: 7 }
             });
     }
 }

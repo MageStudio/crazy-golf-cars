@@ -8,7 +8,8 @@ const assets = {
         'wheel_new': 'assets/models/wheel_new.glb',
         'rocket': 'assets/models/rocket.glb',
         'grenade': 'assets/models/grenade.glb',
-        'police_car': 'assets/models/police_car.glb'
+        'police_car': 'assets/models/police_car.glb',
+        'course': 'assets/models/course.glb',
     },
     textures: {
         'dot': 'assets/textures/dot.png'

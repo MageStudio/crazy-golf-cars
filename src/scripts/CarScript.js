@@ -46,10 +46,10 @@ export default class CarScript extends BaseScript {
         this.car.addScript('BaseCar', {
             wheels,
             mass: 1000,
-            debug: true,
-            friction: 5,
-            steeringIncrement: .04,
-            maxEngineForce: 3500,
+            // debug: true,
+            friction: 10,
+            steeringIncrement: .08,
+            maxEngineForce: 3000,
             maxBreakingForce: 100,
             wheelsOptions: {
                 back: {
@@ -66,10 +66,10 @@ export default class CarScript extends BaseScript {
                 }
             },
             suspensions: {
-                stiffness: 20.0,
+                stiffness: 10,//20.0,
                 damping: 2.3,
                 compression: 4.4,
-                restLength: 0.8
+                restLength: 0.7
             }
         });
 
