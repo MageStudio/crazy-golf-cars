@@ -1,0 +1,14 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl Dark_Olive(Clone)
+Kd 0.7020834 0.1795724 0.05608033
+
+newmtl Gold(Clone)
+Kd 0.8039221 0.6980391 0.09411801
+
+newmtl Gray8(Clone)
+Kd 0.266667 0.266667 0.266667
+
+newmtl Gray5(Clone)
+Kd 0.7600576 0.7600576 0.7600576
+

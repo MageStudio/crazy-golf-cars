@@ -27,6 +27,6 @@
     },
     "dependencies": {
         "inferno": "^7.4.2",
-        "mage-engine": "3.7.1"
+        "mage-engine": "3.10.0"
     }
 }
