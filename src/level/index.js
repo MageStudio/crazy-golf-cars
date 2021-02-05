@@ -24,8 +24,8 @@ export default class Intro extends Level {
 
     addSunLight() {
         this.sunlight = new SunLight({
-            color: WHITE,
-            intensity: .8,
+            color: SUNLIGHT,
+            intensity: 1,
             position: { x: 20, y: 40, z: 20 }
         });
     }
@@ -42,12 +42,12 @@ export default class Intro extends Level {
         course.enablePhysics({ mass: 0 });
     }
 
-    // createFloor() {
-    //     const floor = new Box(50, 1, 50, 0xffffff);
-    //     floor.setMaterialFromName(constants.MATERIALS.STANDARD)
-    //     floor.setPosition({ y: -1 });
-    //     floor.enablePhysics({ mass: 0, debug: true });
-    // }
+    createFloor() {
+        const floor = new Box(500, 1, 500, 0xffffff);
+        floor.setMaterialFromName(constants.MATERIALS.STANDARD)
+        floor.setPosition({ y: -1 });
+        floor.enablePhysics({ mass: 0, debug: true });
+    }
 
     // createWall() {
     //     const wall = new Box(50, 25, 1, 0xeeeeee);
@@ -64,7 +64,7 @@ export default class Intro extends Level {
         Scripts.create('CarScript', CarScript);
         Scripts.create('BombScript', BombScript);
 
-        // this.createFloor();
+        this.createFloor();
         // this.createWall();
         this.createCourse();
         const car = this.createCar('first');
