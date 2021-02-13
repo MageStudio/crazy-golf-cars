@@ -52,7 +52,7 @@ const config = {
     camera: {
         fov: 75,
         near: 0.1,
-        far: 3000000,
+        far: 1000,
     },
 };
 

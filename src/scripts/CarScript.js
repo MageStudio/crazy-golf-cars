@@ -25,6 +25,19 @@ export default class CarScript extends BaseScript {
         });
     }
 
+    flip() {
+        const position = this.car.getPosition();
+        this.car.setPosition({
+            ...position,
+            y: position.y + 2
+        });
+
+        this.car.setRotation({
+            x: 0,
+            z: 0
+        });
+    }
+
     start(car, options) {
         this.car = car;
         this.speed = undefined;
@@ -81,8 +94,15 @@ export default class CarScript extends BaseScript {
     }
 
     handleKeyDown = ({ event }) => {
-        if (event.key === 'space' && this.direction) {
-            this.throwBomb();
+        switch(event.key) {
+            case 'space':
+                if (this.direction) {
+                    this.throwBomb();
+                }
+                break;
+            case 'r':
+                this.flip();
+                break;
         }
     }
 

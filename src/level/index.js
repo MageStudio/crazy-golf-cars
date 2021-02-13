@@ -5,7 +5,10 @@ import {
     Scene,
     Models,
     AmbientLight,
+    Lights,
+    THREE,
     SunLight,
+    HemisphereLight,
     constants
 } from 'mage-engine';
 
@@ -15,6 +18,8 @@ import BombScript from '../scripts/BombScript';
 
 export const WHITE = 0xffffff;
 export const SUNLIGHT = 0xffeaa7;
+export const GROUND = 0xd35400;
+export const BACKGROUND = 0xddf3f5;
 
 export default class Intro extends Level {
 
@@ -23,11 +28,36 @@ export default class Intro extends Level {
     }
 
     addSunLight() {
-        this.sunlight = new SunLight({
-            color: SUNLIGHT,
-            intensity: 1,
-            position: { x: 20, y: 40, z: 20 }
+        this.hemisphereLight = new HemisphereLight({
+            color: {
+                sky: BACKGROUND,
+                ground: GROUND
+            },
+            intensity: .5
         });
+
+        // this.sunlight = new SunLight({
+        //     color: SUNLIGHT,
+        //     intensity: 1,
+        //     mapSize: 512,
+        //     far: 200,
+        //     position: { x: 20, y: 40, z: 20 }
+        // });
+
+        // this.sunlight.addHelper();
+
+        Lights.setUpCSM({
+            maxFar: 500,
+            cascades: 4 ,
+            mode: 'practical',
+            shadowMapSize: 512,
+            lightDirection: new THREE.Vector3( -1, -1, -1 ).normalize(),
+        });
+    }
+
+    addLights() {
+        this.addAmbientLight();
+        this.addSunLight();
     }
 
     createCar(name) {
@@ -38,37 +68,32 @@ export default class Intro extends Level {
     }
 
     createCourse() {
-        const course =  Models.getModel('course');
+        // course has to be exported x1000 from assets forge
+        const course =  Models.getModel('course', { name: 'course' });
         course.enablePhysics({ mass: 0 });
     }
 
     createFloor() {
         const floor = new Box(500, 1, 500, 0xffffff);
+        floor.setName('floor');
         floor.setMaterialFromName(constants.MATERIALS.STANDARD)
         floor.setPosition({ y: -1 });
-        floor.enablePhysics({ mass: 0, debug: true });
+        floor.enablePhysics({ mass: 0 });
     }
 
-    // createWall() {
-    //     const wall = new Box(50, 25, 1, 0xeeeeee);
-    //     wall.setMaterialFromName(constants.MATERIALS.STANDARD)
-    //     wall.setPosition({ z: -25, y: 0 });
-    //     wall.enablePhysics({ mass: 0, debug: true });
-    // }
-
     onCreate() {
-        this.addAmbientLight();
-        this.addSunLight();
+        this.addLights();
 
         Scripts.create('SmoothCarFollow', SmoothCarFollow);
         Scripts.create('CarScript', CarScript);
         Scripts.create('BombScript', BombScript);
 
-        this.createFloor();
-        // this.createWall();
+        // this.createFloor();
         this.createCourse();
+
         const car = this.createCar('first');
 
+        Scene.setClearColor(BACKGROUND);
         Scene.getCamera().setPosition({ y: 10 });
 
         Scene
