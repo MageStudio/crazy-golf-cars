@@ -4,7 +4,8 @@ import {
     Input,
     Sphere,
     PHYSICS_EVENTS,
-    INPUT_EVENTS
+    INPUT_EVENTS,
+    THREE
 } from 'mage-engine';
 
 export default class CarScript extends BaseScript {
@@ -44,7 +45,7 @@ export default class CarScript extends BaseScript {
         this.direction = undefined;
 
         this.car.setPosition({ y: 14 });
-        //this.car.setRotation({ y: Math.PI });
+        // this.car.setRotation({ y: 1 });
 
         const wheels = [
             this.createWheel(1),
@@ -79,10 +80,10 @@ export default class CarScript extends BaseScript {
                 }
             },
             suspensions: {
-                stiffness: 10,//20.0,
+                stiffness: 20.0,
                 damping: 2.3,
                 compression: 4.4,
-                restLength: 0.7
+                restLength: 0.9
             }
         });
 
@@ -106,8 +107,12 @@ export default class CarScript extends BaseScript {
         }
     }
 
-    handleSpeedChange = ({ data }) => { this.speed = data.speed; };
+    handleSpeedChange = ({ data }) => {
+        this.speed = data.speed;
+        this.car.speed = this.speed;
+    };
     handleCarDirectionChange = ({ data }) => {
         this.direction = data.direction;
+        this.car.direction = this.direction;
     }
 }

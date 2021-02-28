@@ -71,12 +71,20 @@ export default class SmoothCarFollow extends BaseScript {
         const vector = new THREE.Vector3(0, 0, this.usedDistance);
 
         wantedPosition.add(vector.applyEuler(euler));
-        wantedPosition.y = 10;
+        wantedPosition.y = this.target.getPosition().y + DEFAULT_DISTANCE;
         // wantedPosition.applyEuler(euler);
 
         // console.log(wantedPosition);
 
-        this.camera.setPosition(wantedPosition);
+        const { x, y, z } = this.target.getPosition();
+        const desiredposition = {
+            x: this.distance * Math.sin(math.degToRad(45)) * Math.sin(this.target.getRotation().y) + x,
+            y: this.distance * Math.cos(math.degToRad(45)) + y,
+            z: this.distance * Math.sin(math.degToRad(45)) * Math.cos(this.target.getRotation().y) + z
+        }
+        
+        
+        this.camera.setPosition(desiredposition);
 
         const lookAtTarget = new THREE.Vector3();
         lookAtTarget.copy(this.target.getPosition().add(this.lookAtVector));

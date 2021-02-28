@@ -7,7 +7,7 @@ import {
     AmbientLight,
     Lights,
     THREE,
-    SunLight,
+    PostProcessing,
     HemisphereLight,
     constants
 } from 'mage-engine';
@@ -20,6 +20,18 @@ export const WHITE = 0xffffff;
 export const SUNLIGHT = 0xffeaa7;
 export const GROUND = 0xd35400;
 export const BACKGROUND = 0xddf3f5;
+
+const FOG_DENSITY = 0.007;
+
+const DOF_OPTIONS = {
+    focus: 1.0,
+    aperture: 0.0001,
+    maxblur: 0.01
+};
+
+const SATURATION_OPTIONS = {
+    saturation: 0.2
+};
 
 export default class Intro extends Level {
 
@@ -36,21 +48,11 @@ export default class Intro extends Level {
             intensity: .5
         });
 
-        // this.sunlight = new SunLight({
-        //     color: SUNLIGHT,
-        //     intensity: 1,
-        //     mapSize: 512,
-        //     far: 200,
-        //     position: { x: 20, y: 40, z: 20 }
-        // });
-
-        // this.sunlight.addHelper();
-
         Lights.setUpCSM({
             maxFar: 500,
-            cascades: 4 ,
+            cascades: 3 ,
             mode: 'practical',
-            shadowMapSize: 512,
+            shadowMapSize: 1024,
             lightDirection: new THREE.Vector3( -1, -1, -1 ).normalize(),
         });
     }
@@ -68,7 +70,6 @@ export default class Intro extends Level {
     }
 
     createCourse() {
-        // course has to be exported x1000 from assets forge
         const course =  Models.getModel('course', { name: 'course' });
         course.enablePhysics({ mass: 0 });
     }
@@ -88,7 +89,6 @@ export default class Intro extends Level {
         Scripts.create('CarScript', CarScript);
         Scripts.create('BombScript', BombScript);
 
-        // this.createFloor();
         this.createCourse();
 
         const car = this.createCar('first');
@@ -102,5 +102,10 @@ export default class Intro extends Level {
                 target: car,
                 offset: { x: 0, y: 7, z: 7 }
             });
+
+        Scene.setFog(BACKGROUND, FOG_DENSITY);
+
+        PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
+        PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
     }
 }
