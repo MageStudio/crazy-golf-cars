@@ -4,9 +4,10 @@ import {
     Input,
     Sphere,
     PHYSICS_EVENTS,
-    INPUT_EVENTS,
-    THREE
+    INPUT_EVENTS
 } from 'mage-engine';
+
+import { TYPES, getCarOptionsByType } from '../constants';
 
 export default class CarScript extends BaseScript {
 
@@ -39,8 +40,10 @@ export default class CarScript extends BaseScript {
         });
     }
 
-    start(car, options) {
+    start(car, { type = TYPES.BASE }) {
         this.car = car;
+        this.type = type;
+
         this.speed = undefined;
         this.direction = undefined;
 
@@ -59,32 +62,7 @@ export default class CarScript extends BaseScript {
 
         this.car.addScript('BaseCar', {
             wheels,
-            mass: 1000,
-            // debug: true,
-            friction: 10,
-            steeringIncrement: .08,
-            maxEngineForce: 3000,
-            maxBreakingForce: 100,
-            wheelsOptions: {
-                back: {
-                    axisPosition: -0.9,
-                    radius: .35,
-                    halfTrack: .6,
-                    axisHeight: .1
-                },
-                front: {
-                    axisPosition: 1.1,
-                    radius: .35,
-                    halfTrack: .6,
-                    axisHeight: .1
-                }
-            },
-            suspensions: {
-                stiffness: 20.0,
-                damping: 2.3,
-                compression: 4.4,
-                restLength: 0.9
-            }
+            ...getCarOptionsByType(this.type)
         });
 
         this.setInput();

@@ -103,9 +103,9 @@ export default class Intro extends Level {
                 offset: { x: 0, y: 7, z: 7 }
             });
 
-        Scene.setFog(BACKGROUND, FOG_DENSITY);
+        // Scene.setFog(BACKGROUND, FOG_DENSITY);
 
-        PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
+        // PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
         PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
     }
 }
