@@ -47,7 +47,7 @@ export default class CarScript extends BaseScript {
         this.speed = undefined;
         this.direction = undefined;
 
-        this.car.setPosition({ y: 14 });
+        this.car.setPosition({ y: 7, x: 46, z: 17 });
         // this.car.setRotation({ y: 1 });
 
         const wheels = [

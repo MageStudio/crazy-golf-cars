@@ -66,6 +66,7 @@ export default class Intro extends Level {
         const car =  Models.getModel('police_car', { name });
         car.addScript('CarScript');
 
+        window.car = car;
         return car;
     }
 
