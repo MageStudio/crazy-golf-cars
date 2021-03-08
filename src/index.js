@@ -2,6 +2,9 @@ import { Router, store } from 'mage-engine';
 import Level from './level';
 
 const assets = {
+    audio: {
+        engine: 'assets/audio/engine.mp3'
+    },
     models: {
         'car': 'assets/models/buggy.gltf',
         'wheel': 'assets/models/wheel.gltf',
@@ -9,21 +12,12 @@ const assets = {
         'rocket': 'assets/models/rocket.glb',
         'grenade': 'assets/models/grenade.glb',
         'police_car': 'assets/models/police_car.glb',
+        'truck': 'assets/models/truck.glb',
         'course': 'assets/models/course.glb',
     },
     textures: {
         'dot': 'assets/textures/dot.png'
     },
-    // cubetextures: {
-    //     'stars': [
-    //         'assets/textures/cube/dark-s_px.jpg',
-    //         'assets/textures/cube/dark-s_nx.jpg',
-    //         'assets/textures/cube/dark-s_py.jpg',
-    //         'assets/textures/cube/dark-s_ny.jpg',
-    //         'assets/textures/cube/dark-s_pz.jpg',
-    //         'assets/textures/cube/dark-s_nz.jpg'
-    //     ]
-    // }
 }
 
 const config = {
@@ -37,6 +31,7 @@ const config = {
 
     lights: {
         shadows: true,
+        textureAnisotropy: 2
     },
 
     physics: {
@@ -52,7 +47,7 @@ const config = {
     camera: {
         fov: 75,
         near: 0.1,
-        far: 1000,
+        far: 200,
     },
 };
 

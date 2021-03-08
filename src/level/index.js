@@ -9,12 +9,16 @@ import {
     THREE,
     PostProcessing,
     HemisphereLight,
+    Controls,
+    Stats,
+    Audio,
     constants
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
 import CarScript from '../scripts/CarScript';
 import BombScript from '../scripts/BombScript';
+import { getModelNameFromVehicleType, TYPES } from '../constants';
 
 export const WHITE = 0xffffff;
 export const SUNLIGHT = 0xffeaa7;
@@ -50,9 +54,10 @@ export default class Intro extends Level {
 
         Lights.setUpCSM({
             maxFar: 500,
-            cascades: 3 ,
+            cascades: 2 ,
             mode: 'practical',
-            shadowMapSize: 1024,
+            shadowBias: -0.0001,
+            shadowMapSize: 1024 * 2,
             lightDirection: new THREE.Vector3( -1, -1, -1 ).normalize(),
         });
     }
@@ -62,9 +67,11 @@ export default class Intro extends Level {
         this.addSunLight();
     }
 
-    createCar(name) {
-        const car =  Models.getModel('police_car', { name });
-        car.addScript('CarScript');
+    createVehicle(name, type) {
+        const model = getModelNameFromVehicleType(type);
+        const car =  Models.getModel(model, { name });
+
+        car.addScript('CarScript', { type });
 
         window.car = car;
         return car;
@@ -84,6 +91,10 @@ export default class Intro extends Level {
     }
 
     onCreate() {
+
+        window.stats = Stats;
+        Audio.setVolume(2);
+        // Controls.setOrbitControl();
         this.addLights();
 
         Scripts.create('SmoothCarFollow', SmoothCarFollow);
@@ -92,7 +103,7 @@ export default class Intro extends Level {
 
         this.createCourse();
 
-        const car = this.createCar('first');
+        const car = this.createVehicle('first', TYPES.BASE);
 
         Scene.setClearColor(BACKGROUND);
         Scene.getCamera().setPosition({ y: 10 });
@@ -100,13 +111,12 @@ export default class Intro extends Level {
         Scene
             .getCamera()
             .addScript('SmoothCarFollow', {
-                target: car,
-                offset: { x: 0, y: 7, z: 7 }
+                target: car
             });
 
         // Scene.setFog(BACKGROUND, FOG_DENSITY);
 
         // PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
-        PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
+        // PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
     }
 }

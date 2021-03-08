@@ -40,14 +40,20 @@ export default class CarScript extends BaseScript {
         });
     }
 
+    startEngine() {
+        this.car.addSound('engine', { loop: true, autoplay: false });
+        //this.car.sound.play(2);
+    }
+
     start(car, { type = TYPES.BASE }) {
         this.car = car;
         this.type = type;
 
         this.speed = undefined;
+        this.maxSpeed = 100;
         this.direction = undefined;
 
-        this.car.setPosition({ y: 7, x: 46, z: 17 });
+        this.car.setPosition({ y: 10, x: 46, z: 17 });
         // this.car.setRotation({ y: 1 });
 
         const wheels = [
@@ -66,6 +72,7 @@ export default class CarScript extends BaseScript {
         });
 
         this.setInput();
+        this.startEngine();
     }
 
     setInput() {
@@ -89,8 +96,26 @@ export default class CarScript extends BaseScript {
         this.speed = data.speed;
         this.car.speed = this.speed;
     };
+
     handleCarDirectionChange = ({ data }) => {
         this.direction = data.direction;
         this.car.direction = this.direction;
+    }
+
+    getDetuneFromSpeed = () => {
+        const max = 1200;
+        const min = -1200;
+
+        return (Math.abs(this.speed) * (max * 2) / this.maxSpeed) + min;
+    }
+
+    updateSound() {
+        if (this.car.sound && this.speed) {
+            this.car.sound.detune(this.getDetuneFromSpeed());
+        }
+    }
+
+    update() {
+        this.updateSound();
     }
 }
