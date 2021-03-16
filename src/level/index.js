@@ -52,14 +52,14 @@ export default class Intro extends Level {
             intensity: .5
         });
 
-        Lights.setUpCSM({
-            maxFar: 500,
-            cascades: 2 ,
-            mode: 'practical',
-            shadowBias: -0.0001,
-            shadowMapSize: 1024 * 2,
-            lightDirection: new THREE.Vector3( -1, -1, -1 ).normalize(),
-        });
+        // Lights.setUpCSM({
+        //     maxFar: 500,
+        //     cascades: 2 ,
+        //     mode: 'practical',
+        //     shadowBias: -0.0001,
+        //     shadowMapSize: 1024 * 2,
+        //     lightDirection: new THREE.Vector3( -1, -1, -1 ).normalize(),
+        // });
     }
 
     addLights() {
@@ -90,9 +90,16 @@ export default class Intro extends Level {
         floor.enablePhysics({ mass: 0 });
     }
 
-    onCreate() {
+    horriblyPrintFPS() {
+        const update = value => {
+            document.querySelector('#fps').innerHTML = Math.floor(value);
+        };
 
-        window.stats = Stats;
+        Stats.fps.subscribe(update);
+    }
+
+    onCreate() {
+        this.horriblyPrintFPS();
         Audio.setVolume(2);
         // Controls.setOrbitControl();
         this.addLights();
@@ -117,6 +124,6 @@ export default class Intro extends Level {
         // Scene.setFog(BACKGROUND, FOG_DENSITY);
 
         // PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
-        // PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
+        PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
     }
 }
