@@ -5,16 +5,37 @@ import {
     Scene,
     Models,
     AmbientLight,
-    SunLight,
+    Lights,
+    THREE,
+    PostProcessing,
+    HemisphereLight,
+    Controls,
+    Stats,
+    Audio,
     constants
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
 import CarScript from '../scripts/CarScript';
 import BombScript from '../scripts/BombScript';
+import { getModelNameFromVehicleType, TYPES } from '../constants';
 
 export const WHITE = 0xffffff;
 export const SUNLIGHT = 0xffeaa7;
+export const GROUND = 0xd35400;
+export const BACKGROUND = 0xddf3f5;
+
+const FOG_DENSITY = 0.007;
+
+const DOF_OPTIONS = {
+    focus: 1.0,
+    aperture: 0.0001,
+    maxblur: 0.01
+};
+
+const SATURATION_OPTIONS = {
+    saturation: 0.2
+};
 
 export default class Intro extends Level {
 
@@ -23,59 +44,83 @@ export default class Intro extends Level {
     }
 
     addSunLight() {
-        this.sunlight = new SunLight({
-            color: WHITE,
-            intensity: .8,
-            position: { x: 20, y: 40, z: 20 }
+        this.hemisphereLight = new HemisphereLight({
+            color: {
+                sky: BACKGROUND,
+                ground: GROUND
+            },
+            intensity: .5
         });
+
+        // Lights.setUpCSM({
+        //     maxFar: 200,
+        //     cascades: 1 ,
+        //     mode: 'practical',
+        //     shadowBias: -0.0001,
+        //     shadowMapSize: 1024 * 2,
+        //     lightDirection: new THREE.Vector3( -1, -1, -1 ).normalize(),
+        // });
     }
 
-    createCar(name) {
-        const car =  Models.getModel('police_car', { name });
-        car.addScript('CarScript');
+    addLights() {
+        this.addAmbientLight();
+        this.addSunLight();
+    }
 
+    createVehicle(name, type) {
+        const model = getModelNameFromVehicleType(type);
+        const car =  Models.getModel(model, { name });
+
+        car.addScript('CarScript', { type });
+
+        window.car = car;
         return car;
     }
 
     createCourse() {
-        const course =  Models.getModel('course');
+        const course =  Models.getModel('course', { name: 'course' });
         course.enablePhysics({ mass: 0 });
     }
 
-    // createFloor() {
-    //     const floor = new Box(50, 1, 50, 0xffffff);
-    //     floor.setMaterialFromName(constants.MATERIALS.STANDARD)
-    //     floor.setPosition({ y: -1 });
-    //     floor.enablePhysics({ mass: 0, debug: true });
-    // }
+    createFloor() {
+        const floor = new Box(500, 1, 500, 0xffffff);
+        floor.setName('floor');
+        floor.setMaterialFromName(constants.MATERIALS.STANDARD)
+        floor.setPosition({ y: -1 });
+        floor.enablePhysics({ mass: 0 });
+    }
 
-    // createWall() {
-    //     const wall = new Box(50, 25, 1, 0xeeeeee);
-    //     wall.setMaterialFromName(constants.MATERIALS.STANDARD)
-    //     wall.setPosition({ z: -25, y: 0 });
-    //     wall.enablePhysics({ mass: 0, debug: true });
-    // }
+    horriblyPrintFPS() {
+        const update = value => {
+            document.querySelector('#fps').innerHTML = Math.floor(value);
+        };
+
+        Stats.fps.subscribe(update);
+    }
 
     onCreate() {
-        this.addAmbientLight();
-        this.addSunLight();
+        this.horriblyPrintFPS();
+        Audio.setVolume(.5);
+        // Controls.setOrbitControl();
+        this.addLights();
 
         Scripts.create('SmoothCarFollow', SmoothCarFollow);
         Scripts.create('CarScript', CarScript);
         Scripts.create('BombScript', BombScript);
 
-        // this.createFloor();
-        // this.createWall();
         this.createCourse();
-        const car = this.createCar('first');
 
+        const target = this.createVehicle('first', TYPES.BASE);
+
+        Scene.setClearColor(BACKGROUND);
         Scene.getCamera().setPosition({ y: 10 });
 
-        Scene
-            .getCamera()
-            .addScript('SmoothCarFollow', {
-                target: car,
-                offset: { x: 0, y: 7, z: 7 }
-            });
+        Scene.getCamera()
+            .addScript('SmoothCarFollow', { target });
+
+        // Scene.setFog(BACKGROUND, FOG_DENSITY);
+
+        // PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
+        // PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
     }
 }

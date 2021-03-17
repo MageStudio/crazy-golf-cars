@@ -1,9 +1,9 @@
 import { BaseScript, math, THREE } from 'mage-engine';
 
-const DEFAULT_DISTANCE = 10.0;
-const DEFAULT_HEIGHT = 5.0;
+const DEFAULT_DISTANCE = 5.0;
+const DEFAULT_HEIGHT = 3.0;
 const DEFAULT_HEIGHT_DAMPING = 2.0;
-const DEFAULT_LOOK_AT_HEIGHT = 0;
+const DEFAULT_LOOK_AT_HEIGHT = 1;
 const DEFAULT_ROTATION_SNAP_TIME = 0.3;
 const DEFAULT_DISTANCE_SNAP_TIME = 0.5;
 const DEFAULT_DISTANCE_MULTIPLIER = 1;
@@ -47,40 +47,32 @@ export default class SmoothCarFollow extends BaseScript {
         this.lookAtVector = new THREE.Vector3(0, lookAtHeight, 0);
     }
 
-    physicsUpdate(dt) {
-        const wantedHeight = this.target.getPosition().y + this.height;
-        let currentHeight = this.camera.getPosition().y;
+    followCar(dt) {
+        if (this.target.direction) {
+            const { x, y, z } = this.target.direction;
+            const cameraPosition = this.camera.getPosition();
+            const targetPosition = this.target.getPosition();
+            const vector = new THREE.Vector3(x, y, z)
+                .negate()
+                .normalize()
+                .multiplyScalar(this.distance);
 
-        const wantedRotationAngle = this.target.getRotation().y;
+            vector.y = y + this.height;
+            const desiredPosition = targetPosition.add(vector)
 
-        const [currentRotationAngle, updatedYVelocity] = math.smoothDampAngle(this.camera.getRotation().y, wantedRotationAngle, this.yVelocity, this.rotationSnapTime, Infinity, dt);
-        this.yVelocity = updatedYVelocity;
+            cameraPosition.lerpVectors(cameraPosition, desiredPosition, 0.08);
 
+            this.camera.setPosition(cameraPosition);
 
-        const targetHeight = math.lerp(currentHeight, wantedHeight, this.heightDamping);
+            const lookAtTarget = new THREE.Vector3();
+            lookAtTarget.copy(this.target.getPosition().add(this.lookAtVector));
 
-        const wantedPosition = this.target.getPosition().clone();
-        // wantedPosition.y = targetHeight;
-
-        // parentRigidbody.velocity.magnitude * this.distanceMultiplier
-        const [usedDistance, updatedZVelocity] = math.smoothDampAngle(this.usedDistance, this.distance, this.zVelocity, this.distanceSnapTime, Infinity, dt); 
-        this.usedDistance = usedDistance;
-        this.zVelocity = updatedZVelocity;
-
-        const euler = new THREE.Euler(0, -currentRotationAngle, 0);
-        const vector = new THREE.Vector3(0, 0, this.usedDistance);
-
-        wantedPosition.add(vector.applyEuler(euler));
-        wantedPosition.y = 10;
-        // wantedPosition.applyEuler(euler);
-
-        // console.log(wantedPosition);
-
-        this.camera.setPosition(wantedPosition);
-
-        const lookAtTarget = new THREE.Vector3();
-        lookAtTarget.copy(this.target.getPosition().add(this.lookAtVector));
-
-        this.camera.lookAt(lookAtTarget);
+            this.camera.lookAt(lookAtTarget);
+        }
     }
+
+    physicsUpdate(dt) {
+        this.followCar(dt);
+    }
+
 }

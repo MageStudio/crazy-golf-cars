@@ -7,10 +7,14 @@ import {
     INPUT_EVENTS
 } from 'mage-engine';
 
+import { TYPES, getCarOptionsByType } from '../constants';
+
 export default class CarScript extends BaseScript {
 
     constructor() {
         super('CarScript');
+
+        this.engineStarted = false;
     }
 
     createWheel(index) {
@@ -25,13 +29,36 @@ export default class CarScript extends BaseScript {
         });
     }
 
-    start(car, options) {
+    flip() {
+        const position = this.car.getPosition();
+        this.car.setPosition({
+            ...position,
+            y: position.y + 2
+        });
+
+        this.car.setRotation({
+            x: 0,
+            z: 0
+        });
+    }
+
+    startEngine() {
+        this.car.addSound('engine', { loop: true, autoplay: false });
+        this.car.sound.play(1);
+
+        this.engineStarted = true;
+    }
+
+    start(car, { type = TYPES.BASE }) {
         this.car = car;
+        this.type = type;
+
         this.speed = undefined;
+        this.maxSpeed = 200;
         this.direction = undefined;
 
-        this.car.setPosition({ y: 14 });
-        //this.car.setRotation({ y: Math.PI });
+        this.car.setPosition({ y: 10, x: 46, z: 17 });
+        // this.car.setRotation({ y: 1 });
 
         const wheels = [
             this.createWheel(1),
@@ -45,32 +72,7 @@ export default class CarScript extends BaseScript {
 
         this.car.addScript('BaseCar', {
             wheels,
-            mass: 1000,
-            // debug: true,
-            friction: 10,
-            steeringIncrement: .08,
-            maxEngineForce: 3000,
-            maxBreakingForce: 100,
-            wheelsOptions: {
-                back: {
-                    axisPosition: -0.9,
-                    radius: .35,
-                    halfTrack: .6,
-                    axisHeight: .1
-                },
-                front: {
-                    axisPosition: 1.1,
-                    radius: .35,
-                    halfTrack: .6,
-                    axisHeight: .1
-                }
-            },
-            suspensions: {
-                stiffness: 10,//20.0,
-                damping: 2.3,
-                compression: 4.4,
-                restLength: 0.7
-            }
+            ...getCarOptionsByType(this.type)
         });
 
         this.setInput();
@@ -81,13 +83,47 @@ export default class CarScript extends BaseScript {
     }
 
     handleKeyDown = ({ event }) => {
-        if (event.key === 'space' && this.direction) {
-            this.throwBomb();
+        switch(event.key) {
+            case 'space':
+                if (this.direction) {
+                    this.throwBomb();
+                }
+                break;
+            case 'r':
+                this.flip();
+                break;
+        }
+
+        if (!this.engineStarted) {
+            // need user interaction before starting sounds
+            this.startEngine();
         }
     }
 
-    handleSpeedChange = ({ data }) => { this.speed = data.speed; };
+    handleSpeedChange = ({ data }) => {
+        this.speed = data.speed;
+        this.car.speed = this.speed;
+    };
+
     handleCarDirectionChange = ({ data }) => {
         this.direction = data.direction;
+        this.car.direction = this.direction;
+    }
+
+    getDetuneFromSpeed = () => {
+        const max = 1200;
+        const min = -1200;
+
+        return (Math.abs(this.speed) * (max * 2) / this.maxSpeed) + min;
+    }
+
+    updateSound() {
+        if (this.car.sound && this.speed) {
+            this.car.sound.detune(this.getDetuneFromSpeed());
+        }
+    }
+
+    update() {
+        this.updateSound();
     }
 }
