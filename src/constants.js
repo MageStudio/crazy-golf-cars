@@ -15,13 +15,13 @@ const BASE_CAR_OPTIONS = {
     wheelsOptions: {
         back: {
             axisPosition: -0.9,
-            radius: .35,
+            radius: .5,
             halfTrack: .6,
             axisHeight: .1
         },
         front: {
             axisPosition: 1.1,
-            radius: .35,
+            radius: .5,
             halfTrack: .6,
             axisHeight: .1
         }

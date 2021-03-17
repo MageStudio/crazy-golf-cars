@@ -53,8 +53,8 @@ export default class Intro extends Level {
         });
 
         // Lights.setUpCSM({
-        //     maxFar: 500,
-        //     cascades: 2 ,
+        //     maxFar: 200,
+        //     cascades: 1 ,
         //     mode: 'practical',
         //     shadowBias: -0.0001,
         //     shadowMapSize: 1024 * 2,
@@ -100,7 +100,7 @@ export default class Intro extends Level {
 
     onCreate() {
         this.horriblyPrintFPS();
-        Audio.setVolume(2);
+        Audio.setVolume(.5);
         // Controls.setOrbitControl();
         this.addLights();
 
@@ -110,20 +110,17 @@ export default class Intro extends Level {
 
         this.createCourse();
 
-        const car = this.createVehicle('first', TYPES.BASE);
+        const target = this.createVehicle('first', TYPES.BASE);
 
         Scene.setClearColor(BACKGROUND);
         Scene.getCamera().setPosition({ y: 10 });
 
-        Scene
-            .getCamera()
-            .addScript('SmoothCarFollow', {
-                target: car
-            });
+        Scene.getCamera()
+            .addScript('SmoothCarFollow', { target });
 
         // Scene.setFog(BACKGROUND, FOG_DENSITY);
 
         // PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
-        PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
+        // PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
     }
 }

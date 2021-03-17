@@ -13,6 +13,8 @@ export default class CarScript extends BaseScript {
 
     constructor() {
         super('CarScript');
+
+        this.engineStarted = false;
     }
 
     createWheel(index) {
@@ -42,7 +44,9 @@ export default class CarScript extends BaseScript {
 
     startEngine() {
         this.car.addSound('engine', { loop: true, autoplay: false });
-        //this.car.sound.play(2);
+        this.car.sound.play(1);
+
+        this.engineStarted = true;
     }
 
     start(car, { type = TYPES.BASE }) {
@@ -50,7 +54,7 @@ export default class CarScript extends BaseScript {
         this.type = type;
 
         this.speed = undefined;
-        this.maxSpeed = 100;
+        this.maxSpeed = 200;
         this.direction = undefined;
 
         this.car.setPosition({ y: 10, x: 46, z: 17 });
@@ -72,7 +76,6 @@ export default class CarScript extends BaseScript {
         });
 
         this.setInput();
-        this.startEngine();
     }
 
     setInput() {
@@ -89,6 +92,11 @@ export default class CarScript extends BaseScript {
             case 'r':
                 this.flip();
                 break;
+        }
+
+        if (!this.engineStarted) {
+            // need user interaction before starting sounds
+            this.startEngine();
         }
     }
 
