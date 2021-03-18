@@ -99,7 +99,7 @@ export default class Intro extends Level {
     }
 
     onCreate() {
-        this.horriblyPrintFPS();
+        // this.horriblyPrintFPS();
         Audio.setVolume(.5);
         // Controls.setOrbitControl();
         this.addLights();

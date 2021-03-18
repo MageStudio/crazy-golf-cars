@@ -1,5 +1,7 @@
 import { Router, store } from 'mage-engine';
 import Level from './level';
+import Intro from './intro';
+import Root from './ui/root';
 
 const assets = {
     audio: {
@@ -49,12 +51,18 @@ const config = {
         near: 0.1,
         far: 200,
     },
+
+    ui: {
+        root: Root
+    }
 };
 
 window.addEventListener('load', () => {
     store.createStore({}, {}, true);
 
-    Router.on('/', Level);
+
+    Router.on('/', Intro);
+    Router.on('/course', Level);
 
     Router.start(config, assets);
 });

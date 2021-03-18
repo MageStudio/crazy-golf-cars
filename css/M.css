@@ -1,6 +1,6 @@
 @font-face {
-    font-family: Kamatic;
-    src: url('ka1.ttf');
+    font-family: Chango;
+    src: url('Chango-Regular.ttf');
 }
 
 body {
@@ -10,7 +10,7 @@ body {
     height: 100%;
     width: 100%;
     position: absolute;
-    font-family: Kamatic;
+    font-family: Chango;
 }
 
 .visible {
@@ -114,60 +114,45 @@ canvas {
 
 @keyframes loader {
     0% {
-        width: 0;
-    }
-    20% {
-        width: 10%;
-    }
-    25% {
-        width: 24%;
-    }
-    43% {
-        width: 41%;
-    }
-    56% {
-        width: 50%;
-    }
-    66% {
-        width: 52%;
-    }
-    71% {
-        width: 60%;
-    }
-    75% {
-        width: 76%;
-    }
-    94% {
-        width: 86%;
+        margin-left: 8px;
     }
     100% {
-        width: 100%;
+        margin-left: 86%;
     }
 }
 
 .progress-bar {
-    border-radius: 8px;
     overflow: hidden;
     width: 100%;
-    height: 8px;
-    /* margin-top: -4px; */
-    border: 1px solid #B8B2A6;
+    margin-top: 12px;
 }
 
-.progress-bar span {
+.track {
+    border-radius: 32px;
+    border: 16px solid #e74c3c;
+    border-top-width: 12px;
+    box-shadow: inset 0px 6px #c0392b;
+    background: #2ecc71;
+    height: 32px;
+    width: calc(100% - 32px);
+}
+
+.track::after {
+    height: 12px;
+    width: 12px;
+    background: #2c3e50;
+    content: ' ';
     display: block;
+    float: right;
+    margin: 12px;
+    margin-left: 0;
+    border-radius: 24px;
+    box-shadow: inset -1px 3px #7f8c8d;
 }
 
-.bar {
-    background: #DED7CD;
-}
-
-.progress {
-    animation: loader 8s ease forwards;
-    background: white;
-    color: #dcdde1;
-    padding: 4px;
-    width: 0;
+.car {
+    animation: loader 10s ease-in-out forwards;
+    margin-top: 10px;
 }
 
 #fps {
@@ -182,4 +167,79 @@ canvas {
     color: white;
     background: black;
     z-index: 99999;
+}
+
+.screen-title,
+.loading-screen {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    position: absolute;
+    z-index: 9999;
+    top: 0;
+    background: repeating-linear-gradient(45deg, #f1c40f, #f1c40f 30px, #f39c12 0, #f39c12 60px);
+}
+
+.loading-bar-container {
+    width: 500px;
+    margin: auto;
+    margin-top: 400px;
+}
+
+.loading-bar-label {
+    margin-left: 24px;
+}
+
+.game-title {
+    padding: 16px;
+    padding-bottom: 42px;
+    background: rgba(255, 255, 255, .8);
+    border: 16px solid #2ecc71;
+    border-radius: 8px;
+    font-size: 80px;
+    WIDTH: 580px;
+    color: #2ecc71;
+    margin: 0;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 12px;
+    margin-top: 8px;
+    text-shadow: 6px 6px #3498db, 12px 12px #9b59b6, 18px 18px #e74c3c;
+    box-shadow: 6px 6px #3498db, 12px 12px #9b59b6, 18px 18px #e74c3c;
+}
+
+.game-title-label {
+    color: #3498db;
+    font-size: 18px;
+    text-shadow: 2px 2px white;
+}
+
+.game-title-random-message {
+    color: #f1c40f;
+    font-size: 12px;
+}
+
+.game-title-container {
+    margin: auto;
+    margin-top: 120px;
+    width: 644px;
+}
+
+
+.title-buttons-list {
+    padding: 0;
+    width: 400px;
+    margin: 64px auto;
+}
+.title-buttons-container {
+    list-style: none;
+    margin-bottom: 16px;
+}
+
+.title-button {
+    width: 240px;
+    height: 60px;
+    border-radius: 60px;
+    margin: auto;
+    display: block;
 }
