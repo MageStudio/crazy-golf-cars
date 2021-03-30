@@ -121,6 +121,34 @@ canvas {
     }
 }
 
+@keyframes slideIn {
+    0% {
+      transform: translateY(400px);
+      animation-timing-function: ease-out;
+    }
+    60% {
+      transform: translateY(-30px);
+      animation-timing-function: ease-in;
+    }
+    80% {
+      transform: translateY(10px);
+      animation-timing-function: ease-out;
+    }
+    100% {
+      transform: translateY(0px);
+      animation-timing-function: ease-in;
+    }
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
 .progress-bar {
     overflow: hidden;
     width: 100%;
@@ -209,9 +237,11 @@ canvas {
 }
 
 .game-title-label {
-    color: #3498db;
+    color: #2c3e50;
     font-size: 18px;
-    text-shadow: 2px 2px white;
+    display: block;
+    text-align: center;
+    width: 100%;
 }
 
 .game-title-random-message {
@@ -237,9 +267,81 @@ canvas {
 }
 
 .title-button {
+    position: relative;
     width: 240px;
     height: 60px;
     border-radius: 60px;
     margin: auto;
     display: block;
+    background: #1abc9c;
+    color: white;
+    font-family: 'Chango';
+    font-size: 1.2rem;
+    border: none;
+    box-shadow: 3px 3px #3498db, 6px 6px #9b59b6, 9px 9px #e74c3c;
+}
+
+.title-button:hover {
+    cursor: pointer;
+    top: 6px;
+    left: 6px;
+    box-shadow: inset 0px 0px 4px #34495e;
+    border: none;
+    background: #16a085;
+}
+
+.modal-backdrop {
+    position: absolute;
+    background: rgba(0, 0, 0, .75);
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.modal {
+    height: 500px;
+    width: 500px;
+    margin: auto;
+    position: relative;
+    top: 200px;
+    background: white;
+    border-radius: 4px;
+
+    animation: fadeIn 1s, slideIn .8s linear;
+}
+
+.modal-head {
+    height: 42px;
+    border-bottom: 1px solid #bdc3c7;
+}
+
+.modal-title {
+    line-height: 42px;
+    margin-left: 16px;
+    text-align: center;
+    display: block;
+    width: auto;
+    float: left;
+}
+
+.modal-close-btn {
+    cursor: pointer;
+    line-height: 42px;
+    text-align: center;
+    display: block;
+    width: 42px;
+    color: #bdc3c7;
+    float: right;
+    font-family: Arial;
+}
+
+.modal-body {
+    height: calc(100% - 138px);
+    position: relative;
+    display: block;
+    padding: 16px;
+}
+
+.modal-footer {
+    height: 64px;
 }

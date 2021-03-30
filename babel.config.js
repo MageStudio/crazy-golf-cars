@@ -11,7 +11,7 @@ const config = {
     ],
     plugins: [
         '@babel/plugin-transform-runtime',
-        ['babel-plugin-inferno', { imports: true }],
+        ['babel-plugin-inferno', { imports: "xferno" }],
         '@babel/plugin-proposal-class-properties',
     ],
 };

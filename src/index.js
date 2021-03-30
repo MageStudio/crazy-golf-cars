@@ -2,6 +2,7 @@ import { Router, store } from 'mage-engine';
 import Level from './level';
 import Intro from './intro';
 import Root from './ui/root';
+import * as reducers from './ui/reducers';
 
 const assets = {
     audio: {
@@ -58,7 +59,7 @@ const config = {
 };
 
 window.addEventListener('load', () => {
-    store.createStore({}, {}, true);
+    store.createStore(reducers, {}, true);
 
 
     Router.on('/', Intro);
