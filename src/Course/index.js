@@ -37,7 +37,7 @@ const SATURATION_OPTIONS = {
     saturation: 0.2
 };
 
-export default class Intro extends Level {
+export default class WoodsCourse extends Level {
 
     addAmbientLight() {
         this.ambientLight = new AmbientLight({ color: WHITE });
@@ -117,6 +117,10 @@ export default class Intro extends Level {
 
         Scene.getCamera()
             .addScript('SmoothCarFollow', { target });
+
+        window.camera = Scene.getCamera();
+
+        console.log('done oncreate');
 
         // Scene.setFog(BACKGROUND, FOG_DENSITY);
 

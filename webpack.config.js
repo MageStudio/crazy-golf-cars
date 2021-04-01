@@ -37,6 +37,7 @@ module.exports = {
                 { from: './index.html', to: 'index.html', force: true },
                 { from: 'assets', to: 'assets', noErrorOnMissing: true, force: true },
                 { from: 'css', to: 'css', noErrorOnMissing: true, force: true },
+                { from: 'img', to: 'img', noErrorOnMissing: true, force: true },
                 { from: 'js', to: 'js', noErrorOnMissing: true, force: true }
             ]
         })
