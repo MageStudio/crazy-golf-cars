@@ -305,7 +305,7 @@ canvas {
     position: relative;
     top: 200px;
     background: white;
-    border-radius: 4px;
+    border-radius: 8px;
 
     animation: fadeIn 1s, slideIn .8s linear;
 }
@@ -313,6 +313,8 @@ canvas {
 .modal-head {
     height: 42px;
     border-bottom: 1px solid #bdc3c7;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
 }
 
 .modal-title {
@@ -324,13 +326,22 @@ canvas {
     float: left;
 }
 
+.modal-head.info { background: #2980b9; }
+.modal-head.info .modal-close-btn, .modal-head.info .modal-title { color: white }
+
+.modal-head.warning { background: #f39c12; }
+.modal-head.warning .modal-close-btn, .modal-head.warning .modal-title { color: white }
+
+.modal-head.error { background: #c0392b; }
+.modal-head.error .modal-close-btn, .modal-head.error .modal-title { color: white }
+
+
 .modal-close-btn {
     cursor: pointer;
     line-height: 42px;
     text-align: center;
     display: block;
     width: 42px;
-    color: #bdc3c7;
     float: right;
     font-family: Arial;
 }

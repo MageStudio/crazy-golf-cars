@@ -1,26 +1,28 @@
 import { Router, store } from 'mage-engine';
-import Level from './level';
+import Course from './Course';
 import Intro from './intro';
 import Root from './ui/root';
 import * as reducers from './ui/reducers';
 
 const assets = {
-    audio: {
-        engine: 'assets/audio/engine.mp3'
-    },
-    models: {
-        'car': 'assets/models/buggy.gltf',
-        'wheel': 'assets/models/wheel.gltf',
-        'wheel_new': 'assets/models/wheel_new.glb',
-        'rocket': 'assets/models/rocket.glb',
-        'grenade': 'assets/models/grenade.glb',
-        'police_car': 'assets/models/police_car.glb',
-        'truck': 'assets/models/truck.glb',
-        'course': 'assets/models/course.glb',
-    },
-    textures: {
-        'dot': 'assets/textures/dot.png'
-    },
+    '/course': {
+        audio: {
+            engine: 'assets/audio/engine.mp3'
+        },
+        models: {
+            'car': 'assets/models/buggy.gltf',
+            'wheel': 'assets/models/wheel.gltf',
+            'wheel_new': 'assets/models/wheel_new.glb',
+            'rocket': 'assets/models/rocket.glb',
+            'grenade': 'assets/models/grenade.glb',
+            'police_car': 'assets/models/police_car.glb',
+            'truck': 'assets/models/truck.glb',
+            'course': 'assets/models/course.glb',
+        },
+        textures: {
+            'dot': 'assets/textures/dot.png'
+        },
+    }
 }
 
 const config = {
@@ -63,7 +65,7 @@ window.addEventListener('load', () => {
 
 
     Router.on('/', Intro);
-    Router.on('/course', Level);
+    Router.on('/course', Course);
 
     Router.start(config, assets);
 });

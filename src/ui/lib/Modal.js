@@ -1,5 +1,6 @@
 const Modal = ({
     visible,
+    type = 'info',
     title = '',
     onClose,
     onConfirm,
@@ -20,7 +21,7 @@ const Modal = ({
             <div
                 onClick={preventModalClick}
                 className='modal'>
-                <div className='modal-head'>
+                <div className={`modal-head ${type}`}>
                     <span className='modal-title'>{ title }</span>
                     <span className='modal-close-btn' onClick={onClose}>x</span>
                 </div>
