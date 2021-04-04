@@ -40,7 +40,7 @@ const SATURATION_OPTIONS = {
 export default class WoodsCourse extends Level {
 
     addAmbientLight() {
-        this.ambientLight = new AmbientLight({ color: WHITE });
+        this.ambientLight = new AmbientLight({ color: WHITE, intensity: 1 });
     }
 
     addSunLight() {
@@ -49,7 +49,7 @@ export default class WoodsCourse extends Level {
                 sky: BACKGROUND,
                 ground: GROUND
             },
-            intensity: .5
+            intensity: 1
         });
 
         // Lights.setUpCSM({
@@ -124,7 +124,7 @@ export default class WoodsCourse extends Level {
 
         // Scene.setFog(BACKGROUND, FOG_DENSITY);
 
-        // PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
-        // PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
+        PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
+        PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
     }
 }

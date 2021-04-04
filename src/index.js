@@ -17,7 +17,7 @@ const assets = {
             'grenade': 'assets/models/grenade.glb',
             'police_car': 'assets/models/police_car.glb',
             'truck': 'assets/models/truck.glb',
-            'course': 'assets/models/course.glb',
+            'course': 'assets/models/course_new.glb',
         },
         textures: {
             'dot': 'assets/textures/dot.png'
