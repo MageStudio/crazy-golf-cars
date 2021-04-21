@@ -120,8 +120,6 @@ export default class WoodsCourse extends Level {
 
         window.camera = Scene.getCamera();
 
-        console.log('done oncreate');
-
         // Scene.setFog(BACKGROUND, FOG_DENSITY);
 
         PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
