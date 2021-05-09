@@ -1,12 +1,12 @@
 import { Router, store } from 'mage-engine';
-import Course from './course';
+import Race from './race';
 import Intro from './intro';
 import Root from './ui/root';
 import NetworkClient from './network/client';
 import * as reducers from './ui/reducers';
 
 const assets = {
-    '/course': {
+    '/race': {
         audio: {
             engine: 'assets/audio/engine.mp3'
         },
@@ -65,7 +65,7 @@ window.addEventListener('load', () => {
     store.createStore(reducers, {}, true);
 
     Router.on('/', Intro);
-    Router.on('/course', Course);
+    Router.on('/race', Race);
 
     Router.start(config, assets);
 

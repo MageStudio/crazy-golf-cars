@@ -5,17 +5,13 @@ import {
     Scene,
     Models,
     AmbientLight,
-    Lights,
-    THREE,
     PostProcessing,
     HemisphereLight,
     Controls,
     Stats,
     Audio,
     constants,
-    store,
-    Router,
-    Cube
+    store
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
@@ -41,7 +37,7 @@ const SATURATION_OPTIONS = {
     saturation: 0.2
 };
 
-export default class WoodsCourse extends Level {
+export default class Race extends Level {
 
     addAmbientLight() {
         this.ambientLight = new AmbientLight({ color: WHITE, intensity: 1 });

@@ -3,7 +3,7 @@ import { NAVIGATION_CHANGED } from "./types";
 
 export const CAR_SELECTION_PATH = 'carSelection';
 export const WAITING_ROOM_PATH = 'waitingRoom';
-export const COURSE_PATH = 'course';
+export const RACE_PATH = 'race';
 
 export const goToCarSelection = () => ({
     type: NAVIGATION_CHANGED,
@@ -16,10 +16,10 @@ export const goToWaitingRoom = () => ({
 })
 
 export const goToCourse = () => dispatch => {
-    Router.goTo(`/${COURSE_PATH}`);
+    Router.goTo(`/${RACE_PATH}`);
 
     dispatch({
         type: NAVIGATION_CHANGED,
-        path: COURSE_PATH
+        path: RACE_PATH
     })
 };
