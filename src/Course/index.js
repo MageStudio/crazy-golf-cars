@@ -12,13 +12,17 @@ import {
     Controls,
     Stats,
     Audio,
-    constants
+    constants,
+    store,
+    Router,
+    Cube
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
 import CarScript from '../scripts/CarScript';
 import BombScript from '../scripts/BombScript';
 import { getModelNameFromVehicleType, TYPES } from '../constants';
+import OpponentCarScript from '../scripts/OpponentCarScript';
 
 export const WHITE = 0xffffff;
 export const SUNLIGHT = 0xffeaa7;
@@ -67,14 +71,32 @@ export default class WoodsCourse extends Level {
         this.addSunLight();
     }
 
-    createVehicle(name, type) {
+    createPlayer(player, type, isOpponent = false) {
+        const { username }  = player;
         const model = getModelNameFromVehicleType(type);
-        const car =  Models.getModel(model, { name });
+        const car =  Models.getModel(model, { name: username });
 
-        car.addScript('CarScript', { type });
+        console.log('creating car for', username);
+        if (isOpponent) {
+            car.addScript('OpponentCarScript', { type, username });
+        } else {
+            car.addScript('CarScript', { type });
+        }
 
-        window.car = car;
         return car;
+    }
+
+    createPlayers(players, { username }) {
+        const opponents = [];
+        players.forEach(player => {
+            if (player.username !== username) {
+                opponents.push(this.createPlayer(player, TYPES.BASE, true));
+            }
+        });
+
+        window.opponents = opponents;
+
+        return opponents;
     }
 
     createCourse() {
@@ -90,6 +112,20 @@ export default class WoodsCourse extends Level {
         floor.enablePhysics({ mass: 0 });
     }
 
+    prepareCamera(target) {
+        Scene.getCamera().setPosition({ y: 10 });
+
+        // Scene.getCamera()
+        //     .addScript('SmoothCarFollow', { target });
+    }
+
+    prepareSceneEffects() {
+        Scene.setClearColor(BACKGROUND);
+        // Scene.setFog(BACKGROUND, FOG_DENSITY);
+        PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
+        PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
+    }
+
     horriblyPrintFPS() {
         const update = value => {
             document.querySelector('#fps').innerHTML = Math.floor(value);
@@ -98,31 +134,43 @@ export default class WoodsCourse extends Level {
         Stats.fps.subscribe(update);
     }
 
-    onCreate() {
+    createWorld(players, player) {
         this.horriblyPrintFPS();
-        Audio.setVolume(.5);
-        // Controls.setOrbitControl();
+        Controls.setOrbitControl();
         this.addLights();
-
-        Scripts.create('SmoothCarFollow', SmoothCarFollow);
-        Scripts.create('CarScript', CarScript);
-        Scripts.create('BombScript', BombScript);
 
         this.createCourse();
 
-        const target = this.createVehicle('first', TYPES.BASE);
+        this.createPlayers(players, player);
+        const me = this.createPlayer(player, TYPES.BASE);
+        window.me = me;
 
-        Scene.setClearColor(BACKGROUND);
-        Scene.getCamera().setPosition({ y: 10 });
+        this.prepareCamera(me);
+        this.prepareSceneEffects();
+    }
 
-        Scene.getCamera()
-            .addScript('SmoothCarFollow', { target });
+    onCreate() {
+        const { multiplayer, player } = store.getState();
+        const { players = [] } = multiplayer;
 
-        window.camera = Scene.getCamera();
+        Audio.setVolume(.5);
 
-        // Scene.setFog(BACKGROUND, FOG_DENSITY);
+        Scripts.create('SmoothCarFollow', SmoothCarFollow);
+        Scripts.create('CarScript', CarScript);
+        Scripts.create('OpponentCarScript', OpponentCarScript);
+        Scripts.create('BombScript', BombScript);
 
-        PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
-        PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
+        const fakePlayers = [{
+            username: 'meena'
+        }];
+        const fakeMe = { username: 'marco' };
+
+        this.createWorld(fakePlayers, fakeMe);
+
+        // if (players.length) {
+        //     this.createWorld(players, player);
+        // } else {
+        //     Router.goTo('/');
+        // }
     }
 }

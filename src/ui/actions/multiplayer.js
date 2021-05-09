@@ -19,7 +19,7 @@ const roomJoined = room => ({
     room
 });
 
-const waitingRoomEntered = players => ({
+const waitingRoomEntered = ({ players }) => ({
     type: WAITING_ROOM_ENTERED,
     players
 });

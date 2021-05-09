@@ -1,5 +1,5 @@
 import { Router, store } from 'mage-engine';
-import Course from './Course';
+import Course from './course';
 import Intro from './intro';
 import Root from './ui/root';
 import NetworkClient from './network/client';

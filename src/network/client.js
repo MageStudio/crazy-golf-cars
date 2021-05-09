@@ -41,6 +41,7 @@ class MultiplayerClient extends EventDispatcher {
         super();
 
         this.url = `${RGS.url}:${RGS.port}${RGS.path}`;
+        console.log(this.url);
         this.socket = undefined;
         this.hasListeners = false;
     }
