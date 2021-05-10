@@ -152,7 +152,6 @@ canvas {
 .progress-bar {
     overflow: hidden;
     width: 100%;
-    margin-top: 12px;
 }
 
 .track {
@@ -214,7 +213,9 @@ canvas {
     margin-top: 400px;
 }
 
-.loading-bar-label {
+.loading-bar-message {
+    display: block;
+    margin: 0 0 4px 24px;
     margin-left: 24px;
 }
 
@@ -299,7 +300,6 @@ canvas {
 }
 
 .modal {
-    height: 500px;
     width: 500px;
     margin: auto;
     position: relative;
@@ -353,6 +353,31 @@ canvas {
     padding: 16px;
 }
 
+.modal-body input {
+    width: 90%;
+    height: 16px;
+    padding: 8px;
+    margin: 0;
+    font-family: 'Chango';
+}
+
 .modal-footer {
     height: 64px;
 }
+
+.modal-footer .button {
+    float: right;
+    height: 42px;
+    width: 128px;
+    border: none;
+    margin: 10px 16px;
+    color: white;
+    text-transform: uppercase;
+    border-radius: 8px;
+    font-family: 'Chango';
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.modal-footer .button.confirm { background: #1abc9c; }
+.modal-footer .button.cancel { background: #34495e; }

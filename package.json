@@ -27,7 +27,8 @@
     },
     "dependencies": {
         "inferno": "^7.4.2",
-        "mage-engine": "3.11.4",
+        "mage-engine": "3.11.6",
+        "socket.io-client": "4.0.1",
         "xferno": "0.0.7"
     }
 }

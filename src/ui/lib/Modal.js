@@ -1,5 +1,6 @@
 const Modal = ({
     visible,
+    dismissable = true,
     type = 'info',
     title = '',
     onClose,
@@ -23,14 +24,14 @@ const Modal = ({
                 className='modal'>
                 <div className={`modal-head ${type}`}>
                     <span className='modal-title'>{ title }</span>
-                    <span className='modal-close-btn' onClick={onClose}>x</span>
+                    { dismissable && <span className='modal-close-btn' onClick={onClose}>x</span> }
                 </div>
                 <div className='modal-body'>
                     { children }
                 </div>
                 <div className='modal-footer'>
-                    { onCancel && <button>Cancel</button> }
-                    { onConfirm && <button>Confirm</button> }
+                    { onCancel && <button className='button cancel' onClick={onCancel}>Cancel</button> }
+                    { onConfirm && <button className='button confirm' onClick={onConfirm}>Confirm</button> }
                 </div>
             </div>
         </div>
