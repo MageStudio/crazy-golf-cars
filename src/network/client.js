@@ -6,7 +6,7 @@ const NEW_ROOM_EVENT = 'new_room';
 const JOIN_ROOM_EVENT = 'join_room';
 const LEAVE_ROOM_EVENT = 'leave_room';
 
-export const EVENTS = {
+export const GAME_EVENTS = {
     ROOM_ALREADY_EXISTS_EVENT: 'room_already_exists',
     ROOM_DOES_NOT_EXIST_EVENT: 'room_does_not_exist',
     ROOM_DOES_NOT_HAVE_PLAYER_EVENT: 'room_does_not_have_player',
@@ -14,6 +14,8 @@ export const EVENTS = {
     ROOM_IS_FULL_EVENT: 'room_is_full',
     ROOM_CANT_BE_JOINED_LEAVE_FIRST: 'room_cant_be_joined_leave_first',
     ROOM_MISSING: 'room_missing',
+
+    DISCONNECT: 'disconnect',
 
     PLAYER_JOINED: 'player_joined',
     PLAYER_LEFT: 'player_left',
@@ -23,17 +25,16 @@ export const EVENTS = {
 
     ROOMS_LIST_EVENT: 'rooms_list',
 
-
     GAME_STARTED_EVENT: 'game_started',
     WAITING_ROOM_EVENT: 'waiting_room',
+};
 
-    POSITION_CHANGE_EVENT: 'position_change',
-    ROTATION_CHANGE_EVENT: 'rotation_change',
+export const ROOM_EVENTS = {
     ENTITY_CHANGE_EVENT: 'entity_change',
     PLAYER_CHANGE_EVENT: 'player_change',
 };
 
-const EVENTS_LIST = Object.keys(EVENTS);
+const GAME_EVENTS_LIST = Object.keys(GAME_EVENTS);
 
 class MultiplayerClient extends EventDispatcher {
 
@@ -41,7 +42,6 @@ class MultiplayerClient extends EventDispatcher {
         super();
 
         this.url = `${RGS.url}:${RGS.port}${RGS.path}`;
-        console.log(this.url);
         this.socket = undefined;
         this.hasListeners = false;
     }
@@ -59,15 +59,15 @@ class MultiplayerClient extends EventDispatcher {
     }
 
     setListeners = () => {
-        EVENTS_LIST.forEach(event => {
-            this.socket.on(EVENTS[event], this.getPropagate(EVENTS[event]).bind(this));
+        GAME_EVENTS_LIST.forEach(event => {
+            this.socket.on(GAME_EVENTS[event], this.getPropagate(GAME_EVENTS[event]).bind(this));
         });
 
-        this.socket.on("disconnect", this.onDisconnect);
+        this.socket.on(GAME_EVENTS.DISCONNECT, this.onDisconnect);
+        this.socket.on(ROOM_EVENTS.PLAYER_CHANGE_EVENT, this.getPropagate(ROOM_EVENTS.PLAYER_CHANGE_EVENT).bind(this));
     }
 
     getPropagate = type => data => {
-        console.log('dispatching', type, data);
         this.dispatchEvent({
             type,
             data
@@ -75,10 +75,17 @@ class MultiplayerClient extends EventDispatcher {
     }
 
     createRoom = (username, room, config) => {
+        const roomConfig = {
+            initialPositions: [
+                { y: 10, x: 46, z: 17 },
+                { y: 10, x: 48, z: 17 }
+            ],
+            ...config,
+        };
         this.socket.emit(NEW_ROOM_EVENT, {
             username,
             room,
-            config
+            config: roomConfig
         });
     };
 
@@ -96,19 +103,17 @@ class MultiplayerClient extends EventDispatcher {
         });
     };
 
-    sendEntityChange = (username, position, rotation) => {
-        this.socket.emit(EVENTS.ENTITY_CHANGE_EVENT, {
+    sendEntityChange = (username, data) => {
+        this.socket.emit(ROOM_EVENTS.ENTITY_CHANGE_EVENT, {
             username,
-            position,
-            rotation
+            ...data
         });
     };
 
-    sendPlayerChange = (username, position, rotation) => {
-        this.socket.emit(EVENTS.PLAYER_CHANGE_EVENT, {
+    sendPlayerChange = (username, data) => {
+        this.socket.emit(ROOM_EVENTS.PLAYER_CHANGE_EVENT, {
             username,
-            position,
-            rotation
+            ...data
         });
     };
 }
