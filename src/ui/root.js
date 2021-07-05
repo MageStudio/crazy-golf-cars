@@ -34,6 +34,9 @@ class Root extends Component {
             onUsernameSet
         } = this.props;
 
+        const { room = {} } = multiplayer;
+        const { players = [] } = room; 
+
         if (loadingScreenVisible) return <LoadingScreen />;
         if (location.path !== '/') return null;
 
@@ -44,7 +47,7 @@ class Root extends Component {
                     username={username}
                     version={version} />
             case 'waitingRoom':
-                return <WaitingRoom players={multiplayer.players}/>
+                return <WaitingRoom players={players}/>
         }
     }
 }

@@ -6,7 +6,7 @@ import {
     PHYSICS_EVENTS,
     INPUT_EVENTS
 } from 'mage-engine';
-
+import Network from '../network/client';
 import { TYPES, getCarOptionsByType } from '../constants';
 
 export default class CarScript extends BaseScript {
@@ -49,15 +49,21 @@ export default class CarScript extends BaseScript {
         this.engineStarted = true;
     }
 
-    start(car, { type = TYPES.BASE }) {
+    start(car, { type = TYPES.BASE, username, initialPosition }) {
         this.car = car;
         this.type = type;
+        this.initialPosition = initialPosition;
+        this.username = username;
 
         this.speed = undefined;
         this.maxSpeed = 200;
         this.direction = undefined;
 
-        this.car.setPosition({ y: 10, x: 46, z: 17 });
+        console.log('inside car,', this.username, this.initialPosition);
+
+
+        this.car.setPosition(initialPosition);
+        // this.car.setPosition({ y: 10, x: 46, z: 17 });
         // this.car.setRotation({ y: 1 });
 
         const wheels = [
@@ -70,7 +76,7 @@ export default class CarScript extends BaseScript {
         this.car.addEventListener(PHYSICS_EVENTS.SPEED_CHANGE_EVENT, this.handleSpeedChange);
         this.car.addEventListener(PHYSICS_EVENTS.CAR_DIRECTION_CHANGE_EVENT, this.handleCarDirectionChange);
 
-        this.car.addScript('BaseCar', {
+        this.baseCarScript = this.car.addScript('BaseCar', {
             wheels,
             ...getCarOptionsByType(this.type)
         });
@@ -123,7 +129,12 @@ export default class CarScript extends BaseScript {
         }
     }
 
+    dispatchCarStateChange() {
+        Network.sendPlayerChange(this.username, this.baseCarScript.state);
+    }
+
     update() {
         this.updateSound();
+        this.dispatchCarStateChange();
     }
 }

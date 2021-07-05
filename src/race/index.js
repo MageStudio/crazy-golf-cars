@@ -11,7 +11,8 @@ import {
     Stats,
     Audio,
     constants,
-    store
+    store,
+    Router
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
@@ -68,31 +69,35 @@ export default class Race extends Level {
     }
 
     createPlayer(player, type, isOpponent = false) {
-        const { username }  = player;
+        const { username, initialPosition }  = player;
         const model = getModelNameFromVehicleType(type);
         const car =  Models.getModel(model, { name: username });
 
         console.log('creating car for', username);
         if (isOpponent) {
-            car.addScript('OpponentCarScript', { type, username });
+            car.addScript('OpponentCarScript', { type, username, initialPosition });
         } else {
-            car.addScript('CarScript', { type });
+            car.addScript('CarScript', { type, username, initialPosition });
         }
 
         return car;
     }
 
-    createPlayers(players, { username }) {
-        const opponents = [];
-        players.forEach(player => {
-            if (player.username !== username) {
-                opponents.push(this.createPlayer(player, TYPES.BASE, true));
-            }
+    createPlayers(playersList, { username }) {
+        const players = [];
+        let myself;
+        playersList.forEach(player => {
+            const isOpponent = player.username !== username;
+            const p = this.createPlayer(player, TYPES.BASE, isOpponent)
+
+            if (!isOpponent) {
+                myself = p;
+            };
+
+            players.push(p);
         });
 
-        window.opponents = opponents;
-
-        return opponents;
+        return myself;
     }
 
     createCourse() {
@@ -109,10 +114,12 @@ export default class Race extends Level {
     }
 
     prepareCamera(target) {
+        // Controls.setOrbitControl();
+
         Scene.getCamera().setPosition({ y: 10 });
 
-        // Scene.getCamera()
-        //     .addScript('SmoothCarFollow', { target });
+        Scene.getCamera()
+            .addScript('SmoothCarFollow', { target });
     }
 
     prepareSceneEffects() {
@@ -130,24 +137,24 @@ export default class Race extends Level {
         Stats.fps.subscribe(update);
     }
 
-    createWorld(players, player) {
+    createWorld(playersList, player) {
         this.horriblyPrintFPS();
-        Controls.setOrbitControl();
         this.addLights();
 
         this.createCourse();
 
-        this.createPlayers(players, player);
-        const me = this.createPlayer(player, TYPES.BASE);
+        const me = this.createPlayers(playersList, player);
+        // window.players = players;
+        // const me = players.filter(player => player.getName() === player.username)[0];
         window.me = me;
-
         this.prepareCamera(me);
         this.prepareSceneEffects();
     }
 
     onCreate() {
         const { multiplayer, player } = store.getState();
-        const { players = [] } = multiplayer;
+        const { room } = multiplayer;
+        const { players = [] } = room;
 
         Audio.setVolume(.5);
 
@@ -156,17 +163,17 @@ export default class Race extends Level {
         Scripts.create('OpponentCarScript', OpponentCarScript);
         Scripts.create('BombScript', BombScript);
 
-        const fakePlayers = [{
-            username: 'meena'
-        }];
-        const fakeMe = { username: 'marco' };
+        // const fakePlayers = [{
+        //     username: 'meena'
+        // }];
+        // const fakeMe = { username: 'marco' };
 
-        this.createWorld(fakePlayers, fakeMe);
+        // this.createWorld(fakePlayers, fakeMe);
 
-        // if (players.length) {
-        //     this.createWorld(players, player);
-        // } else {
-        //     Router.goTo('/');
-        // }
+        if (players.length) {
+            this.createWorld(players, player);
+        } else {
+            Router.goTo('/');
+        }
     }
 }

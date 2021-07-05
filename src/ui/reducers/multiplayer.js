@@ -1,9 +1,18 @@
-import { PLAYER_JOINED, ROOMS_LIST_CHANGED, ROOM_JOINED, WAITING_ROOM_ENTERED } from "../actions/types";
+import {
+    GAME_STARTED,
+    PLAYER_JOINED,
+    ROOMS_LIST_CHANGED,
+    ROOM_JOINED,
+    WAITING_ROOM_ENTERED
+} from "../actions/types";
 
 const DEFAULT_STATE = {
     rooms: [],
-    players: [],
-    currentRoom: {}
+    room: {
+        config: {},
+        players: []
+    },
+    state: ''
 };
 
 export default (state = DEFAULT_STATE, action = {}) => {
@@ -11,12 +20,14 @@ export default (state = DEFAULT_STATE, action = {}) => {
         case WAITING_ROOM_ENTERED:
             return {
                 ...state,
-                players: action.players
+                room: action.room,
+                state: action.state
             };
         case ROOM_JOINED:
             return {
                 ...state,
-                currentRoom: action.room
+                room: action.room,
+                state: action.state
             };
         case ROOMS_LIST_CHANGED:
             return {
@@ -26,11 +37,14 @@ export default (state = DEFAULT_STATE, action = {}) => {
         case PLAYER_JOINED:
             return {
                 ...state,
-                players: [
-                    ...state.players,
-                    action.player
-                ]
+                room: action.room
             };
+        case GAME_STARTED:
+            return {
+                ...state,
+                room: action.room,
+                state: action.state
+            }
         default:
             return state;
     }
