@@ -12,14 +12,17 @@ import {
     Audio,
     constants,
     store,
-    Router
+    Router,
+    PHYSICS_EVENTS
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
-import CarScript from '../scripts/CarScript';
+import NetworkCarScript from '../scripts/NetworkCarScript';
 import BombScript from '../scripts/BombScript';
 import { getModelNameFromVehicleType, TYPES } from '../constants';
-import OpponentCarScript from '../scripts/OpponentCarScript';
+import OpponentNetworkCarScript from '../scripts/OpponentNetworkCarScript';
+import NetworkClient from '../network/client';
+import * as NetworkPhysics from '../network/physics';
 
 export const WHITE = 0xffffff;
 export const SUNLIGHT = 0xffeaa7;
@@ -75,51 +78,33 @@ export default class Race extends Level {
 
         console.log('creating car for', username);
         if (isOpponent) {
-            car.addScript('OpponentCarScript', { type, username, initialPosition });
+            car.addScript('OpponentNetworkCarScript', { type, username, initialPosition });
         } else {
-            car.addScript('CarScript', { type, username, initialPosition });
+            car.addScript('NetworkCarScript', { type, username, initialPosition });
         }
 
         return car;
     }
 
-    createPlayers(playersList, { username }) {
-        const players = [];
-        let myself;
-        playersList.forEach(player => {
-            const isOpponent = player.username !== username;
-            const p = this.createPlayer(player, TYPES.BASE, isOpponent)
-
-            if (!isOpponent) {
-                myself = p;
-            };
-
-            players.push(p);
-        });
-
-        return myself;
-    }
+    createPlayers = (playersList, { username }) => (
+        playersList.map(player => this.createPlayer(player, TYPES.BASE, player.username !== username))
+    );
 
     createCourse() {
         const course =  Models.getModel('course', { name: 'course' });
-        course.enablePhysics({ mass: 0 });
-    }
+        NetworkPhysics.addModel(course, { mass: 0 });
+        // course.enablePhysics({ mass: 0 });
 
-    createFloor() {
-        const floor = new Box(500, 1, 500, 0xffffff);
-        floor.setName('floor');
-        floor.setMaterialFromName(constants.MATERIALS.STANDARD)
-        floor.setPosition({ y: -1 });
-        floor.enablePhysics({ mass: 0 });
+        window.course = course;
     }
 
     prepareCamera(target) {
-        // Controls.setOrbitControl();
+        Controls.setOrbitControl();
 
         Scene.getCamera().setPosition({ y: 10 });
-
-        Scene.getCamera()
-            .addScript('SmoothCarFollow', { target });
+        window.camera = Scene.getCamera();
+        // Scene.getCamera()
+        //     .addScript('SmoothCarFollow', { target });
     }
 
     prepareSceneEffects() {
@@ -143,11 +128,11 @@ export default class Race extends Level {
 
         this.createCourse();
 
-        const me = this.createPlayers(playersList, player);
+        window.players = this.createPlayers(playersList, player);
         // window.players = players;
         // const me = players.filter(player => player.getName() === player.username)[0];
-        window.me = me;
-        this.prepareCamera(me);
+        // window.me = me;
+        this.prepareCamera();
         this.prepareSceneEffects();
     }
 
@@ -159,8 +144,8 @@ export default class Race extends Level {
         Audio.setVolume(.5);
 
         Scripts.create('SmoothCarFollow', SmoothCarFollow);
-        Scripts.create('CarScript', CarScript);
-        Scripts.create('OpponentCarScript', OpponentCarScript);
+        Scripts.create('NetworkCarScript', NetworkCarScript);
+        Scripts.create('OpponentNetworkCarScript', OpponentNetworkCarScript);
         Scripts.create('BombScript', BombScript);
 
         // const fakePlayers = [{
@@ -175,5 +160,6 @@ export default class Race extends Level {
         } else {
             Router.goTo('/');
         }
+
     }
 }

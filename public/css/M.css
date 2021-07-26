@@ -1,6 +1,6 @@
 @font-face {
-    font-family: Kamatic;
-    src: url('ka1.ttf');
+    font-family: Chango;
+    src: url('Chango-Regular.ttf');
 }
 
 body {
@@ -10,7 +10,7 @@ body {
     height: 100%;
     width: 100%;
     position: absolute;
-    font-family: Kamatic;
+    font-family: Chango;
 }
 
 .visible {
@@ -114,58 +114,270 @@ canvas {
 
 @keyframes loader {
     0% {
-        width: 0;
-    }
-    20% {
-        width: 10%;
-    }
-    25% {
-        width: 24%;
-    }
-    43% {
-        width: 41%;
-    }
-    56% {
-        width: 50%;
-    }
-    66% {
-        width: 52%;
-    }
-    71% {
-        width: 60%;
-    }
-    75% {
-        width: 76%;
-    }
-    94% {
-        width: 86%;
+        margin-left: 8px;
     }
     100% {
-        width: 100%;
+        margin-left: 86%;
     }
 }
 
+@keyframes slideIn {
+    0% {
+      transform: translateY(400px);
+      animation-timing-function: ease-out;
+    }
+    60% {
+      transform: translateY(-30px);
+      animation-timing-function: ease-in;
+    }
+    80% {
+      transform: translateY(10px);
+      animation-timing-function: ease-out;
+    }
+    100% {
+      transform: translateY(0px);
+      animation-timing-function: ease-in;
+    }
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
 .progress-bar {
-    border-radius: 8px;
     overflow: hidden;
     width: 100%;
-    height: 8px;
-    /* margin-top: -4px; */
-    border: 1px solid #B8B2A6;
 }
 
-.progress-bar span {
+.track {
+    border-radius: 32px;
+    border: 16px solid #e74c3c;
+    border-top-width: 12px;
+    box-shadow: inset 0px 6px #c0392b;
+    background: #2ecc71;
+    height: 32px;
+    width: calc(100% - 32px);
+}
+
+.track::after {
+    height: 12px;
+    width: 12px;
+    background: #2c3e50;
+    content: ' ';
     display: block;
+    float: right;
+    margin: 12px;
+    margin-left: 0;
+    border-radius: 24px;
+    box-shadow: inset -1px 3px #7f8c8d;
 }
 
-.bar {
-    background: #DED7CD;
+.car {
+    animation: loader 10s ease-in-out forwards;
+    margin-top: 10px;
 }
 
-.progress {
-    animation: loader 8s ease forwards;
+#fps {
+    position: absolute;
+    font-size: 16px;
+    height: 50px;
+    width: 50px;
+    line-height: 50px;
+    top: 0;
+    left: 0;
+    text-align: center;
+    color: white;
+    background: black;
+    z-index: 99999;
+}
+
+.screen-title,
+.loading-screen {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    position: absolute;
+    z-index: 9999;
+    top: 0;
+    background: repeating-linear-gradient(45deg, #f1c40f, #f1c40f 30px, #f39c12 0, #f39c12 60px);
+}
+
+.loading-bar-container {
+    width: 500px;
+    margin: auto;
+    margin-top: 400px;
+}
+
+.loading-bar-message {
+    display: block;
+    margin: 0 0 4px 24px;
+    margin-left: 24px;
+}
+
+.game-title {
+    padding: 16px;
+    padding-bottom: 42px;
+    background: rgba(255, 255, 255, .8);
+    border: 16px solid #2ecc71;
+    border-radius: 8px;
+    font-size: 80px;
+    WIDTH: 580px;
+    color: #2ecc71;
+    margin: 0;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 12px;
+    margin-top: 8px;
+    text-shadow: 6px 6px #3498db, 12px 12px #9b59b6, 18px 18px #e74c3c;
+    box-shadow: 6px 6px #3498db, 12px 12px #9b59b6, 18px 18px #e74c3c;
+}
+
+.game-title-label {
+    color: #2c3e50;
+    font-size: 18px;
+    display: block;
+    text-align: center;
+    width: 100%;
+}
+
+.game-title-random-message {
+    color: #f1c40f;
+    font-size: 12px;
+}
+
+.game-title-container {
+    margin: auto;
+    margin-top: 120px;
+    width: 644px;
+}
+
+
+.title-buttons-list {
+    padding: 0;
+    width: 400px;
+    margin: 64px auto;
+}
+.title-buttons-container {
+    list-style: none;
+    margin-bottom: 16px;
+}
+
+.title-button {
+    position: relative;
+    width: 240px;
+    height: 60px;
+    border-radius: 60px;
+    margin: auto;
+    display: block;
+    background: #1abc9c;
+    color: white;
+    font-family: 'Chango';
+    font-size: 1.2rem;
+    border: none;
+    box-shadow: 3px 3px #3498db, 6px 6px #9b59b6, 9px 9px #e74c3c;
+}
+
+.title-button:hover {
+    cursor: pointer;
+    top: 6px;
+    left: 6px;
+    box-shadow: inset 0px 0px 4px #34495e;
+    border: none;
+    background: #16a085;
+}
+
+.modal-backdrop {
+    position: absolute;
+    background: rgba(0, 0, 0, .75);
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.modal {
+    width: 500px;
+    margin: auto;
+    position: relative;
+    top: 200px;
     background: white;
-    color: #dcdde1;
-    padding: 4px;
-    width: 0;
+    border-radius: 8px;
+
+    animation: fadeIn 1s, slideIn .8s linear;
 }
+
+.modal-head {
+    height: 42px;
+    border-bottom: 1px solid #bdc3c7;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+}
+
+.modal-title {
+    line-height: 42px;
+    margin-left: 16px;
+    text-align: center;
+    display: block;
+    width: auto;
+    float: left;
+}
+
+.modal-head.info { background: #2980b9; }
+.modal-head.info .modal-close-btn, .modal-head.info .modal-title { color: white }
+
+.modal-head.warning { background: #f39c12; }
+.modal-head.warning .modal-close-btn, .modal-head.warning .modal-title { color: white }
+
+.modal-head.error { background: #c0392b; }
+.modal-head.error .modal-close-btn, .modal-head.error .modal-title { color: white }
+
+
+.modal-close-btn {
+    cursor: pointer;
+    line-height: 42px;
+    text-align: center;
+    display: block;
+    width: 42px;
+    float: right;
+    font-family: Arial;
+}
+
+.modal-body {
+    height: calc(100% - 138px);
+    position: relative;
+    display: block;
+    padding: 16px;
+}
+
+.modal-body input {
+    width: 90%;
+    height: 16px;
+    padding: 8px;
+    margin: 0;
+    font-family: 'Chango';
+}
+
+.modal-footer {
+    height: 64px;
+}
+
+.modal-footer .button {
+    float: right;
+    height: 42px;
+    width: 128px;
+    border: none;
+    margin: 10px 16px;
+    color: white;
+    text-transform: uppercase;
+    border-radius: 8px;
+    font-family: 'Chango';
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.modal-footer .button.confirm { background: #1abc9c; }
+.modal-footer .button.cancel { background: #34495e; }

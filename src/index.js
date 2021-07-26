@@ -1,5 +1,6 @@
 import { Router, store } from 'mage-engine';
 import Race from './race';
+import Test from './test';
 import Intro from './intro';
 import Root from './ui/root';
 import NetworkClient from './network/client';
@@ -7,6 +8,24 @@ import * as reducers from './ui/reducers';
 
 const assets = {
     '/race': {
+        audio: {
+            engine: 'assets/audio/engine.mp3'
+        },
+        models: {
+            'car': 'assets/models/buggy.gltf',
+            'wheel': 'assets/models/wheel.gltf',
+            'wheel_new': 'assets/models/wheel_new.glb',
+            'rocket': 'assets/models/rocket.glb',
+            'grenade': 'assets/models/grenade.glb',
+            'police_car': 'assets/models/police_car.glb',
+            'truck': 'assets/models/truck.glb',
+            'course': 'assets/models/course_new.glb',
+        },
+        textures: {
+            'dot': 'assets/textures/dot.png'
+        },
+    },
+    '/test': {
         audio: {
             engine: 'assets/audio/engine.mp3'
         },
@@ -41,7 +60,7 @@ const config = {
     },
 
     physics: {
-        enabled: true,
+        enabled: false,
         path: 'ammo.js',
         gravity: { x: 0, y: -9.8, z: 0}
     },
@@ -66,6 +85,7 @@ window.addEventListener('load', () => {
 
     Router.on('/', Intro);
     Router.on('/race', Race);
+    Router.on('/test', Test);
 
     Router.start(config, assets);
 

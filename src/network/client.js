@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
-import { EventDispatcher } from 'mage-engine';
-import { RGS } from './constants';
+import { EventDispatcher, PHYSICS_EVENTS } from 'mage-engine';
+import { getModelsEndpoint, RGS, SOCKETIO } from './constants';
 
 const NEW_ROOM_EVENT = 'new_room';
 const JOIN_ROOM_EVENT = 'join_room';
@@ -31,23 +31,46 @@ export const GAME_EVENTS = {
 
 export const ROOM_EVENTS = {
     ENTITY_CHANGE_EVENT: 'entity_change',
-    PLAYER_CHANGE_EVENT: 'player_change',
+    PLAYER_CHANGE_EVENT: 'player_change'
 };
 
 const GAME_EVENTS_LIST = Object.keys(GAME_EVENTS);
+
+const FLAG_TYPED_ARRAY = "FLAG_TYPED_ARRAY";
+
+const typedArrayJSONReplacer = ( _, value ) => {
+    // the replacer function is looking for some typed arrays.
+    // If found, it replaces it by a trio
+    if (value instanceof Int8Array         ||
+        value instanceof Uint8Array        ||
+        value instanceof Uint8ClampedArray ||
+        value instanceof Int16Array        ||
+        value instanceof Uint16Array       ||
+        value instanceof Int32Array        ||
+        value instanceof Uint32Array       ||
+        value instanceof Float32Array      ||
+        value instanceof Float64Array       ) {
+
+            return {
+                constructor: value.constructor.name,
+                data: Array.apply([], value),
+                flag: FLAG_TYPED_ARRAY
+            }
+    }
+
+    return value;
+};
 
 class MultiplayerClient extends EventDispatcher {
 
     constructor() {
         super();
-
-        this.url = `${RGS.url}:${RGS.port}${RGS.path}`;
         this.socket = undefined;
         this.hasListeners = false;
     }
 
     connect = () => {
-        this.socket = io(this.url);
+        this.socket = io(SOCKETIO);
         if (!this.hasListeners) {
             this.setListeners();
             this.hasListeners = true;
@@ -65,6 +88,7 @@ class MultiplayerClient extends EventDispatcher {
 
         this.socket.on(GAME_EVENTS.DISCONNECT, this.onDisconnect);
         this.socket.on(ROOM_EVENTS.PLAYER_CHANGE_EVENT, this.getPropagate(ROOM_EVENTS.PLAYER_CHANGE_EVENT).bind(this));
+        this.socket.on(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.getPropagate(PHYSICS_EVENTS.UPDATE_BODY_EVENT).bind(this));
     }
 
     getPropagate = type => data => {
@@ -74,15 +98,21 @@ class MultiplayerClient extends EventDispatcher {
         });
     }
 
+    emitEvent = (event, payload) => {
+        this.socket.emit(event, payload);
+    }
+
     createRoom = (username, room, config) => {
         const roomConfig = {
             initialPositions: [
-                { y: 10, x: 46, z: 17 },
-                { y: 10, x: 48, z: 17 }
+                { y: 5, x: 46, z: 17 },
+                { y: 5, x: 48, z: 17 }
             ],
+            physics: true,
             ...config,
         };
-        this.socket.emit(NEW_ROOM_EVENT, {
+
+        this.emitEvent(NEW_ROOM_EVENT, {
             username,
             room,
             config: roomConfig
@@ -90,32 +120,50 @@ class MultiplayerClient extends EventDispatcher {
     };
 
     joinRoom = (username, room) => {
-        this.socket.emit(JOIN_ROOM_EVENT, {
+        this.emitEvent(JOIN_ROOM_EVENT, {
             username,
             room
         });
     };
 
     leaveRoom = (username, room) => {
-        this.socket.emit(LEAVE_ROOM_EVENT, {
+        this.emitEvent(LEAVE_ROOM_EVENT, {
             username,
             room
         });
     };
 
     sendEntityChange = (username, data) => {
-        this.socket.emit(ROOM_EVENTS.ENTITY_CHANGE_EVENT, {
+        this.emitEvent(ROOM_EVENTS.ENTITY_CHANGE_EVENT, {
             username,
             ...data
         });
     };
 
     sendPlayerChange = (username, data) => {
-        this.socket.emit(ROOM_EVENTS.PLAYER_CHANGE_EVENT, {
+        this.emitEvent(ROOM_EVENTS.PLAYER_CHANGE_EVENT, {
             username,
             ...data
         });
     };
+    
+    createModel = (model) => {
+        // FIXME: we need to remove 'testing' being used explicitly.
+        fetch(getModelsEndpoint('testing'), {
+            method: 'POST', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(model, typedArrayJSONReplacer),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
 }
 
 

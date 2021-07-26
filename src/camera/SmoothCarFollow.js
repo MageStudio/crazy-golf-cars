@@ -72,7 +72,7 @@ export default class SmoothCarFollow extends BaseScript {
     }
 
     physicsUpdate(dt) {
-        this.followCar(dt);
+        // this.followCar(dt);
     }
 
 }
