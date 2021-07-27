@@ -20,7 +20,11 @@ export default class OpponentCarScript extends BaseScript {
     }
 
     createWheel(index, username) {
-        return Models.getModel('wheel', { name: `${username}:wheel:${index}` });
+        const name = `${username}:wheel:${index}`
+        return {
+            wheel:  Models.getModel('wheel', { name }),
+            name
+        }
     }
 
     // throwBomb() {
@@ -68,7 +72,10 @@ export default class OpponentCarScript extends BaseScript {
             this.createWheel(2, username),
             this.createWheel(3, username),
             this.createWheel(4, username),
-        ];
+        ].reduce((acc, { name, wheel }) => {
+            acc[name] = wheel;
+            return acc;
+        }, {});
 
         NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
     }
