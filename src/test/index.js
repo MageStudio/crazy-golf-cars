@@ -13,7 +13,9 @@ import {
     constants,
     store,
     Router,
-    PHYSICS_EVENTS
+    PHYSICS_EVENTS,
+    Input,
+    INPUT_EVENTS
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
@@ -64,7 +66,7 @@ export default class Test extends Level {
     }
 
     createCar() {
-        const type = TYPES.BASE;
+        const type = TYPES.GOLF_CART;
         const username = 'marco';
         const initialPosition = { y: 5, x: 46, z: 17 };
 
@@ -163,6 +165,7 @@ export default class Test extends Level {
             minPlayers: 1
         });
         this.createWorld();
+
         NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
         NetworkClient.addEventListener(GAME_EVENTS.GAME_STARTED_EVENT, this.handleGameStarted);
     }

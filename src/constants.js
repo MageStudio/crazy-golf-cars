@@ -1,5 +1,6 @@
 export const TYPES = {
     BASE: 'base',
+    GOLF_CART: 'golf_cart',
     TRUCK: 'truck'
 };
 
@@ -24,6 +25,38 @@ const BASE_CAR_OPTIONS = {
             radius: .5,
             halfTrack: .6,
             axisHeight: .1
+        }
+    },
+    suspensions: {
+        stiffness: 30.0,
+        damping: 2.3,//10.3,
+        compression: 4.4,//30,
+        restLength: .9
+    }
+};
+
+const GOLF_CART_OPTIONS = {
+    mass: 1000,
+    name: 'golf',
+    // debug: true,
+    friction: 700,
+    steeringIncrement: .017,
+    steeringClamp: .4,
+    rollInfluence: 0.01,
+    maxEngineForce: 1500,
+    maxBreakingForce: 100,
+    wheelsOptions: {
+        back: {
+            axisPosition: -1,
+            radius: .5,
+            halfTrack: 1,
+            axisHeight: -.6
+        },
+        front: {
+            axisPosition: 2.1,
+            radius: .5,
+            halfTrack: 1,
+            axisHeight: -.6
         }
     },
     suspensions: {
@@ -67,10 +100,12 @@ const TRUCK_OPTIONS = {
 
 export const getModelNameFromVehicleType = (type = TYPES.BASE) => ({
     [TYPES.BASE]: 'police_car',
+    [TYPES.GOLF_CART]: 'golf_cart',
     [TYPES.TRUCK]: 'truck'
 }[type])
 
 export const getCarOptionsByType = (type = TYPES.BASE) => ({
     [TYPES.BASE]: BASE_CAR_OPTIONS,
+    [TYPES.GOLF_CART]: GOLF_CART_OPTIONS,
     [TYPES.TRUCK]: TRUCK_OPTIONS
 }[type] || BASE_CAR_OPTIONS);

@@ -86,9 +86,22 @@ export default class Race extends Level {
         return car;
     }
 
-    createPlayers = (playersList, { username }) => (
-        playersList.map(player => this.createPlayer(player, TYPES.BASE, player.username !== username))
-    );
+    createPlayers = (playersList, { username }) => {
+        let me;
+        const opponents = playersList.reduce((acc, player) => {
+            if (player.username !== username) {
+                acc.push(this.createPlayer(player, TYPES.GOLF_CART, true));
+            } else {
+                me = this.createPlayer(player, TYPES.GOLF_CART, false);
+            }
+            return acc;
+        }, [])
+
+        return {
+            me,
+            opponents
+        }
+    };
 
     createCourse() {
         const course =  Models.getModel('course', { name: 'course' });
@@ -114,6 +127,21 @@ export default class Race extends Level {
         PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
     }
 
+    handleKeyDown() {
+        if (!this.enginesStarted) {
+            this.enginesStarted = true;
+
+            this.opponents.forEach(opponent => {
+                opponent.getScript('OpponentNetworkCarScript').startEngine();
+            });
+        }
+    }
+
+    setUpInput = () => {
+        Input.enable();
+        Input.addEventListener(INPUT_EVENTS.KEY_DOWN, this.handleKeyDown);
+    }
+
     horriblyPrintFPS() {
         const update = value => {
             document.querySelector('#fps').innerHTML = Math.floor(value);
@@ -128,10 +156,10 @@ export default class Race extends Level {
 
         this.createCourse();
 
-        window.players = this.createPlayers(playersList, player);
-        // window.players = players;
-        // const me = players.filter(player => player.getName() === player.username)[0];
-        // window.me = me;
+        const { me, opponents } = this.createPlayers(playersList, player);
+        this.me = me;
+        this.opponents = opponents;
+
         this.prepareCamera();
         this.prepareSceneEffects();
     }

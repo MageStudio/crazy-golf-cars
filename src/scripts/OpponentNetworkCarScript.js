@@ -48,12 +48,10 @@ export default class OpponentCarScript extends BaseScript {
     //     });
     // }
 
-    // startEngine() {
-    //     this.car.addSound('engine', { loop: true, autoplay: false });
-    //     this.car.sound.play(1);
-
-    //     this.engineStarted = true;
-    // }
+    startEngine() {
+        this.car.addSound('engine', { loop: true, autoplay: false });
+        this.car.sound.play(1)
+    }
 
     start(car, { type = TYPES.TRUCK, username, initialPosition }) {
         this.car = car;
@@ -81,10 +79,13 @@ export default class OpponentCarScript extends BaseScript {
     }
 
     handleBodyUpdate = ({ data }) => {
-        const { uuid, position, quaternion } = data;
+        const { uuid, position, quaternion, direction, speed} = data;
         if (uuid === this.username) {
             this.car.setPosition(position);
             this.car.setQuaternion(quaternion);
+
+            this.car.speed = speed;
+            this.car.direction = direction;
         } else {
             const wheel = this.wheels[uuid];
             if (wheel) {
@@ -92,5 +93,22 @@ export default class OpponentCarScript extends BaseScript {
                 wheel.setQuaternion(quaternion);
             }
         }
+    }
+
+    getDetuneFromSpeed = () => {
+        const max = 1200;
+        const min = -1200;
+
+        return (Math.abs(this.car.speed) * (max * 2) / this.maxSpeed) + min;
+    }
+
+    updateSound() {
+        if (this.car.sound && this.car.speed) {
+            this.car.sound.detune(this.getDetuneFromSpeed());
+        }
+    }
+
+    update = () => {
+        this.updateSound();
     }
 }

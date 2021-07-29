@@ -12,6 +12,7 @@ const assets = {
             engine: 'assets/audio/engine.mp3'
         },
         models: {
+            'golf_cart': 'assets/models/golf_cart_white.glb',
             'car': 'assets/models/buggy.gltf',
             'wheel': 'assets/models/wheel.gltf',
             'wheel_new': 'assets/models/wheel_new.glb',
@@ -30,6 +31,7 @@ const assets = {
             engine: 'assets/audio/engine.mp3'
         },
         models: {
+            'golf_cart': 'assets/models/golf_cart_white.glb',
             'car': 'assets/models/buggy.gltf',
             'wheel': 'assets/models/wheel.gltf',
             'wheel_new': 'assets/models/wheel_new.glb',

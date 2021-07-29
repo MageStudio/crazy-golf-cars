@@ -62,7 +62,7 @@ const handlePlayerJoined = ({ data }) => {
 
 const handleGameStarted = ({ data }) => {
     store.dispatch(gameStarted(data));
-    store.dispatch(goToCourse());
+    // store.dispatch(goToCourse());
 }
 
 export const setNetworkClientListeners = () => {

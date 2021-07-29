@@ -47,18 +47,19 @@ export default class NetworkCarScript extends BaseScript {
     //     });
     // }
 
-    // startEngine() {
-    //     this.car.addSound('engine', { loop: true, autoplay: false });
-    //     this.car.sound.play(1);
+    startEngine() {
+        this.car.addSound('engine', { loop: true, autoplay: false });
+        this.car.sound.play(1);
 
-    //     this.engineStarted = true;
-    // }
+        this.engineStarted = true;
+    }
 
     start(car, { type = TYPES.BASE, username, initialPosition }) {
         this.car = car;
         this.type = type;
         this.initialPosition = initialPosition;
         this.username = username;
+        this.engineStarted = false;
 
         this.speed = undefined;
         this.maxSpeed = 200;
@@ -86,13 +87,13 @@ export default class NetworkCarScript extends BaseScript {
             return acc;
         }, {});
 
-        // this.car.addEventListener(PHYSICS_EVENTS.SPEED_CHANGE_EVENT, this.handleSpeedChange);
-        // this.car.addEventListener(PHYSICS_EVENTS.CAR_DIRECTION_CHANGE_EVENT, this.handleCarDirectionChange);
-
-        NetworkPhysics.addVehicle(this.car, { wheels: Object.keys(this.wheels), ...getCarOptionsByType(this.type) });
+        const options = getCarOptionsByType(this.type);
+        console.log('using options, ', options);
+        NetworkPhysics.addVehicle(this.car, { wheels: Object.keys(this.wheels), ...options });
         NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
 
         Input.enable();
+        Input.addEventListener(INPUT_EVENTS.KEY_DOWN, this.handleKeyDown);
 
         this.fixedUpdateInterval = setInterval(this.fixedUpdate, 1000/60);
     }
@@ -104,11 +105,20 @@ export default class NetworkCarScript extends BaseScript {
         this.state.left = Input.keyboard.isPressed('a');
     }
 
+    handleKeyDown = () => {
+        if (!this.engineStarted) {
+            this.startEngine();
+        }
+    }
+
     handleBodyUpdate = ({ data }) => {
-        const { uuid, position, quaternion } = data;
+        const { uuid, position, quaternion, direction, speed } = data;
         if (uuid === this.username) {
             this.car.setPosition(position);
             this.car.setQuaternion(quaternion);
+
+            this.car.speed = speed;
+            this.car.direction = direction;
         } else {
             const wheel = this.wheels[uuid];
             if (wheel) {
@@ -136,28 +146,18 @@ export default class NetworkCarScript extends BaseScript {
     //     }
     // }
 
-    // handleSpeedChange = ({ data }) => {
-    //     this.speed = data.speed;
-    //     this.car.speed = this.speed;
-    // };
+    getDetuneFromSpeed = () => {
+        const max = 1200;
+        const min = -1200;
 
-    // handleCarDirectionChange = ({ data }) => {
-    //     this.direction = data.direction;
-    //     this.car.direction = this.direction;
-    // }
+        return (Math.abs(this.car.speed) * (max * 2) / this.maxSpeed) + min;
+    }
 
-    // getDetuneFromSpeed = () => {
-    //     const max = 1200;
-    //     const min = -1200;
-
-    //     return (Math.abs(this.speed) * (max * 2) / this.maxSpeed) + min;
-    // }
-
-    // updateSound() {
-    //     if (this.car.sound && this.speed) {
-    //         this.car.sound.detune(this.getDetuneFromSpeed());
-    //     }
-    // }
+    updateSound() {
+        if (this.car.sound && this.car.speed) {
+            this.car.sound.detune(this.getDetuneFromSpeed());
+        }
+    }
 
     dispatchCarStateChange() {
         NetworkPhysics.updateBodyState(this.car, this.state);
@@ -165,6 +165,7 @@ export default class NetworkCarScript extends BaseScript {
 
     fixedUpdate = () => {
         this.handleInput();
+        this.updateSound();
         this.dispatchCarStateChange();
     }
 }
