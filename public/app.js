@@ -17079,6 +17079,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var TYPES = {
   BASE: 'base',
+  GOLF_CART: 'golf_cart',
   TRUCK: 'truck'
 };
 var BASE_CAR_OPTIONS = {
@@ -17102,6 +17103,39 @@ var BASE_CAR_OPTIONS = {
       radius: .5,
       halfTrack: .6,
       axisHeight: .1
+    }
+  },
+  suspensions: {
+    stiffness: 30.0,
+    damping: 2.3,
+    //10.3,
+    compression: 4.4,
+    //30,
+    restLength: .9
+  }
+};
+var GOLF_CART_OPTIONS = {
+  mass: 1000,
+  name: 'golf',
+  // debug: true,
+  friction: 700,
+  steeringIncrement: .017,
+  steeringClamp: .4,
+  rollInfluence: 0.01,
+  maxEngineForce: 1500,
+  maxBreakingForce: 100,
+  wheelsOptions: {
+    back: {
+      axisPosition: -1,
+      radius: .5,
+      halfTrack: 1,
+      axisHeight: -.6
+    },
+    front: {
+      axisPosition: 2.1,
+      radius: .5,
+      halfTrack: 1,
+      axisHeight: -.6
     }
   },
   suspensions: {
@@ -17144,16 +17178,16 @@ var TRUCK_OPTIONS = {
   }
 };
 var getModelNameFromVehicleType = function getModelNameFromVehicleType() {
-  var _TYPES$BASE$TYPES$TRU;
+  var _TYPES$BASE$TYPES$GOL;
 
   var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : TYPES.BASE;
-  return (_TYPES$BASE$TYPES$TRU = {}, _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(_TYPES$BASE$TYPES$TRU, TYPES.BASE, 'police_car'), _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(_TYPES$BASE$TYPES$TRU, TYPES.TRUCK, 'truck'), _TYPES$BASE$TYPES$TRU)[type];
+  return (_TYPES$BASE$TYPES$GOL = {}, _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(_TYPES$BASE$TYPES$GOL, TYPES.BASE, 'police_car'), _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(_TYPES$BASE$TYPES$GOL, TYPES.GOLF_CART, 'golf_cart'), _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(_TYPES$BASE$TYPES$GOL, TYPES.TRUCK, 'truck'), _TYPES$BASE$TYPES$GOL)[type];
 };
 var getCarOptionsByType = function getCarOptionsByType() {
-  var _TYPES$BASE$TYPES$TRU2;
+  var _TYPES$BASE$TYPES$GOL2;
 
   var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : TYPES.BASE;
-  return (_TYPES$BASE$TYPES$TRU2 = {}, _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(_TYPES$BASE$TYPES$TRU2, TYPES.BASE, BASE_CAR_OPTIONS), _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(_TYPES$BASE$TYPES$TRU2, TYPES.TRUCK, TRUCK_OPTIONS), _TYPES$BASE$TYPES$TRU2)[type] || BASE_CAR_OPTIONS;
+  return (_TYPES$BASE$TYPES$GOL2 = {}, _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(_TYPES$BASE$TYPES$GOL2, TYPES.BASE, BASE_CAR_OPTIONS), _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(_TYPES$BASE$TYPES$GOL2, TYPES.GOLF_CART, GOLF_CART_OPTIONS), _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(_TYPES$BASE$TYPES$GOL2, TYPES.TRUCK, TRUCK_OPTIONS), _TYPES$BASE$TYPES$GOL2)[type] || BASE_CAR_OPTIONS;
 };
 
 /***/ }),
@@ -17187,6 +17221,7 @@ var assets = {
       engine: 'assets/audio/engine.mp3'
     },
     models: {
+      'golf_cart': 'assets/models/golf_cart_white.glb',
       'car': 'assets/models/buggy.gltf',
       'wheel': 'assets/models/wheel.gltf',
       'wheel_new': 'assets/models/wheel_new.glb',
@@ -17205,6 +17240,7 @@ var assets = {
       engine: 'assets/audio/engine.mp3'
     },
     models: {
+      'golf_cart': 'assets/models/golf_cart_white.glb',
       'car': 'assets/models/buggy.gltf',
       'wheel': 'assets/models/wheel.gltf',
       'wheel_new': 'assets/models/wheel_new.glb',
@@ -17763,9 +17799,25 @@ var Race = /*#__PURE__*/function (_Level) {
 
     _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6___default()(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2___default()(_this), "createPlayers", function (playersList, _ref) {
       var username = _ref.username;
-      return playersList.map(function (player) {
-        return _this.createPlayer(player, _constants__WEBPACK_IMPORTED_MODULE_11__["TYPES"].BASE, player.username !== username);
-      });
+      var me;
+      var opponents = playersList.reduce(function (acc, player) {
+        if (player.username !== username) {
+          acc.push(_this.createPlayer(player, _constants__WEBPACK_IMPORTED_MODULE_11__["TYPES"].BASE, true));
+        } else {
+          me = _this.createPlayer(player, _constants__WEBPACK_IMPORTED_MODULE_11__["TYPES"].BASE, false);
+        }
+
+        return acc;
+      }, []);
+      return {
+        me: me,
+        opponents: opponents
+      };
+    });
+
+    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6___default()(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2___default()(_this), "setUpInput", function () {
+      Input.enable();
+      Input.addEventListener(INPUT_EVENTS.KEY_DOWN, _this.handleKeyDown);
     });
 
     return _this;
@@ -17862,6 +17914,16 @@ var Race = /*#__PURE__*/function (_Level) {
       mage_engine__WEBPACK_IMPORTED_MODULE_7__["PostProcessing"].add(mage_engine__WEBPACK_IMPORTED_MODULE_7__["constants"].EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
     }
   }, {
+    key: "handleKeyDown",
+    value: function handleKeyDown() {
+      if (!this.enginesStarted) {
+        this.enginesStarted = true;
+        this.opponents.forEach(function (opponent) {
+          opponent.getScript('OpponentNetworkCarScript').startEngine();
+        });
+      }
+    }
+  }, {
     key: "horriblyPrintFPS",
     value: function horriblyPrintFPS() {
       var update = function update(value) {
@@ -17876,10 +17938,13 @@ var Race = /*#__PURE__*/function (_Level) {
       this.horriblyPrintFPS();
       this.addLights();
       this.createCourse();
-      window.players = this.createPlayers(playersList, player); // window.players = players;
-      // const me = players.filter(player => player.getName() === player.username)[0];
-      // window.me = me;
 
+      var _this$createPlayers = this.createPlayers(playersList, player),
+          me = _this$createPlayers.me,
+          opponents = _this$createPlayers.opponents;
+
+      this.me = me;
+      this.opponents = opponents;
       this.prepareCamera();
       this.prepareSceneEffects();
     }
@@ -18091,16 +18156,27 @@ var NetworkCarScript = /*#__PURE__*/function (_BaseScript) {
       _this.state.left = mage_engine__WEBPACK_IMPORTED_MODULE_7__["Input"].keyboard.isPressed('a');
     });
 
+    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6___default()(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2___default()(_this), "handleKeyDown", function () {
+      if (!_this.engineStarted) {
+        _this.startEngine();
+      }
+    });
+
     _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6___default()(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2___default()(_this), "handleBodyUpdate", function (_ref) {
       var data = _ref.data;
       var uuid = data.uuid,
           position = data.position,
-          quaternion = data.quaternion;
+          quaternion = data.quaternion,
+          direction = data.direction,
+          speed = data.speed;
 
       if (uuid === _this.username) {
         _this.car.setPosition(position);
 
         _this.car.setQuaternion(quaternion);
+
+        _this.car.speed = speed;
+        _this.car.direction = direction;
       } else {
         var wheel = _this.wheels[uuid];
 
@@ -18111,8 +18187,16 @@ var NetworkCarScript = /*#__PURE__*/function (_BaseScript) {
       }
     });
 
+    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6___default()(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2___default()(_this), "getDetuneFromSpeed", function () {
+      var max = 1200;
+      var min = -1200;
+      return Math.abs(_this.car.speed) * (max * 2) / _this.maxSpeed + min;
+    });
+
     _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6___default()(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2___default()(_this), "fixedUpdate", function () {
       _this.handleInput();
+
+      _this.updateSound();
 
       _this.dispatchCarStateChange();
     });
@@ -18149,12 +18233,17 @@ var NetworkCarScript = /*#__PURE__*/function (_BaseScript) {
     //         z: 0
     //     });
     // }
-    // startEngine() {
-    //     this.car.addSound('engine', { loop: true, autoplay: false });
-    //     this.car.sound.play(1);
-    //     this.engineStarted = true;
-    // }
 
+  }, {
+    key: "startEngine",
+    value: function startEngine() {
+      this.car.addSound('engine', {
+        loop: true,
+        autoplay: false
+      });
+      this.car.sound.play(1);
+      this.engineStarted = true;
+    }
   }, {
     key: "start",
     value: function start(car, _ref2) {
@@ -18166,6 +18255,7 @@ var NetworkCarScript = /*#__PURE__*/function (_BaseScript) {
       this.type = type;
       this.initialPosition = initialPosition;
       this.username = username;
+      this.engineStarted = false;
       this.speed = undefined;
       this.maxSpeed = 200;
       this.direction = undefined;
@@ -18182,52 +18272,26 @@ var NetworkCarScript = /*#__PURE__*/function (_BaseScript) {
             wheel = _ref3.wheel;
         acc[name] = wheel;
         return acc;
-      }, {}); // this.car.addEventListener(PHYSICS_EVENTS.SPEED_CHANGE_EVENT, this.handleSpeedChange);
-      // this.car.addEventListener(PHYSICS_EVENTS.CAR_DIRECTION_CHANGE_EVENT, this.handleCarDirectionChange);
-
+      }, {});
+      var options = Object(_constants__WEBPACK_IMPORTED_MODULE_9__["getCarOptionsByType"])(this.type);
+      console.log('using options, ', options);
       _network_physics__WEBPACK_IMPORTED_MODULE_10__["addVehicle"](this.car, _objectSpread({
         wheels: Object.keys(this.wheels)
-      }, Object(_constants__WEBPACK_IMPORTED_MODULE_9__["getCarOptionsByType"])(this.type)));
+      }, options));
       _network_client__WEBPACK_IMPORTED_MODULE_8__["default"].addEventListener(mage_engine__WEBPACK_IMPORTED_MODULE_7__["PHYSICS_EVENTS"].UPDATE_BODY_EVENT, this.handleBodyUpdate);
       mage_engine__WEBPACK_IMPORTED_MODULE_7__["Input"].enable();
+      mage_engine__WEBPACK_IMPORTED_MODULE_7__["Input"].addEventListener(mage_engine__WEBPACK_IMPORTED_MODULE_7__["INPUT_EVENTS"].KEY_DOWN, this.handleKeyDown);
       this.fixedUpdateInterval = setInterval(this.fixedUpdate, 1000 / 60);
     }
   }, {
+    key: "updateSound",
+    value: function updateSound() {
+      if (this.car.sound && this.car.speed) {
+        this.car.sound.detune(this.getDetuneFromSpeed());
+      }
+    }
+  }, {
     key: "dispatchCarStateChange",
-    // handleKeyDown = ({ event }) => {
-    //     switch(event.key) {
-    //         case 'space':
-    //             if (this.direction) {
-    //                 this.throwBomb();
-    //             }
-    //             break;
-    //         case 'r':
-    //             this.flip();
-    //             break;
-    //     }
-    //     if (!this.engineStarted) {
-    //         // need user interaction before starting sounds
-    //         this.startEngine();
-    //     }
-    // }
-    // handleSpeedChange = ({ data }) => {
-    //     this.speed = data.speed;
-    //     this.car.speed = this.speed;
-    // };
-    // handleCarDirectionChange = ({ data }) => {
-    //     this.direction = data.direction;
-    //     this.car.direction = this.direction;
-    // }
-    // getDetuneFromSpeed = () => {
-    //     const max = 1200;
-    //     const min = -1200;
-    //     return (Math.abs(this.speed) * (max * 2) / this.maxSpeed) + min;
-    // }
-    // updateSound() {
-    //     if (this.car.sound && this.speed) {
-    //         this.car.sound.detune(this.getDetuneFromSpeed());
-    //     }
-    // }
     value: function dispatchCarStateChange() {
       _network_physics__WEBPACK_IMPORTED_MODULE_10__["updateBodyState"](this.car, this.state);
     }
@@ -18299,12 +18363,17 @@ var OpponentCarScript = /*#__PURE__*/function (_BaseScript) {
       var data = _ref.data;
       var uuid = data.uuid,
           position = data.position,
-          quaternion = data.quaternion;
+          quaternion = data.quaternion,
+          direction = data.direction,
+          speed = data.speed;
 
       if (uuid === _this.username) {
         _this.car.setPosition(position);
 
         _this.car.setQuaternion(quaternion);
+
+        _this.car.speed = speed;
+        _this.car.direction = direction;
       } else {
         var wheel = _this.wheels[uuid];
 
@@ -18315,6 +18384,16 @@ var OpponentCarScript = /*#__PURE__*/function (_BaseScript) {
       }
     });
 
+    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6___default()(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2___default()(_this), "getDetuneFromSpeed", function () {
+      var max = 1200;
+      var min = -1200;
+      return Math.abs(_this.car.speed) * (max * 2) / _this.maxSpeed + min;
+    });
+
+    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6___default()(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2___default()(_this), "update", function () {
+      _this.updateSound();
+    });
+
     _this.engineStarted = false;
     return _this;
   }
@@ -18322,9 +18401,13 @@ var OpponentCarScript = /*#__PURE__*/function (_BaseScript) {
   _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(OpponentCarScript, [{
     key: "createWheel",
     value: function createWheel(index, username) {
-      return mage_engine__WEBPACK_IMPORTED_MODULE_7__["Models"].getModel('wheel', {
-        name: "".concat(username, ":wheel:").concat(index)
-      });
+      var name = "".concat(username, ":wheel:").concat(index);
+      return {
+        wheel: mage_engine__WEBPACK_IMPORTED_MODULE_7__["Models"].getModel('wheel', {
+          name: name
+        }),
+        name: name
+      };
     } // throwBomb() {
     //     const bomb = new Sphere(.3);
     //     bomb.addScript('BombScript', {
@@ -18343,12 +18426,16 @@ var OpponentCarScript = /*#__PURE__*/function (_BaseScript) {
     //         z: 0
     //     });
     // }
-    // startEngine() {
-    //     this.car.addSound('engine', { loop: true, autoplay: false });
-    //     this.car.sound.play(1);
-    //     this.engineStarted = true;
-    // }
 
+  }, {
+    key: "startEngine",
+    value: function startEngine() {
+      this.car.addSound('engine', {
+        loop: true,
+        autoplay: false
+      });
+      this.car.sound.play(1);
+    }
   }, {
     key: "start",
     value: function start(car, _ref2) {
@@ -18364,8 +18451,20 @@ var OpponentCarScript = /*#__PURE__*/function (_BaseScript) {
       this.maxSpeed = 200;
       this.direction = undefined;
       this.car.setPosition(initialPosition);
-      this.wheels = [this.createWheel(1, username), this.createWheel(2, username), this.createWheel(3, username), this.createWheel(4, username)];
+      this.wheels = [this.createWheel(1, username), this.createWheel(2, username), this.createWheel(3, username), this.createWheel(4, username)].reduce(function (acc, _ref3) {
+        var name = _ref3.name,
+            wheel = _ref3.wheel;
+        acc[name] = wheel;
+        return acc;
+      }, {});
       _network_client__WEBPACK_IMPORTED_MODULE_8__["default"].addEventListener(mage_engine__WEBPACK_IMPORTED_MODULE_7__["PHYSICS_EVENTS"].UPDATE_BODY_EVENT, this.handleBodyUpdate);
+    }
+  }, {
+    key: "updateSound",
+    value: function updateSound() {
+      if (this.car.sound && this.car.speed) {
+        this.car.sound.detune(this.getDetuneFromSpeed());
+      }
     }
   }]);
 
@@ -18538,7 +18637,7 @@ var Test = /*#__PURE__*/function (_Level) {
   }, {
     key: "createCar",
     value: function createCar() {
-      var type = _constants__WEBPACK_IMPORTED_MODULE_11__["TYPES"].BASE;
+      var type = _constants__WEBPACK_IMPORTED_MODULE_11__["TYPES"].GOLF_CART;
       var username = 'marco';
       var initialPosition = {
         y: 5,
@@ -19193,8 +19292,7 @@ var handlePlayerJoined = function handlePlayerJoined(_ref8) {
 
 var handleGameStarted = function handleGameStarted(_ref9) {
   var data = _ref9.data;
-  mage_engine__WEBPACK_IMPORTED_MODULE_0__["store"].dispatch(gameStarted(data));
-  mage_engine__WEBPACK_IMPORTED_MODULE_0__["store"].dispatch(Object(_navigation__WEBPACK_IMPORTED_MODULE_2__["goToCourse"])());
+  mage_engine__WEBPACK_IMPORTED_MODULE_0__["store"].dispatch(gameStarted(data)); // store.dispatch(goToCourse());
 };
 
 var setNetworkClientListeners = function setNetworkClientListeners() {

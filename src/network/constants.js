@@ -1,12 +1,11 @@
 export const NAMESPACE = 'game';
 
 export const RGS = {
-    url: 'http://localhost',
-    port: 3000,
+    url: 'https://rgs.api.mage.studio',
     path: `/${NAMESPACE}`
 };
 
-export const BASE = `${RGS.url}:${RGS.port}`;
+export const BASE = `${RGS.url}`;
 export const SOCKETIO =`${BASE}${RGS.path}`;
 export const API = `${BASE}/api`;
 
