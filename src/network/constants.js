@@ -1,5 +1,12 @@
+export const NAMESPACE = 'game';
+
 export const RGS = {
-    url: 'http://rgs.prod.api.mage.studio',
-    port: 3000,
-    path: '/game'
+    url: 'https://rgs.api.mage.studio',
+    path: `/${NAMESPACE}`
 };
+
+export const BASE = `${RGS.url}`;
+export const SOCKETIO =`${BASE}${RGS.path}`;
+export const API = `${BASE}/api`;
+
+export const getModelsEndpoint = (room) => `${API}/models/${NAMESPACE}/${room}`;
