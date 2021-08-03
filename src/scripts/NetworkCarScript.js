@@ -4,7 +4,8 @@ import {
     Input,
     Sphere,
     PHYSICS_EVENTS,
-    INPUT_EVENTS
+    INPUT_EVENTS,
+    Vector3
 } from 'mage-engine';
 import NetworkClient from '../network/client';
 import { TYPES, getCarOptionsByType } from '../constants';
@@ -163,9 +164,21 @@ export default class NetworkCarScript extends BaseScript {
         NetworkPhysics.updateBodyState(this.car, this.state);
     }
 
+    predictMovement = (dt) => {
+        // TODO: need a way to discard this if there are enough info
+        const { speed = 0, direction = { x: 0, y: 0, z: 0 } } = this.car;
+        const { x, y, z } = direction;
+        const position = this.car.getPosition();
+
+        const v = new Vector3(x, y, z);
+
+        this.car.setPosition(v.multiplyScalar(speed).multiplyScalar(dt).add(position));
+    }
+
     fixedUpdate = () => {
         this.handleInput();
         this.updateSound();
         this.dispatchCarStateChange();
+        this.predictMovement(0.001)
     }
 }
