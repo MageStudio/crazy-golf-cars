@@ -105,8 +105,8 @@ class MultiplayerClient extends EventDispatcher {
     createRoom = (username, room, config) => {
         const roomConfig = {
             initialPositions: [
-                { y: 5, x: 46, z: 17 },
-                { y: 5, x: 48, z: 17 }
+                { y: 10, x: 46, z: 17 },
+                { y: 10, x: 48, z: 17 }
             ],
             physics: true,
             ...config,
@@ -147,25 +147,19 @@ class MultiplayerClient extends EventDispatcher {
         });
     };
     
-    createModel = (model) => {
-        // FIXME: we need to remove 'testing' being used explicitly.
-        fetch(getModelsEndpoint('testing'), {
-            method: 'POST', // or 'PUT'
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(model, typedArrayJSONReplacer),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    }
+    createModel = (model) => (
+        new Promise((resolve, reject) => (
+            fetch(getModelsEndpoint('testing'), {
+                method: 'POST', // or 'PUT'
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(model, typedArrayJSONReplacer),
+            })
+            .then(response => response.json())
+            .then(resolve)
+            .catch(reject)
+        ))
+    )
 }
-
 
 const client = new MultiplayerClient();
 window.client = client;

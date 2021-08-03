@@ -68,7 +68,7 @@ export default class Test extends Level {
     createCar() {
         const type = TYPES.GOLF_CART;
         const username = 'marco';
-        const initialPosition = { y: 5, x: 46, z: 17 };
+        const initialPosition = { y: 20, x: 46, z: 17 };
 
         const model = getModelNameFromVehicleType(type);
         const car =  Models.getModel(model, { name: username });
@@ -103,10 +103,7 @@ export default class Test extends Level {
     
     createCourse = () => {
         const course =  Models.getModel('course', { name: 'course' });
-        NetworkPhysics.addModel(course, { mass: 0 });
-        // course.enablePhysics({ mass: 0 });
-
-        window.course = course;
+        return NetworkPhysics.addModel(course, { mass: 0 });
     }
 
     prepareCamera(target) {
@@ -154,9 +151,11 @@ export default class Test extends Level {
     handleGameStarted = () => {
         // this.createPlane();
         // this.createBoxes();
-        this.createCourse();
-        this.createCar();
-        this.prepareCamera();
+        this.createCourse()
+            .then(() => {
+                this.createCar();
+                this.prepareCamera();
+            })
     }
 
     onCreate() {

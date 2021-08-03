@@ -105,19 +105,16 @@ export default class Race extends Level {
 
     createCourse() {
         const course =  Models.getModel('course', { name: 'course' });
-        NetworkPhysics.addModel(course, { mass: 0 });
-        // course.enablePhysics({ mass: 0 });
-
-        window.course = course;
+        return NetworkPhysics.addModel(course, { mass: 0 });
     }
 
     prepareCamera(target) {
-        Controls.setOrbitControl();
+        // Controls.setOrbitControl();
 
         Scene.getCamera().setPosition({ y: 10 });
-        window.camera = Scene.getCamera();
-        // Scene.getCamera()
-        //     .addScript('SmoothCarFollow', { target });
+        // window.camera = Scene.getCamera();
+        Scene.getCamera()
+            .addScript('SmoothCarFollow', { target });
     }
 
     prepareSceneEffects() {
@@ -154,14 +151,15 @@ export default class Race extends Level {
         this.horriblyPrintFPS();
         this.addLights();
 
-        this.createCourse();
-
-        const { me, opponents } = this.createPlayers(playersList, player);
-        this.me = me;
-        this.opponents = opponents;
-
-        this.prepareCamera();
-        this.prepareSceneEffects();
+        this.createCourse()
+            .then(() => {
+                const { me, opponents } = this.createPlayers(playersList, player);
+                this.me = me;
+                this.opponents = opponents;
+        
+                this.prepareCamera(me);
+                this.prepareSceneEffects();
+            });
     }
 
     onCreate() {

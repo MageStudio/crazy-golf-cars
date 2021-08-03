@@ -62,7 +62,7 @@ export const addModel = (model, options = {}) => {
 
     console.log('sending payload', payload.indexes);
 
-    client.createModel(payload);
+    return client.createModel(payload);
 }
 
 export const add = (element, options) => {
