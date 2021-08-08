@@ -2,8 +2,9 @@ import LoadingScreen from "../LoadingScreen"
 
 const getLoadingMessage = players => {
     const length = players.length;
+    const suffix = length > 1 ? 's' : '';
 
-    return `${length} player${length > 1 && 's'} connected`;
+    return `${length} player${suffix} connected`;
 }
 
 export const WaitingRoom = ({ players }) => {

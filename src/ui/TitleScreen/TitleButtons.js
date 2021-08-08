@@ -1,27 +1,25 @@
 const TitleButtons = ({ onAboutClick, onCreateRoomClick, onJoinRoomClick }) => (
-    <ul className='title-buttons-list'>
-        <li className='title-buttons-container'>
+    <div className='title-right-panel'>
+        <div className='title-buttons-list'>
             <button
                 onClick={onCreateRoomClick}
-                className='title-button'>
-                Create Room
+                class="primary large button">
+                CREATE ROOM
             </button>
-        </li>
-        <li className='title-buttons-container'>
+        
             <button
-                className='title-button'
-                onClick={onJoinRoomClick}>
-                Join Room
+                onClick={onJoinRoomClick}
+                class="secondary large button">
+                JOIN ROOM
             </button>
-        </li>
-        <li className='title-buttons-container'>
+        
             <button
                 onClick={onAboutClick}
-                className='title-button'>
+                className='tertiary large button'>
                 About
             </button>
-        </li>
-    </ul>
+        </div>
+    </div>
 );
 
 export default TitleButtons;

@@ -8,6 +8,7 @@ import AboutModal from './AboutModal';
 import CreateRoomModal from './CreateRoomModal';
 import UsernameModal from './UsernameModal';
 import JoinRoomModal from './JoinRoomModal';
+import { playClickSound } from '../sounds';
 
 const TitleScreen = ({ version, username, onUsernameSet }) => {
     const [aboutModalVisible, setAboutModalVisible] = useState(false);
@@ -15,18 +16,21 @@ const TitleScreen = ({ version, username, onUsernameSet }) => {
     const [joinRoomModalVisible, setJoinRoomModalVisible] = useState(false);
 
     const onAboutClick = () => {
+        playClickSound();
         if (!aboutModalVisible) {
             setAboutModalVisible(true);
         }
     };
 
     const onJoinRoomClick = () => {
+        playClickSound();
         if (!joinRoomModalVisible) {
             setJoinRoomModalVisible(true);
         }
     }
 
     const onCreateRoomClick = () => {
+        playClickSound();
         if (!createRoomModalVisible) {
             setCreateRoomModalVisible(true);
         }
@@ -47,7 +51,7 @@ const TitleScreen = ({ version, username, onUsernameSet }) => {
     }
 
     return (
-        <div className='screen-title'>
+        <div className='screen-title gradient-background'>
             <GameTitle/>
             <TitleButtons
                 onAboutClick={onAboutClick}

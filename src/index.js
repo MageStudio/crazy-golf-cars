@@ -7,6 +7,11 @@ import NetworkClient from './network/client';
 import * as reducers from './ui/reducers';
 
 const assets = {
+    '/': {
+        audio: {
+            click: 'assets/audio/click.ogg'
+        }
+    },
     '/race': {
         audio: {
             engine: 'assets/audio/engine.mp3'
