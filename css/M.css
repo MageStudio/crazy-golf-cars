@@ -10,7 +10,6 @@ body {
     height: 100%;
     width: 100%;
     position: absolute;
-    font-family: Chango;
 }
 
 .visible {
@@ -225,13 +224,13 @@ canvas {
 .game-title {
     padding: 16px;
     padding-bottom: 42px;
-    background: rgba(255, 255, 255, .8);
-    border: 16px solid #2ecc71;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 1);
+    /* border: 16px solid #2ecc71; */
+    border-radius: 64px;
     font-size: 80px;
-    WIDTH: 580px;
+    WIDTH: 420px;
     color: #2ecc71;
-    /* margin: 0; */
+    font-family: 'Fredoka One';
     margin: auto;
     text-transform: uppercase;
     text-align: center;
@@ -239,14 +238,30 @@ canvas {
     margin-top: 8px;
     text-shadow: 6px 6px #3498db, 12px 12px #9b59b6, 18px 18px #e74c3c;
     box-shadow: 6px 6px #3498db, 12px 12px #9b59b6, 18px 18px #e74c3c;
+    position: absolute;
+}
+
+.game-title:nth-child(2) {
+    position: absolute;
+}
+
+.game-title:nth-child(3) {
+    left: 198px;
+    top: 356px;
+}
+
+.game-title:nth-child(4) {
+    left: 132px;
+    top: 490px;
 }
 
 .game-title-label {
     color: #2c3e50;
     font-size: 18px;
     display: block;
-    text-align: center;
+    text-align: left;
     width: 100%;
+    padding-left: 42px;
 }
 
 .game-title-random-message {
@@ -255,11 +270,12 @@ canvas {
 }
 
 .game-title-container {
-    width: 60%;
+    width: 52%;
     display: inline-block;
     position: relative;
     height: 100%;
     padding-top: 15%;
+    padding-left: 92px;
 }
 
 
