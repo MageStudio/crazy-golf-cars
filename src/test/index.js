@@ -30,7 +30,7 @@ import { Universe } from 'mage-engine';
 export const WHITE = 0xffffff;
 export const SUNLIGHT = 0xffeaa7;
 export const GROUND = 0xd35400;
-export const BACKGROUND = 0xddf3f5;
+export const BACKGROUND = 0xdff9fb;//0xddf3f5;
 
 const FOG_DENSITY = 0.007;
 
@@ -44,25 +44,22 @@ const SATURATION_OPTIONS = {
     saturation: 0.2
 };
 
+const { MATERIALS } = constants;
+
 export default class Test extends Level {
 
     addAmbientLight() {
         this.ambientLight = new AmbientLight({ color: WHITE, intensity: 1 });
     }
 
-
-    createPlane() {
-        const plane = new Box(30, 2, 30, SUNLIGHT, { name: 'plane' });
-        plane.setPosition({ x: 46, z: 17, y: -1 });
-        NetworkPhysics.add(plane, { mass: 0 });
-    }
-
-    createBox(position, rotation, index) {
-        const box = new Box(1,1,1, GROUND, { name: `box:${index}` });
-        box.setPosition(position);
-        box.setRotation(rotation);
-
-        NetworkPhysics.add(box, { mass: 10 });
+    addSunLight() {
+        this.hemisphereLight = new HemisphereLight({
+            color: {
+                sky: BACKGROUND,
+                ground: GROUND
+            },
+            intensity: 1
+        });
     }
 
     createCar() {
@@ -72,6 +69,7 @@ export default class Test extends Level {
 
         const model = getModelNameFromVehicleType(type);
         const car =  Models.getModel(model, { name: username });
+        car.setMaterialFromName(MATERIALS.LAMBERT, { reflectivity: 0 });
 
         window.car= car;
         car.addScript('NetworkCarScript', { type, username, initialPosition });
@@ -103,6 +101,7 @@ export default class Test extends Level {
     
     createCourse = () => {
         const course =  Models.getModel('course', { name: 'course' });
+        course.setMaterialFromName(MATERIALS.LAMBERT, { reflectivity: 0 });
         return NetworkPhysics.addModel(course, { mass: 0 });
     }
 
@@ -120,6 +119,7 @@ export default class Test extends Level {
 
     createWorld() {
         this.addAmbientLight();
+        this.addSunLight();
 
         Scripts.create('NetworkCarScript', NetworkCarScript);
 
