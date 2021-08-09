@@ -1,6 +1,7 @@
 import { useState } from 'xferno';
 import { EnterIcon } from '../icons';
 import Modal from '../lib/Modal';
+import RoomsList from './RoomsList';
 
 const JoinRoomModal = ({ onConfirm, onCancel, ...rest }) => {
     const [roomName, setRoomName] = useState('');
@@ -25,6 +26,7 @@ const JoinRoomModal = ({ onConfirm, onCancel, ...rest }) => {
             {...rest}
             dismissable
             onConfirm={handleModalConfirm}>
+            <RoomsList/>
             <div className='input-container'>
                 <EnterIcon/>
                 <input

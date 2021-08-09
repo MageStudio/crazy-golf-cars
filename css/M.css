@@ -243,6 +243,8 @@ canvas {
 
 .game-title:nth-child(2) {
     position: absolute;
+    left: 100px;
+    top: 216px;
 }
 
 .game-title:nth-child(3) {
@@ -262,6 +264,8 @@ canvas {
     text-align: left;
     width: 100%;
     padding-left: 42px;
+    position: absolute;
+    top: 180px;
 }
 
 .game-title-random-message {
