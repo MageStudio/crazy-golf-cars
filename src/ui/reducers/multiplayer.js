@@ -1,4 +1,7 @@
+import { NETWORK_EVENTS } from "../../network/client";
 import {
+    CONNECTED,
+    DISCONNECTED,
     GAME_STARTED,
     PLAYER_JOINED,
     ROOMS_LIST_CHANGED,
@@ -12,11 +15,24 @@ const DEFAULT_STATE = {
         config: {},
         players: []
     },
+    status: NETWORK_EVENTS.CONNECTED,
+    error: '',
     state: ''
 };
 
 export default (state = DEFAULT_STATE, action = {}) => {
     switch(action.type) {
+        case CONNECTED:
+            return {
+                ...state,
+                status: NETWORK_EVENTS.CONNECTED
+            };
+        case DISCONNECTED:
+            return {
+                ...state,
+                status: NETWORK_EVENTS.DISCONNECTED,
+                error: action.reason
+            };
         case WAITING_ROOM_ENTERED:
             return {
                 ...state,

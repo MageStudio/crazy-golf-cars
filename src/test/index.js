@@ -118,16 +118,7 @@ export default class Test extends Level {
         Scene.setClearColor(BACKGROUND);
     }
 
-    horriblyPrintFPS() {
-        const update = value => {
-            document.querySelector('#fps').innerHTML = Math.floor(value);
-        };
-
-        Stats.fps.subscribe(update);
-    }
-
     createWorld() {
-        this.horriblyPrintFPS();
         this.addAmbientLight();
 
         Scripts.create('NetworkCarScript', NetworkCarScript);

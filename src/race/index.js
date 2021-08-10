@@ -139,16 +139,7 @@ export default class Race extends Level {
         Input.addEventListener(INPUT_EVENTS.KEY_DOWN, this.handleKeyDown);
     }
 
-    horriblyPrintFPS() {
-        const update = value => {
-            document.querySelector('#fps').innerHTML = Math.floor(value);
-        };
-
-        Stats.fps.subscribe(update);
-    }
-
     createWorld(playersList, player) {
-        this.horriblyPrintFPS();
         this.addLights();
 
         this.createCourse()

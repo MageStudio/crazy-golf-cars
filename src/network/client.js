@@ -6,6 +6,11 @@ const NEW_ROOM_EVENT = 'new_room';
 const JOIN_ROOM_EVENT = 'join_room';
 const LEAVE_ROOM_EVENT = 'leave_room';
 
+export const NETWORK_EVENTS = {
+    CONNECTED: 'network_connected',
+    DISCONNECTED: 'network_disconnected'
+};
+
 export const GAME_EVENTS = {
     ROOM_ALREADY_EXISTS_EVENT: 'room_already_exists',
     ROOM_DOES_NOT_EXIST_EVENT: 'room_does_not_exist',
@@ -75,10 +80,17 @@ class MultiplayerClient extends EventDispatcher {
             this.setListeners();
             this.hasListeners = true;
         }
+
+        this.dispatchEvent({
+            type: NETWORK_EVENTS.CONNECTED
+        });
     }
 
     onDisconnect = reason => {
-        console.log('Disconnecting due to', reason);
+        this.dispatchEvent({
+            type: NETWORK_EVENTS.DISCONNECTED,
+            reason
+        });
     }
 
     setListeners = () => {

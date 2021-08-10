@@ -181,18 +181,16 @@ canvas {
     margin-top: 10px;
 }
 
-#fps {
+.stats-bar {
     position: absolute;
-    font-size: 16px;
-    height: 50px;
-    width: 50px;
-    line-height: 50px;
-    top: 0;
-    left: 0;
-    text-align: center;
-    color: white;
-    background: black;
+}
+
+.fps,
+.connection {
+    position: relative;
+    margin: 8px;
     z-index: 99999;
+    float: left;
 }
 
 .screen-title,
