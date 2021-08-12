@@ -1,11 +1,17 @@
 import { useState } from 'xferno';
+import { EnterIcon } from '../icons';
 import Modal from '../lib/Modal';
+import RoomsList from './RoomsList';
 
 const JoinRoomModal = ({ onConfirm, onCancel, ...rest }) => {
     const [roomName, setRoomName] = useState('');
 
     const onInputChange = event => {
-        setRoomName(event.target.value);
+        const { value } = event.target;
+
+        if (value) {
+            setRoomName(value);
+        }
     }
 
     const handleModalConfirm = () => {
@@ -20,12 +26,16 @@ const JoinRoomModal = ({ onConfirm, onCancel, ...rest }) => {
             {...rest}
             dismissable
             onConfirm={handleModalConfirm}>
-
-            <p>Create Room</p>
-            <input
-                name='room'
-                value={roomName}
-                onInput={onInputChange}/>
+            <RoomsList/>
+            <div className='input-container'>
+                <EnterIcon/>
+                <input
+                    name='room'
+                    className='input text'
+                    placeholder='room name'
+                    value={roomName}
+                    onInput={onInputChange}/>
+            </div>
         </Modal>
     );
 };

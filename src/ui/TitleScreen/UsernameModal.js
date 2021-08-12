@@ -1,11 +1,16 @@
 import { useState } from 'xferno';
 import Modal from '../lib/Modal';
+import { UserIcon } from '../icons';
 
 const UsernameModal = ({ onConfirm, ...rest }) => {
     const [username, setUsername] = useState('');
 
     const onInputChange = event => {
-        setUsername(event.target.value);
+        const { value } = event.target;
+
+        if (value) {
+            setUsername(value);
+        }
     }
 
     const handleModalConfirm = () => {
@@ -20,12 +25,16 @@ const UsernameModal = ({ onConfirm, ...rest }) => {
             {...rest}
             dismissable={false}
             onConfirm={handleModalConfirm}>
-
-            <p>Select your username</p>
-            <input
-                name='username'
-                value={username}
-                onInput={onInputChange}/>
+            <div class='input-container'>
+                <UserIcon/>
+                <input
+                    className='input text'
+                    placeholder='your username'
+                    name='username'
+                    value={username}
+                    onInput={onInputChange}/>
+            </div>
+           
         </Modal>
     );
 };

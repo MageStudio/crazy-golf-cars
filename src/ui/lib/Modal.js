@@ -1,3 +1,5 @@
+import { CloseIcon } from '../icons';
+
 const Modal = ({
     visible,
     dismissable = true,
@@ -24,14 +26,18 @@ const Modal = ({
                 className='modal'>
                 <div className={`modal-head ${type}`}>
                     <span className='modal-title'>{ title }</span>
-                    { dismissable && <span className='modal-close-btn' onClick={onClose}>x</span> }
+                    { dismissable &&
+                        <span className='modal-close-btn' onClick={onClose}>
+                            <CloseIcon/>
+                        </span>
+                    }
                 </div>
                 <div className='modal-body'>
                     { children }
                 </div>
                 <div className='modal-footer'>
-                    { onCancel && <button className='button cancel' onClick={onCancel}>Cancel</button> }
-                    { onConfirm && <button className='button confirm' onClick={onConfirm}>Confirm</button> }
+                    { onCancel && <button className='button secondary small' onClick={onCancel}>Cancel</button> }
+                    { onConfirm && <button className='button primary small' onClick={onConfirm}>Confirm</button> }
                 </div>
             </div>
         </div>

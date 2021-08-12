@@ -4,7 +4,7 @@ const getLoadingScreenMessage = message => (
 );
 
 const LoadingScreen = ({ message }) => (
-    <div className='loading-screen'>
+    <div className='loading-screen gradient-background'>
         <div className='loading-bar-container'>
             { message && getLoadingScreenMessage(message) }
             <div class="progress-bar">

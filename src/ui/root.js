@@ -7,6 +7,7 @@ import {
 import { usernameChanged } from './actions/player';
 
 import LoadingScreen from './LoadingScreen';
+import StatsBar from './stats';
 import TitleScreen from './TitleScreen';
 import WaitingRoom from './WaitingRoom';
 
@@ -27,6 +28,7 @@ class Root extends Component {
         const {
             navigation,
             multiplayer,
+            network,
             loadingScreenVisible,
             version,
             location,
@@ -38,7 +40,9 @@ class Root extends Component {
         const { players = [] } = room; 
 
         if (loadingScreenVisible) return <LoadingScreen />;
-        if (location.path !== '/') return null;
+        if (location.path !== '/') return (
+            <StatsBar network={network} multiplayer={multiplayer} />
+        );
 
         switch (navigation.path) {
             case 'title':
@@ -52,12 +56,13 @@ class Root extends Component {
     }
 }
 
-const mapStateToProps = ({ ui, navigation, info, location, player, multiplayer }) => ({
+const mapStateToProps = ({ ui, navigation, info, location, player, multiplayer, network }) => ({
     loadingScreenVisible: ui.loadingScreenVisible,
     navigation,
     version: info.mage,
     location,
     multiplayer,
+    network,
     ...player
 });
 

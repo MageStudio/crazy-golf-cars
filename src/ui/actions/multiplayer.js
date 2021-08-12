@@ -1,12 +1,14 @@
 import { store } from 'mage-engine';
-import NetworkClient, { EVENTS, GAME_EVENTS } from '../../network/client';
+import NetworkClient, { EVENTS, GAME_EVENTS, NETWORK_EVENTS } from '../../network/client';
 import { goToCourse, goToWaitingRoom } from './navigation';
 import {
     ROOM_JOINED,
     ROOMS_LIST_CHANGED,
     WAITING_ROOM_ENTERED,
     PLAYER_JOINED,
-    GAME_STARTED
+    GAME_STARTED,
+    CONNECTED,
+    DISCONNECTED
 } from './types';
 
 export const ROOM_STATES = {
@@ -43,6 +45,15 @@ const gameStarted = ({ room }) => ({
     room
 });
 
+const connected = () => ({
+    type: CONNECTED
+});
+
+const disconnected = (reason) => ({
+    type: DISCONNECTED,
+    reason
+});
+
 const handleRoomJoined = ({ data }) => {
     store.dispatch(roomJoined(data));
 }
@@ -62,10 +73,21 @@ const handlePlayerJoined = ({ data }) => {
 
 const handleGameStarted = ({ data }) => {
     store.dispatch(gameStarted(data));
-    store.dispatch(goToCourse());
+    // store.dispatch(goToCourse());
+};
+
+const handleConnection = () => {
+    store.dispatch(connected());
+};
+
+const handleDisconnection = ({ reason }) => {
+    store.dispatch(disconnected(reason));
 }
 
 export const setNetworkClientListeners = () => {
+    NetworkClient.addEventListener(NETWORK_EVENTS.CONNECTED, handleConnection);
+    NetworkClient.addEventListener(NETWORK_EVENTS.DISCONNECTED, handleDisconnection);
+
     NetworkClient.addEventListener(GAME_EVENTS.ROOMS_LIST_EVENT, handleRoomsList);
     NetworkClient.addEventListener(GAME_EVENTS.ROOM_JOINED_EVENT, handleRoomJoined);
     NetworkClient.addEventListener(GAME_EVENTS.WAITING_ROOM_EVENT, handleWaitingRoom);
@@ -74,6 +96,9 @@ export const setNetworkClientListeners = () => {
 };
 
 export const removeNetworkClientListeners = () => {
+    NetworkClient.removeEventListener(NETWORK_EVENTS.CONNECTED, handleConnection);
+    NetworkClient.removeEventListener(NETWORK_EVENTS.DISCONNECTED, handleDisconnection);
+
     NetworkClient.removeEventListener(GAME_EVENTS.ROOMS_LIST_EVENT, handleRoomsList);
     NetworkClient.removeEventListener(GAME_EVENTS.ROOM_JOINED_EVENT, handleRoomJoined);
     NetworkClient.removeEventListener(GAME_EVENTS.WAITING_ROOM_EVENT, handleWaitingRoom);
