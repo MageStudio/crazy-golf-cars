@@ -25,7 +25,7 @@ const assets = {
             'grenade': 'assets/models/grenade.glb',
             'police_car': 'assets/models/police_car.glb',
             'truck': 'assets/models/truck.glb',
-            'course': 'assets/models/course_new.glb',
+            'course': 'assets/models/course_original.glb',
         },
         textures: {
             'dot': 'assets/textures/dot.png'
@@ -44,10 +44,11 @@ const assets = {
             'grenade': 'assets/models/grenade.glb',
             'police_car': 'assets/models/police_car.glb',
             'truck': 'assets/models/truck.glb',
-            'course': 'assets/models/course_new.glb',
+            'course': 'assets/models/course_blender_no_bake.glb',
         },
         textures: {
-            'dot': 'assets/textures/dot.png'
+            'dot': 'assets/textures/dot.png',
+            'gradientMap': 'assets/textures/fiveTone.jpg'
         },
     }
 }
@@ -62,7 +63,7 @@ const config = {
     },
 
     lights: {
-        shadows: true,
+        shadows: false,
         textureAnisotropy: 2
     },
 

@@ -58,7 +58,7 @@ const typedArrayJSONReplacer = ( _, value ) => {
 
             return {
                 constructor: value.constructor.name,
-                data: Array.apply([], value),
+                data: [...value],
                 flag: FLAG_TYPED_ARRAY
             }
     }
