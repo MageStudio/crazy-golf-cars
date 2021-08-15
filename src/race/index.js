@@ -7,13 +7,12 @@ import {
     AmbientLight,
     PostProcessing,
     HemisphereLight,
+    PointLight,
     Controls,
-    Stats,
     Audio,
     constants,
     store,
-    Router,
-    PHYSICS_EVENTS
+    Router
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
@@ -41,6 +40,8 @@ const SATURATION_OPTIONS = {
     saturation: 0.2
 };
 
+const { MATERIALS } = constants;
+
 export default class Race extends Level {
 
     addAmbientLight() {
@@ -50,20 +51,19 @@ export default class Race extends Level {
     addSunLight() {
         this.hemisphereLight = new HemisphereLight({
             color: {
-                sky: BACKGROUND,
+                sky: WHITE,
                 ground: GROUND
             },
             intensity: 1
         });
 
-        // Lights.setUpCSM({
-        //     maxFar: 200,
-        //     cascades: 1 ,
-        //     mode: 'practical',
-        //     shadowBias: -0.0001,
-        //     shadowMapSize: 1024 * 2,
-        //     lightDirection: new THREE.Vector3( -1, -1, -1 ).normalize(),
-        // });
+        this.pointLight = new PointLight({
+            color: WHITE,
+            intensity: 1,
+            decay: 0
+        });
+
+        this.pointLight.setPosition({ y: 100, x: 100, z: 100 });
     }
 
     addLights() {
@@ -75,6 +75,15 @@ export default class Race extends Level {
         const { username, initialPosition }  = player;
         const model = getModelNameFromVehicleType(type);
         const car =  Models.getModel(model, { name: username });
+
+        car.setMaterialFromName(MATERIALS.TOON, {
+            reflectivity: 0,
+            light: {
+                color: BACKGROUND,
+                position: this.hemisphereLight.getPosition()
+            },
+            emissive: GROUND
+        });
 
         console.log('creating car for', username);
         if (isOpponent) {
@@ -105,6 +114,15 @@ export default class Race extends Level {
 
     createCourse() {
         const course =  Models.getModel('course', { name: 'course' });
+
+        course.setMaterialFromName(MATERIALS.TOON, {
+            light: {
+                color: BACKGROUND,
+                position: this.hemisphereLight.getPosition()
+            },
+            emissive: 0xeeeeee
+        });
+
         return NetworkPhysics.addModel(course, { mass: 0 });
     }
 
@@ -121,7 +139,8 @@ export default class Race extends Level {
         Scene.setClearColor(BACKGROUND);
         // Scene.setFog(BACKGROUND, FOG_DENSITY);
         PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
-        PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
+        // PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
+        PostProcessing.add(constants.EFFECTS.OUTLINE, { defaultThickness: 0.004 });
     }
 
     handleKeyDown() {

@@ -1,21 +1,16 @@
 import {
     Scripts,
     Level,
-    Box,
     Scene,
     Models,
+    Images,
     AmbientLight,
-    PostProcessing,
     HemisphereLight,
     Controls,
-    Stats,
-    Audio,
     constants,
-    store,
-    Router,
     PHYSICS_EVENTS,
-    Input,
-    INPUT_EVENTS
+    PostProcessing,
+    THREE
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
@@ -26,11 +21,12 @@ import OpponentNetworkCarScript from '../scripts/OpponentNetworkCarScript';
 import NetworkClient, { GAME_EVENTS } from '../network/client';
 import * as NetworkPhysics from '../network/physics';
 import { Universe } from 'mage-engine';
+import { PointLight } from 'mage-engine';
 
 export const WHITE = 0xffffff;
 export const SUNLIGHT = 0xffeaa7;
 export const GROUND = 0xd35400;
-export const BACKGROUND = 0xddf3f5;
+export const BACKGROUND = 0xdff9fb;//0xddf3f5;
 
 const FOG_DENSITY = 0.007;
 
@@ -41,28 +37,34 @@ const DOF_OPTIONS = {
 };
 
 const SATURATION_OPTIONS = {
-    saturation: 0.2
+    saturation: 0.4
 };
+
+const { MATERIALS } = constants;
 
 export default class Test extends Level {
 
     addAmbientLight() {
-        this.ambientLight = new AmbientLight({ color: WHITE, intensity: 1 });
+        this.ambientLight = new AmbientLight({ color: SUNLIGHT, intensity: 1 });
     }
 
+    addSunLight() {
+        this.hemisphereLight = new HemisphereLight({
+            color: {
+                sky: WHITE,
+                ground: GROUND
+            },
+            intensity: 1
+        });
 
-    createPlane() {
-        const plane = new Box(30, 2, 30, SUNLIGHT, { name: 'plane' });
-        plane.setPosition({ x: 46, z: 17, y: -1 });
-        NetworkPhysics.add(plane, { mass: 0 });
-    }
+        this.pointLight = new PointLight({
+            color: WHITE,
+            intensity: 1,
+            decay: 0
+        });
 
-    createBox(position, rotation, index) {
-        const box = new Box(1,1,1, GROUND, { name: `box:${index}` });
-        box.setPosition(position);
-        box.setRotation(rotation);
-
-        NetworkPhysics.add(box, { mass: 10 });
+        this.pointLight.setPosition({ y: 100, x: 100, z: 100 });
+        window.pointLight = this.pointLight;
     }
 
     createCar() {
@@ -72,38 +74,34 @@ export default class Test extends Level {
 
         const model = getModelNameFromVehicleType(type);
         const car =  Models.getModel(model, { name: username });
+        car.setMaterialFromName(MATERIALS.TOON, {
+            reflectivity: 0,
+            light: {
+                color: BACKGROUND,
+                position: this.hemisphereLight.getPosition()
+            },
+            emissive: GROUND
+        });
 
         window.car= car;
         car.addScript('NetworkCarScript', { type, username, initialPosition });
+
+        return car;
     }
 
-    getRandomPosition() {
-        return {
-            x: Math.random() * 30 - 15, 
-            y: Math.random() * 5 + 7,
-            z: Math.random() * 30 - 15
-        }
-    }
-
-    getRandomRotation() {
-        return {
-            x: Math.random() * 0.1,
-            y: Math.random() * 0.1,
-            z: Math.random() * 0.1
-        }
-    }
-
-    createBoxes() {
-        for (let i= 0; i < 2; i++) {
-            const position = this.getRandomPosition();
-            const rotation = this.getRandomRotation();
-            this.createBox(position, rotation, i);
-        }
-    }
-    
     createCourse = () => {
-        const course =  Models.getModel('course', { name: 'course' });
-        return NetworkPhysics.addModel(course, { mass: 0 });
+        this.course =  Models.getModel('course', { name: 'course' });
+
+        this.course.setMaterialFromName(MATERIALS.TOON, {
+            light: {
+                color: BACKGROUND,
+                position: this.hemisphereLight.getPosition()
+            },
+            emissive: 0xeeeeee
+        });
+
+        window.course = this.course;
+        return NetworkPhysics.addModel(this.course, { mass: 0 });
     }
 
     prepareCamera(target) {
@@ -112,20 +110,30 @@ export default class Test extends Level {
         Scene.getCamera().setPosition({ y: 10, x: 25, z: 25 });
         Scene.getCamera().lookAt({ x: 0, y: 0, z: 0 });
         window.camera = Scene.getCamera();
+
+        // Scene.getCamera()
+        //     .addScript('SmoothCarFollow', { target });
     }
 
     prepareSceneEffects() {
         Scene.setClearColor(BACKGROUND);
+        PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
+    }
+
+    addSelectiveOutline() {
+        const outline = PostProcessing.add(constants.EFFECTS.OUTLINE, { defaultThickness: 0.004 });
+        // outline.setVisibleEdgeColor(constants.COLORS.BLACK);
+        // outline.setHiddenEdgeColor(constants.COLORS.BLACK);
     }
 
     createWorld() {
         this.addAmbientLight();
+        this.addSunLight();
 
         Scripts.create('NetworkCarScript', NetworkCarScript);
+        Scripts.create('SmoothCarFollow', SmoothCarFollow);
+        Scripts.create('OpponentNetworkCarScript', OpponentNetworkCarScript);
 
-        // window.players = players;
-        // const me = players.filter(player => player.getName() === player.username)[0];
-        // window.me = me;
         this.prepareSceneEffects();
     }
     
@@ -140,12 +148,11 @@ export default class Test extends Level {
     }
 
     handleGameStarted = () => {
-        // this.createPlane();
-        // this.createBoxes();
         this.createCourse()
             .then(() => {
-                this.createCar();
-                this.prepareCamera();
+                const me = this.createCar();
+                this.prepareCamera(me);
+                this.addSelectiveOutline();
             })
     }
 
