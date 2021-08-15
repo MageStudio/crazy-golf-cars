@@ -179,6 +179,10 @@ export default class NetworkCarScript extends BaseScript {
         this.handleInput();
         this.updateSound();
         this.dispatchCarStateChange();
-        this.predictMovement(0.001)
+        this.predictMovement (0.00001)
+    }
+
+    update(dt) {
+        // this.predictMovement(dt);
     }
 }
