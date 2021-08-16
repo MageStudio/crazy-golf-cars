@@ -1,5 +1,5 @@
-import { NETWORK_EVENTS } from "../../network/client";
-import { ErrorIcon, QuestionMarkIcon, SuccessIcon } from "../icons";
+import { NETWORK_EVENTS } from "../../../network/client";
+import { ErrorIcon, QuestionMarkIcon, SuccessIcon } from "../../icons";
 
 const parseStatus = (status) => {
     switch (status) {
