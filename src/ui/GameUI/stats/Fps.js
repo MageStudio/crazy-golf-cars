@@ -11,6 +11,8 @@ const Fps = () => {
             setFps(value);
         }
         Stats.fps.subscribe(handler);
+
+        return () => Stats.fps.unsubscribe(handler);
     });
 
     return (

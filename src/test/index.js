@@ -150,8 +150,8 @@ export default class Test extends Level {
     handleGameStarted = () => {
         this.createCourse()
             .then(() => {
-                const me = this.createCar();
-                this.prepareCamera(me);
+                this.car = this.createCar();
+                this.prepareCamera(car);
                 this.addSelectiveOutline();
             })
     }

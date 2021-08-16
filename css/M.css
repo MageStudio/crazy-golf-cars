@@ -193,6 +193,13 @@ canvas {
     float: left;
 }
 
+.gauge {
+    position: absolute !important;
+    z-index: 999;
+    bottom: 32px;
+    left: 32px;
+}
+
 .screen-title,
 .loading-screen {
     height: 100vh;

@@ -5,9 +5,9 @@ import {
     setNetworkClientListeners
 } from './actions/multiplayer';
 import { usernameChanged } from './actions/player';
+import GameUI from './GameUI';
 
 import LoadingScreen from './LoadingScreen';
-import StatsBar from './stats';
 import TitleScreen from './TitleScreen';
 import WaitingRoom from './WaitingRoom';
 
@@ -36,12 +36,14 @@ class Root extends Component {
             onUsernameSet
         } = this.props;
 
+        console.log(this.props);
+
         const { room = {} } = multiplayer;
         const { players = [] } = room; 
 
         if (loadingScreenVisible) return <LoadingScreen />;
         if (location.path !== '/') return (
-            <StatsBar network={network} multiplayer={multiplayer} />
+            <GameUI network={network} multiplayer={multiplayer} />
         );
 
         switch (navigation.path) {
