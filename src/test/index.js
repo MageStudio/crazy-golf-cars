@@ -132,6 +132,7 @@ export default class Test extends Level {
 
         Scripts.create('NetworkCarScript', NetworkCarScript);
         Scripts.create('SmoothCarFollow', SmoothCarFollow);
+        Scripts.create('BombScript', BombScript);
         Scripts.create('OpponentNetworkCarScript', OpponentNetworkCarScript);
 
         this.prepareSceneEffects();

@@ -17,6 +17,7 @@ export default class NetworkCarScript extends BaseScript {
         super('NetworkCarScript');
 
         this.engineStarted = false;
+        this.bombCounter = 0;
     }
 
     createWheel(index, username) {
@@ -27,13 +28,17 @@ export default class NetworkCarScript extends BaseScript {
         }
     }
 
-    // throwBomb() {
-    //     const bomb = new Sphere(.3);
-    //     bomb.addScript('BombScript', {
-    //         position: this.car.getPosition(),
-    //         direction: this.direction
-    //     });
-    // }
+    throwBomb() {
+        const name = `${this.username}_bomb_${this.bombCounter}`;
+        const bomb = Models.getModel('bomb', { name });
+        this.bombCounter++;
+
+        bomb.addScript('BombScript', {
+            name,
+            position: this.car.getPosition(),
+            direction: this.car.direction
+        });
+    }
 
     // flip() {
     //     const position = this.car.getPosition();
@@ -106,7 +111,19 @@ export default class NetworkCarScript extends BaseScript {
         this.state.left = Input.keyboard.isPressed('a');
     }
 
-    handleKeyDown = () => {
+    handleKeyDown = ({ event }) => {
+        switch(event.key) {
+            case 'space':
+                console.log('got space');
+                if (this.car.direction) {
+                    console.log('throwing bomb');
+                    this.throwBomb();
+                }
+                break;
+            case 'r':
+                // this.flip();
+                break;
+        }
         if (!this.engineStarted) {
             this.startEngine();
         }
@@ -128,24 +145,6 @@ export default class NetworkCarScript extends BaseScript {
             }
         }
     }
-
-    // handleKeyDown = ({ event }) => {
-    //     switch(event.key) {
-    //         case 'space':
-    //             if (this.direction) {
-    //                 this.throwBomb();
-    //             }
-    //             break;
-    //         case 'r':
-    //             this.flip();
-    //             break;
-    //     }
-
-    //     if (!this.engineStarted) {
-    //         // need user interaction before starting sounds
-    //         this.startEngine();
-    //     }
-    // }
 
     getDetuneFromSpeed = () => {
         const max = 1200;

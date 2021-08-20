@@ -77,6 +77,8 @@ export const add = (element, options) => {
     };
     const event = physicsUtils.mapColliderTypeToAddEvent(description.collider);
 
+    console.log('sending description', description);
+
     client.emitEvent(event, {
         ...description,
         uuid
