@@ -24,23 +24,24 @@ export default class BombScript extends BaseScript {
 
         console.log(name);
 
-        this.bomb.setPosition({ x, y: y + 1, z });
+        this.bomb.setPosition({ x, y: y + 2, z });
         this.bomb.setScale({ x: 10, y: 10, z: 10 }); 
 
-        NetworkPhysics.add(this.bomb, { mass: 0.1, colliderType: PHYSICS_CONSTANTS.COLLIDER_TYPES.SPHERE })
+        NetworkPhysics.add(this.bomb, { mass: 0.1, colliderType: PHYSICS_CONSTANTS.COLLIDER_TYPES.SPHERE, radius: 0.2 })
         NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
+        
+        const velocity = math.scaleVector(direction, 2);
+        NetworkPhysics.applyImpulse(this.bomb, velocity);
 
+        setTimeout(this.listenToCollisions.bind(this), 1000);
+    }
 
-        // this.bomb.addEventListener(PHYSICS_EVENTS.COLLISION_DETECTION_EVENT, this.handleCollision);
-
-        // const velocity = math.scaleVector(direction, 2);
-        // Physics.applyImpulse(this.bomb, velocity);
+    listenToCollisions() {
+        NetworkClient.addEventListener(PHYSICS_EVENTS.COLLISION_DETECTION_EVENT, this.handleCollision);
     }
     
     handleBodyUpdate = ({ data }) => {
         const { uuid, position, quaternion } = data;
-
-        console.log(uuid);
 
         if (uuid === this.name) {
             this.bomb.setPosition(position);
@@ -59,9 +60,15 @@ export default class BombScript extends BaseScript {
         this.bomb.dispose();
     }
 
-    handleCollision = (event) => {
-        this.bomb.removeEventListener(PHYSICS_EVENTS.COLLISION_DETECTION_EVENT, this.handleCollision);
-        this.explode();
-        setTimeout(this.destroyBomb, 100)
+    handleCollision = ({ data }) => {
+        const { uuid } = data;
+
+        if (uuid == this.name) {
+            NetworkClient.removeEventListener(PHYSICS_EVENTS.COLLISION_DETECTION_EVENT, this.handleCollision);
+            setTimeout(() => {
+                this.explode();
+                setTimeout(this.destroyBomb, 100)
+            }, 1000);
+        }
     };
 }

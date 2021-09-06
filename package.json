@@ -4,7 +4,7 @@
     "description": "A car driving around",
     "main": "index.js",
     "scripts": {
-        "dev": "npm run build && npm run start -- 8085",
+        "dev": "NODE_ENV=dev npm run build && npm run start -- 8085",
         "build": "webpack --config webpack.config.js",
         "start": "http-server ./public -p"
     },

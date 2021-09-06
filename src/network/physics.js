@@ -60,8 +60,6 @@ export const addModel = (model, options = {}) => {
         ...options
     };
 
-    console.log('sending payload', payload.indexes);
-
     return client.createModel(payload);
 }
 
@@ -77,7 +75,7 @@ export const add = (element, options) => {
     };
     const event = physicsUtils.mapColliderTypeToAddEvent(description.collider);
 
-    console.log('sending description', description);
+    console.log('sending description', description, event);
 
     client.emitEvent(event, {
         ...description,
@@ -91,5 +89,14 @@ export const updateBodyState = (element, state) => {
     client.emitEvent(PHYSICS_EVENTS.UPDATE_BODY_EVENT, {
         uuid: name,
         state
+    });
+}
+
+export const applyImpulse = (element, impulse) => {
+    const name = typeof element === 'string' ? element : element.getName();
+
+    client.emitEvent(PHYSICS_EVENTS.APPLY_IMPULSE_EVENT, {
+        uuid: name,
+        impulse
     });
 }

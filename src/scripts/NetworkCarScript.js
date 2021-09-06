@@ -40,6 +40,12 @@ export default class NetworkCarScript extends BaseScript {
         });
     }
 
+    jump = () => {
+        const jumpStrength = { x: 0, y: 5, z: 0 };
+
+        NetworkPhysics.applyImpulse(`${this.car.getName()}:chassis`, jumpStrength);
+    }
+
     // flip() {
     //     const position = this.car.getPosition();
     //     this.car.setPosition({
@@ -93,9 +99,7 @@ export default class NetworkCarScript extends BaseScript {
             return acc;
         }, {});
 
-        const options = getCarOptionsByType(this.type);
-        console.log('using options, ', options);
-        NetworkPhysics.addVehicle(this.car, { wheels: Object.keys(this.wheels), ...options });
+        NetworkPhysics.addVehicle(this.car, { wheels: Object.keys(this.wheels), ...getCarOptionsByType(this.type) });
         NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
 
         Input.enable();
@@ -114,9 +118,10 @@ export default class NetworkCarScript extends BaseScript {
     handleKeyDown = ({ event }) => {
         switch(event.key) {
             case 'space':
-                console.log('got space');
+                this.jump();
+                break;
+            case 'b':
                 if (this.car.direction) {
-                    console.log('throwing bomb');
                     this.throwBomb();
                 }
                 break;
