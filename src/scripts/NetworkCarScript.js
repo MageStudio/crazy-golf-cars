@@ -17,6 +17,7 @@ export default class NetworkCarScript extends BaseScript {
         super('NetworkCarScript');
 
         this.engineStarted = false;
+        this.bombCounter = 0;
     }
 
     createWheel(index, username) {
@@ -27,13 +28,23 @@ export default class NetworkCarScript extends BaseScript {
         }
     }
 
-    // throwBomb() {
-    //     const bomb = new Sphere(.3);
-    //     bomb.addScript('BombScript', {
-    //         position: this.car.getPosition(),
-    //         direction: this.direction
-    //     });
-    // }
+    throwBomb() {
+        const name = `${this.username}_bomb_${this.bombCounter}`;
+        const bomb = Models.getModel('bomb', { name });
+        this.bombCounter++;
+
+        bomb.addScript('BombScript', {
+            name,
+            position: this.car.getPosition(),
+            direction: this.car.direction
+        });
+    }
+
+    jump = () => {
+        const jumpStrength = { x: 0, y: 5, z: 0 };
+
+        NetworkPhysics.applyImpulse(`${this.car.getName()}:chassis`, jumpStrength);
+    }
 
     // flip() {
     //     const position = this.car.getPosition();
@@ -88,9 +99,7 @@ export default class NetworkCarScript extends BaseScript {
             return acc;
         }, {});
 
-        const options = getCarOptionsByType(this.type);
-        console.log('using options, ', options);
-        NetworkPhysics.addVehicle(this.car, { wheels: Object.keys(this.wheels), ...options });
+        NetworkPhysics.addVehicle(this.car, { wheels: Object.keys(this.wheels), ...getCarOptionsByType(this.type) });
         NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
 
         Input.enable();
@@ -106,7 +115,20 @@ export default class NetworkCarScript extends BaseScript {
         this.state.left = Input.keyboard.isPressed('a');
     }
 
-    handleKeyDown = () => {
+    handleKeyDown = ({ event }) => {
+        switch(event.key) {
+            case 'space':
+                this.jump();
+                break;
+            case 'b':
+                if (this.car.direction) {
+                    this.throwBomb();
+                }
+                break;
+            case 'r':
+                // this.flip();
+                break;
+        }
         if (!this.engineStarted) {
             this.startEngine();
         }
@@ -128,24 +150,6 @@ export default class NetworkCarScript extends BaseScript {
             }
         }
     }
-
-    // handleKeyDown = ({ event }) => {
-    //     switch(event.key) {
-    //         case 'space':
-    //             if (this.direction) {
-    //                 this.throwBomb();
-    //             }
-    //             break;
-    //         case 'r':
-    //             this.flip();
-    //             break;
-    //     }
-
-    //     if (!this.engineStarted) {
-    //         // need user interaction before starting sounds
-    //         this.startEngine();
-    //     }
-    // }
 
     getDetuneFromSpeed = () => {
         const max = 1200;

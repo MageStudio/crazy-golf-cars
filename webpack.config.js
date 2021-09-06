@@ -1,5 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+
+const env = process.env.NODE_ENV || 'prod';
 
 module.exports = {
     mode: 'development',
@@ -40,6 +43,11 @@ module.exports = {
                 { from: 'img', to: 'img', noErrorOnMissing: true, force: true },
                 { from: 'js', to: 'js', noErrorOnMissing: true, force: true }
             ]
-        })
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify(env)
+            }
+        }),
     ],
 };

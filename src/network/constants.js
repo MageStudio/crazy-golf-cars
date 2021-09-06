@@ -1,7 +1,9 @@
 export const NAMESPACE = 'game';
 
+
 export const RGS = {
-    url: 'https://rgs.api.mage.studio',
+
+    url: process.env.NODE_ENV === 'dev' ? 'http://localhost' : 'https://rgs.api.mage.studio',
     path: `/${NAMESPACE}`
 };
 
