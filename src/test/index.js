@@ -105,14 +105,14 @@ export default class Test extends Level {
     }
 
     prepareCamera(target) {
-        // Controls.setOrbitControl();
+        Controls.setOrbitControl();
 
         Scene.getCamera().setPosition({ y: 10, x: 25, z: 25 });
-        Scene.getCamera().lookAt({ x: 0, y: 0, z: 0 });
-        window.camera = Scene.getCamera();
+        // Scene.getCamera().lookAt({ x: 0, y: 0, z: 0 });
+        // window.camera = Scene.getCamera();
 
-        Scene.getCamera()
-            .addScript('SmoothCarFollow', { target, distance: 8, height: 5 });
+        // Scene.getCamera()
+        //     .addScript('SmoothCarFollow', { target, distance: 8, height: 5 });
     }
 
     prepareSceneEffects() {
@@ -133,20 +133,20 @@ export default class Test extends Level {
         Scripts.create('NetworkCarScript', NetworkCarScript);
         Scripts.create('SmoothCarFollow', SmoothCarFollow);
         Scripts.create('BombScript', BombScript);
-        Scripts.create('OpponentNetworkCarScript', OpponentNetworkCarScript);
+        // Scripts.create('OpponentNetworkCarScript', OpponentNetworkCarScript);
 
         this.prepareSceneEffects();
     }
     
-    handleBodyUpdate = ({ data }) => {
-        const { uuid, position, quaternion } = data;
-        const element = Universe.get(uuid);
+    // handleBodyUpdate = ({ data }) => {
+    //     const { uuid, position, quaternion } = data;
+    //     const element = Universe.get(uuid);
 
-        if (element) {
-            element.setPosition(position);
-            element.setQuaternion(quaternion);
-        }
-    }
+    //     if (element) {
+    //         element.setPosition(position);
+    //         element.setQuaternion(quaternion);
+    //     }
+    // }
 
     handleGameStarted = () => {
         this.createCourse()
@@ -164,7 +164,7 @@ export default class Test extends Level {
         });
         this.createWorld();
 
-        NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
+        // NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
         NetworkClient.addEventListener(GAME_EVENTS.GAME_STARTED_EVENT, this.handleGameStarted);
     }
 }
