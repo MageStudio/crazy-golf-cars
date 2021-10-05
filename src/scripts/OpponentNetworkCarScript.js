@@ -96,30 +96,41 @@ export default class OpponentCarScript extends BaseScript {
         }
     }
 
-    interpolate = () => {
-        const now = +new Date();
-        const renderTimestamp = now - (1000/60);
+    // interpolate = () => {
+    //     const now = +new Date();
+    //     const renderTimestamp = now - (1000/60);
 
-        // Drop older positions.
-        while (this.remotePositionsBuffer.length >= 2 && this.remotePositionsBuffer[1][0] <= renderTimestamp) {
-            this.remotePositionsBuffer.shift();
-        }
+    //     // Drop older positions.
+    //     while (this.remotePositionsBuffer.length >= 2 && this.remotePositionsBuffer[1][0] <= renderTimestamp) {
+    //         this.remotePositionsBuffer.shift();
+    //     }
 
-        // Interpolate between the two surrounding authoritative positions.
-        if (this.remotePositionsBuffer.length >= 2 && this.remotePositionsBuffer[0][0] <= renderTimestamp && renderTimestamp <= this.remotePositionsBuffer[1][0]) {
-            const { x: xA, y: yA, z: zA } = this.remotePositionsBuffer[0][1];
-            const { x: xB, y: yB, z: zB } = this.remotePositionsBuffer[1][1];
-            const t0 = this.remotePositionsBuffer[0][0];
-            const t1 = this.remotePositionsBuffer[1][0];
+    //     // Interpolate between the two surrounding authoritative positions.
+    //     if (this.remotePositionsBuffer.length >= 2 && this.remotePositionsBuffer[0][0] <= renderTimestamp && renderTimestamp <= this.remotePositionsBuffer[1][0]) {
+    //         const { x: xA, y: yA, z: zA } = this.remotePositionsBuffer[0][1];
+    //         const { x: xB, y: yB, z: zB } = this.remotePositionsBuffer[1][1];
+    //         const t0 = this.remotePositionsBuffer[0][0];
+    //         const t1 = this.remotePositionsBuffer[1][0];
 
-            this.car.setPosition({
-                x: xA + (xB - xA) * (renderTimestamp - t0) / (t1 - t0),
-                y: yA + (yB - yA) * (renderTimestamp - t0) / (t1 - t0),
-                z: zA + (zB - zA) * (renderTimestamp - t0) / (t1 - t0)
-            });
+    //         this.car.setPosition({
+    //             x: xA + (xB - xA) * (renderTimestamp - t0) / (t1 - t0),
+    //             y: yA + (yB - yA) * (renderTimestamp - t0) / (t1 - t0),
+    //             z: zA + (zB - zA) * (renderTimestamp - t0) / (t1 - t0)
+    //         });
 
-            this.car.setQuaternion(this.remoteQuaternion);
-        }
+    //         this.car.setQuaternion(this.remoteQuaternion);
+    //     }
+    // }
+
+    interpolate() {
+        const carPosition = this.car.getPosition();
+        const carQuaternion = this.car.getQuaternion();
+
+        carPosition.lerpVectors(carPosition, this.remotePosition || carPosition, 1);
+        carQuaternion.slerp(this.remoteQuaternion || carQuaternion, 1);
+
+        this.car.setPosition(carPosition);
+        this.car.setQuaternion(carQuaternion);
     }
 
     update = () => {

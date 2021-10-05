@@ -37,7 +37,7 @@ const DOF_OPTIONS = {
 };
 
 const SATURATION_OPTIONS = {
-    saturation: 0.4
+    saturation: 0.7
 };
 
 const { MATERIALS } = constants;
@@ -100,19 +100,19 @@ export default class Test extends Level {
             emissive: 0xeeeeee
         });
 
-        window.course = this.course;
+        this.course.enablePhysics({ mass: 0 });
         return NetworkPhysics.addModel(this.course, { mass: 0 });
     }
 
     prepareCamera(target) {
-        Controls.setOrbitControl();
+        // Controls.setOrbitControl();
 
         Scene.getCamera().setPosition({ y: 10, x: 25, z: 25 });
         // Scene.getCamera().lookAt({ x: 0, y: 0, z: 0 });
         // window.camera = Scene.getCamera();
 
-        // Scene.getCamera()
-        //     .addScript('SmoothCarFollow', { target, distance: 8, height: 5 });
+        Scene.getCamera()
+            .addScript('SmoothCarFollow', { target, distance: 8, height: 5 });
     }
 
     prepareSceneEffects() {

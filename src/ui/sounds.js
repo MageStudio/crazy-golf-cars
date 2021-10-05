@@ -1,7 +1,3 @@
-import { Sound } from "mage-engine"
+import { Sound } from "mage-engine";
 
-export const playClickSound = () => {
-    const sound = new Sound('click');
-
-    sound.play();
-}
+export const playClickSound = () => new Sound('click').play(0.5);

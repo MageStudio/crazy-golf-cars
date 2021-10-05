@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "NODE_ENV=dev npm run build && npm run start -- 8085",
+        "prod": "NODE_ENV=prod npm run build && npm run start -- 8085",
         "build": "webpack --config webpack.config.js",
         "start": "http-server ./public -p"
     },
@@ -27,7 +28,7 @@
     },
     "dependencies": {
         "inferno": "^7.4.2",
-        "mage-engine": "3.12.0",
+        "mage-engine": "3.13.2",
         "socket.io-client": "4.0.1",
         "xferno": "0.0.7"
     }
