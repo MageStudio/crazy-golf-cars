@@ -22,8 +22,6 @@ export default class BombScript extends BaseScript {
         this.name = name;
         const { x, y, z } = position;
 
-        console.log(name);
-
         this.bomb.setPosition({ x, y: y + 2, z });
         this.bomb.setScale({ x: 10, y: 10, z: 10 }); 
 
