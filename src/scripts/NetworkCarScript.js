@@ -27,8 +27,6 @@ export default class NetworkCarScript extends BaseScript {
         this.remoteSpeed = 0;
         this.remoteDirection = new THREE.Vector3(0, 0, 0);
 
-        this.remotePositionsBuffer = [];
-
         this.speed = undefined;
         this.maxSpeed = 200;
         this.direction = undefined;
@@ -162,10 +160,6 @@ export default class NetworkCarScript extends BaseScript {
     handleRemoteBodyUpdate = ({ data }) => {
         const { uuid, position, quaternion, direction, speed } = data;
         if (uuid === this.username) {
-            const timestamp = +new Date();
-
-            this.remotePositionsBuffer.push([timestamp, position]);
-
             this.remoteDirection.set(direction.x, direction.y, direction.z);
             this.remotePosition = new THREE.Vector3(position.x, position.y, position.z);
             this.remoteQuaternion = new THREE.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
@@ -196,10 +190,6 @@ export default class NetworkCarScript extends BaseScript {
     dispatchCarStateChange() {
         NetworkPhysics.updateBodyState(this.car, this.state);
     }
-
-    // fixedUpdate = () => {
-    //     this.dispatchCarStateChange();
-    // }
 
     interpolate() {
         const carPosition = this.car.getPosition();

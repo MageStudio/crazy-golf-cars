@@ -19,8 +19,6 @@ export default class OpponentCarScript extends BaseScript {
         this.remotePosition = null;
         this.remoteSpeed = 0;
         this.remoteDirection = new THREE.Vector3(0, 0, 0);
-
-        this.remotePositionsBuffer = [];
     }
 
     createWheel(index, username) {
@@ -65,10 +63,6 @@ export default class OpponentCarScript extends BaseScript {
     handleBodyUpdate = ({ data }) => {
         const { uuid, position, quaternion, direction, speed} = data;
         if (uuid === this.username) {
-            const timestamp = +new Date();
-
-            this.remotePositionsBuffer.push([timestamp, position]);
-
             this.remoteDirection.set(direction.x, direction.y, direction.z);
             this.remotePosition = new THREE.Vector3(position.x, position.y, position.z);
             this.remoteQuaternion = new THREE.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
@@ -95,32 +89,6 @@ export default class OpponentCarScript extends BaseScript {
             this.car.sound.detune(this.getDetuneFromSpeed());
         }
     }
-
-    // interpolate = () => {
-    //     const now = +new Date();
-    //     const renderTimestamp = now - (1000/60);
-
-    //     // Drop older positions.
-    //     while (this.remotePositionsBuffer.length >= 2 && this.remotePositionsBuffer[1][0] <= renderTimestamp) {
-    //         this.remotePositionsBuffer.shift();
-    //     }
-
-    //     // Interpolate between the two surrounding authoritative positions.
-    //     if (this.remotePositionsBuffer.length >= 2 && this.remotePositionsBuffer[0][0] <= renderTimestamp && renderTimestamp <= this.remotePositionsBuffer[1][0]) {
-    //         const { x: xA, y: yA, z: zA } = this.remotePositionsBuffer[0][1];
-    //         const { x: xB, y: yB, z: zB } = this.remotePositionsBuffer[1][1];
-    //         const t0 = this.remotePositionsBuffer[0][0];
-    //         const t1 = this.remotePositionsBuffer[1][0];
-
-    //         this.car.setPosition({
-    //             x: xA + (xB - xA) * (renderTimestamp - t0) / (t1 - t0),
-    //             y: yA + (yB - yA) * (renderTimestamp - t0) / (t1 - t0),
-    //             z: zA + (zB - zA) * (renderTimestamp - t0) / (t1 - t0)
-    //         });
-
-    //         this.car.setQuaternion(this.remoteQuaternion);
-    //     }
-    // }
 
     interpolate() {
         const carPosition = this.car.getPosition();
