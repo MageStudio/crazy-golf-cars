@@ -61,8 +61,6 @@ export default class OpponentCarScript extends BaseScript {
         this.maxSpeed = 200;
         this.direction = undefined;
 
-        console.log('inside opponent,', this.username, this.initialPosition);
-
         this.car.setPosition(initialPosition);
         const options = getCarOptionsByType(type);
 

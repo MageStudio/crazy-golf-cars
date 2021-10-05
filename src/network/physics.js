@@ -10,8 +10,6 @@ export const addVehicle = (element, options = {}) => {
         ...options
     };
 
-    console.log('sending add vehicle event', event);
-
     client.emitEvent(PHYSICS_EVENTS.ADD_VEHICLE_EVENT, event);
 };
 
@@ -74,8 +72,6 @@ export const add = (element, options) => {
         ...options
     };
     const event = physicsUtils.mapColliderTypeToAddEvent(description.collider);
-
-    console.log('sending description', description, event);
 
     client.emitEvent(event, {
         ...description,

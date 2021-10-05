@@ -1,6 +1,6 @@
 import {
     BaseScript,
-    Physics,
+    Sound,
     math,
     PHYSICS_EVENTS,
     Particles,
@@ -21,8 +21,6 @@ export default class BombScript extends BaseScript {
         this.bomb = bomb;
         this.name = name;
         const { x, y, z } = position;
-
-        console.log(name);
 
         this.bomb.setPosition({ x, y: y + 2, z });
         this.bomb.setScale({ x: 10, y: 10, z: 10 }); 
@@ -49,9 +47,17 @@ export default class BombScript extends BaseScript {
         }
     }
 
+    playExplosionSound = () => {
+        const explosionSound = new Sound('explosion');
+    
+        explosionSound.setTarget(this.bomb);
+        explosionSound.play();
+    }
+
     explode = () => {
+        this.playExplosionSound();
         Particles
-            .addParticleEmitter(PARTICLES.EXPLOSION, { texture: 'dot' })
+            .addParticleEmitter(PARTICLES.EXPLOSION, { texture: 'dot', size: 1 })
             .setPosition(this.bomb.getPosition())
             .start('once');
     }

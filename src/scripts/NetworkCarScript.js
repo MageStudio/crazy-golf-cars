@@ -2,10 +2,13 @@ import {
     BaseScript,
     Models,
     Input,
-    Sphere,
+    Scripts,
     PHYSICS_EVENTS,
     INPUT_EVENTS,
-    Vector3
+    BUILTIN,
+    THREE,
+    Element,
+    Physics
 } from 'mage-engine';
 import NetworkClient from '../network/client';
 import { TYPES, getCarOptionsByType } from '../constants';
@@ -16,8 +19,25 @@ export default class NetworkCarScript extends BaseScript {
     constructor() {
         super('NetworkCarScript');
 
-        this.engineStarted = false;
         this.bombCounter = 0;
+        this.wheelsUUIDs = [];
+
+        this.remoteQuaternion = null;
+        this.remotePosition = new THREE.Vector3();
+        this.remoteSpeed = 0;
+        this.remoteDirection = new THREE.Vector3(0, 0, 0);
+
+        this.speed = undefined;
+        this.maxSpeed = 200;
+        this.direction = undefined;
+        this.engineStarted = false;
+
+        this.state = {
+            acceleration: false,
+            braking: false,
+            right: false,
+            left: false
+        };
     }
 
     createWheel(index, username) {
@@ -71,41 +91,39 @@ export default class NetworkCarScript extends BaseScript {
         this.type = type;
         this.initialPosition = initialPosition;
         this.username = username;
-        this.engineStarted = false;
-
-        this.speed = undefined;
-        this.maxSpeed = 200;
-        this.direction = undefined;
-
-        console.log('inside car,', this.username, this.initialPosition);
-
 
         this.car.setPosition(initialPosition);
+        this.remotePosition.set(initialPosition.x, initialPosition.y, initialPosition.z);
 
-        this.state = {
-            acceleration: false,
-            braking: false,
-            right: false,
-            left: false
-        };
+        this.enableInput();
+        this.setUpCar(username);
 
-        this.wheels = [
+        // this.fixedUpdateInterval = setInterval(this.fixedUpdate, 1000/60);
+    }
+
+    setUpCar(username) {
+        const wheels = [
             this.createWheel(1, username),
             this.createWheel(2, username),
             this.createWheel(3, username),
             this.createWheel(4, username),
-        ].reduce((acc, { name, wheel }) => {
+        ];
+
+        this.wheels = wheels.reduce((acc, { name, wheel }) => {
             acc[name] = wheel;
             return acc;
         }, {});
 
-        NetworkPhysics.addVehicle(this.car, { wheels: Object.keys(this.wheels), ...getCarOptionsByType(this.type) });
-        NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
+        this.wheelsUUIDs = Object.keys(this.wheels);
+        const carOptions = getCarOptionsByType(this.type);
 
+        NetworkPhysics.addVehicle(this.car, { wheels: Object.keys(this.wheels), ...carOptions });
+        NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleRemoteBodyUpdate);
+    }
+
+    enableInput() {
         Input.enable();
         Input.addEventListener(INPUT_EVENTS.KEY_DOWN, this.handleKeyDown);
-
-        this.fixedUpdateInterval = setInterval(this.fixedUpdate, 1000/60);
     }
 
     handleInput = () => {
@@ -134,20 +152,25 @@ export default class NetworkCarScript extends BaseScript {
         }
     }
 
-    handleBodyUpdate = ({ data }) => {
+    handleLocalPhysicsUpdate = ({ quaternion, position }) => {
+        this.car.setPosition(position);
+        this.car.setQuaternion(quaternion);
+    }
+
+    handleRemoteBodyUpdate = ({ data }) => {
         const { uuid, position, quaternion, direction, speed } = data;
         if (uuid === this.username) {
-            this.car.setPosition(position);
-            this.car.setQuaternion(quaternion);
+            this.remoteDirection.set(direction.x, direction.y, direction.z);
+            this.remotePosition = new THREE.Vector3(position.x, position.y, position.z);
+            this.remoteQuaternion = new THREE.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+            this.remoteSpeed = Math.max(0, speed);
 
-            this.car.speed = speed;
+            this.car.speed = this.remoteSpeed;
             this.car.direction = direction;
-        } else {
+        } else if (this.wheelsUUIDs.includes(uuid)) {
             const wheel = this.wheels[uuid];
-            if (wheel) {
-                wheel.setPosition(position);
-                wheel.setQuaternion(quaternion);
-            }
+            wheel.setPosition(position);
+            wheel.setQuaternion(quaternion);
         }
     }
 
@@ -168,25 +191,21 @@ export default class NetworkCarScript extends BaseScript {
         NetworkPhysics.updateBodyState(this.car, this.state);
     }
 
-    predictMovement = (dt) => {
-        // TODO: need a way to discard this if there are enough info
-        const { speed = 0, direction = { x: 0, y: 0, z: 0 } } = this.car;
-        const { x, y, z } = direction;
-        const position = this.car.getPosition();
+    interpolate() {
+        const carPosition = this.car.getPosition();
+        const carQuaternion = this.car.getQuaternion();
 
-        const v = new Vector3(x, y, z);
+        carPosition.lerpVectors(carPosition, this.remotePosition || carPosition, 1);
+        carQuaternion.slerp(this.remoteQuaternion || carQuaternion, 1);
 
-        this.car.setPosition(v.multiplyScalar(speed).multiplyScalar(dt).add(position));
+        this.car.setPosition(carPosition);
+        this.car.setQuaternion(carQuaternion);
     }
 
-    fixedUpdate = () => {
-        this.handleInput();
+    update = () => {
         this.updateSound();
+        this.handleInput();
         this.dispatchCarStateChange();
-        this.predictMovement (0.00001)
-    }
-
-    update(dt) {
-        // this.predictMovement(dt);
+        this.interpolate();
     }
 }

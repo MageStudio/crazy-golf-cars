@@ -33,7 +33,8 @@ const assets = {
     },
     '/test': {
         audio: {
-            engine: 'assets/audio/engine.mp3'
+            engine: 'assets/audio/engine.mp3',
+            explosion: 'assets/audio/explosion.wav'
         },
         models: {
             'golf_cart': 'assets/models/golf_cart_white.glb',
@@ -63,12 +64,12 @@ const config = {
     },
 
     lights: {
-        shadows: false,
+        shadows: true,
         textureAnisotropy: 2
     },
 
     physics: {
-        enabled: false,
+        enabled: true,
         path: 'ammo.js',
         gravity: { x: 0, y: -9.8, z: 0}
     },

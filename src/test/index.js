@@ -3,25 +3,20 @@ import {
     Level,
     Scene,
     Models,
-    Images,
     AmbientLight,
     HemisphereLight,
     Controls,
     constants,
-    PHYSICS_EVENTS,
     PostProcessing,
-    THREE
+    PointLight
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
 import NetworkCarScript from '../scripts/NetworkCarScript';
 import BombScript from '../scripts/BombScript';
 import { getModelNameFromVehicleType, TYPES } from '../constants';
-import OpponentNetworkCarScript from '../scripts/OpponentNetworkCarScript';
 import NetworkClient, { GAME_EVENTS } from '../network/client';
 import * as NetworkPhysics from '../network/physics';
-import { Universe } from 'mage-engine';
-import { PointLight } from 'mage-engine';
 
 export const WHITE = 0xffffff;
 export const SUNLIGHT = 0xffeaa7;
@@ -37,7 +32,7 @@ const DOF_OPTIONS = {
 };
 
 const SATURATION_OPTIONS = {
-    saturation: 0.4
+    saturation: 0.7
 };
 
 const { MATERIALS } = constants;
@@ -100,7 +95,7 @@ export default class Test extends Level {
             emissive: 0xeeeeee
         });
 
-        window.course = this.course;
+        this.course.enablePhysics({ mass: 0 });
         return NetworkPhysics.addModel(this.course, { mass: 0 });
     }
 
@@ -108,8 +103,8 @@ export default class Test extends Level {
         // Controls.setOrbitControl();
 
         Scene.getCamera().setPosition({ y: 10, x: 25, z: 25 });
-        Scene.getCamera().lookAt({ x: 0, y: 0, z: 0 });
-        window.camera = Scene.getCamera();
+        // Scene.getCamera().lookAt({ x: 0, y: 0, z: 0 });
+        // window.camera = Scene.getCamera();
 
         Scene.getCamera()
             .addScript('SmoothCarFollow', { target, distance: 8, height: 5 });
@@ -133,19 +128,8 @@ export default class Test extends Level {
         Scripts.create('NetworkCarScript', NetworkCarScript);
         Scripts.create('SmoothCarFollow', SmoothCarFollow);
         Scripts.create('BombScript', BombScript);
-        Scripts.create('OpponentNetworkCarScript', OpponentNetworkCarScript);
 
         this.prepareSceneEffects();
-    }
-    
-    handleBodyUpdate = ({ data }) => {
-        const { uuid, position, quaternion } = data;
-        const element = Universe.get(uuid);
-
-        if (element) {
-            element.setPosition(position);
-            element.setQuaternion(quaternion);
-        }
     }
 
     handleGameStarted = () => {
@@ -164,7 +148,6 @@ export default class Test extends Level {
         });
         this.createWorld();
 
-        NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
         NetworkClient.addEventListener(GAME_EVENTS.GAME_STARTED_EVENT, this.handleGameStarted);
     }
 }

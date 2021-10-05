@@ -36,8 +36,6 @@ class Root extends Component {
             onUsernameSet
         } = this.props;
 
-        console.log(this.props);
-
         const { room = {} } = multiplayer;
         const { players = [] } = room; 
 

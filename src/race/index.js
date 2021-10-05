@@ -85,7 +85,6 @@ export default class Race extends Level {
             emissive: GROUND
         });
 
-        console.log('creating car for', username);
         if (isOpponent) {
             car.addScript('OpponentNetworkCarScript', { type, username, initialPosition });
         } else {

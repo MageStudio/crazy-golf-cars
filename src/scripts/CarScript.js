@@ -59,8 +59,6 @@ export default class CarScript extends BaseScript {
         this.maxSpeed = 200;
         this.direction = undefined;
 
-        console.log('inside car,', this.username, this.initialPosition);
-
 
         this.car.setPosition(initialPosition);
         // this.car.setPosition({ y: 10, x: 46, z: 17 });
