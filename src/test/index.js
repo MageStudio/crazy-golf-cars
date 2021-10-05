@@ -3,25 +3,20 @@ import {
     Level,
     Scene,
     Models,
-    Images,
     AmbientLight,
     HemisphereLight,
     Controls,
     constants,
-    PHYSICS_EVENTS,
     PostProcessing,
-    THREE
+    PointLight
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
 import NetworkCarScript from '../scripts/NetworkCarScript';
 import BombScript from '../scripts/BombScript';
 import { getModelNameFromVehicleType, TYPES } from '../constants';
-import OpponentNetworkCarScript from '../scripts/OpponentNetworkCarScript';
 import NetworkClient, { GAME_EVENTS } from '../network/client';
 import * as NetworkPhysics from '../network/physics';
-import { Universe } from 'mage-engine';
-import { PointLight } from 'mage-engine';
 
 export const WHITE = 0xffffff;
 export const SUNLIGHT = 0xffeaa7;
@@ -133,20 +128,9 @@ export default class Test extends Level {
         Scripts.create('NetworkCarScript', NetworkCarScript);
         Scripts.create('SmoothCarFollow', SmoothCarFollow);
         Scripts.create('BombScript', BombScript);
-        // Scripts.create('OpponentNetworkCarScript', OpponentNetworkCarScript);
 
         this.prepareSceneEffects();
     }
-    
-    // handleBodyUpdate = ({ data }) => {
-    //     const { uuid, position, quaternion } = data;
-    //     const element = Universe.get(uuid);
-
-    //     if (element) {
-    //         element.setPosition(position);
-    //         element.setQuaternion(quaternion);
-    //     }
-    // }
 
     handleGameStarted = () => {
         this.createCourse()
@@ -164,7 +148,6 @@ export default class Test extends Level {
         });
         this.createWorld();
 
-        // NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
         NetworkClient.addEventListener(GAME_EVENTS.GAME_STARTED_EVENT, this.handleGameStarted);
     }
 }
