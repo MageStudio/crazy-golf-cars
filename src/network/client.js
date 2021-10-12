@@ -118,8 +118,8 @@ class MultiplayerClient extends EventDispatcher {
     createRoom = (username, room, config) => {
         const roomConfig = {
             initialPositions: [
-                { y: 10, x: 46, z: 17 },
-                { y: 10, x: 48, z: 17 }
+                { y: 4, x: 46, z: 17 },
+                { y: 4, x: 48, z: 17 }
             ],
             physics: true,
             ...config,

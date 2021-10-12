@@ -95,4 +95,37 @@ export const applyImpulse = (element, impulse) => {
         uuid: name,
         impulse
     });
+};
+
+export const setVehiclePosition = (element, position) => {
+    const name = element.getName();
+
+    client.emitEvent(PHYSICS_EVENTS.SET_CAR_POSITION_EVENT, {
+        uuid: name,
+        position
+    });
+};
+
+export const setVehicleQuaternion = (element, { x, y, z, w }) => {
+    client.emitEvent(PHYSICS_EVENTS.SET_CAR_QUATERNION_EVENT, {
+        uuid: element.getName(),
+        quaternion: { x, y, z, w }
+    });
+};
+
+export const resetVehicle = (element, position, quaternion) => {
+    client.emitEvent(PHYSICS_EVENTS.RESET_CAR_EVENT, {
+        uuid: element.getName(),
+        quaternion: {
+            x: quaternion.x,
+            y: quaternion.y,
+            z: quaternion.z,
+            w: quaternion.w
+        },
+        position: {
+            x: position.x,
+            y: position.y,
+            z: position.z,
+        }
+    });
 }

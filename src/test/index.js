@@ -65,7 +65,7 @@ export default class Test extends Level {
     createCar() {
         const type = TYPES.GOLF_CART;
         const username = 'marco';
-        const initialPosition = { y: 20, x: 46, z: 17 };
+        const initialPosition = { y: 4, x: 46, z: 17 };
 
         const model = getModelNameFromVehicleType(type);
         const car =  Models.getModel(model, { name: username });
@@ -95,7 +95,6 @@ export default class Test extends Level {
             emissive: 0xeeeeee
         });
 
-        this.course.enablePhysics({ mass: 0 });
         return NetworkPhysics.addModel(this.course, { mass: 0 });
     }
 
@@ -144,7 +143,11 @@ export default class Test extends Level {
     onCreate() {
         NetworkClient.createRoom('test', 'testing', {
             physics: true,
-            minPlayers: 1
+            minPlayers: 1,
+            initialPositions: [
+                { y: 4, x: 46, z: 17 },
+                { y: 4, x: 48, z: 17 }
+            ],
         });
         this.createWorld();
 

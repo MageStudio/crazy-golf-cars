@@ -5,7 +5,7 @@ import {
     setNetworkClientListeners
 } from './actions/multiplayer';
 import { usernameChanged } from './actions/player';
-import GameUI from './GameUI';
+import Game from './Game';
 
 import LoadingScreen from './LoadingScreen';
 import TitleScreen from './TitleScreen';
@@ -41,7 +41,7 @@ class Root extends Component {
 
         if (loadingScreenVisible) return <LoadingScreen />;
         if (location.path !== '/') return (
-            <GameUI network={network} multiplayer={multiplayer} />
+            <Game network={network} multiplayer={multiplayer} />
         );
 
         switch (navigation.path) {
