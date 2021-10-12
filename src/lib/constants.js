@@ -1,0 +1,5 @@
+export const WOODEN_CASTLE_COURSE = 'WOODEN_CASTLE_COURSE';
+
+export const COURSES = [
+    WOODEN_CASTLE_COURSE
+];

@@ -69,7 +69,7 @@ const config = {
     },
 
     physics: {
-        enabled: true,
+        enabled: false,
         path: 'ammo.js',
         gravity: { x: 0, y: -9.8, z: 0}
     },

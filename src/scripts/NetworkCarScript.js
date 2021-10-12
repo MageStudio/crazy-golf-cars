@@ -13,6 +13,8 @@ import {
 import NetworkClient from '../network/client';
 import { TYPES, getCarOptionsByType } from '../constants';
 import * as NetworkPhysics from '../network/physics';
+import { getClosestSpawnPoint } from '../lib/spawnPoints';
+import { WOODEN_CASTLE_COURSE } from '../lib/constants';
 
 export default class NetworkCarScript extends BaseScript {
 
@@ -66,18 +68,21 @@ export default class NetworkCarScript extends BaseScript {
         NetworkPhysics.applyImpulse(`${this.car.getName()}:chassis`, jumpStrength);
     }
 
-    // flip() {
-    //     const position = this.car.getPosition();
-    //     this.car.setPosition({
-    //         ...position,
-    //         y: position.y + 2
-    //     });
+    reset() {
+        const { x, y, z, w } = this.car.getQuaternion().clone();
+        const { position, quaternion } = getClosestSpawnPoint(this.car.getPosition(), WOODEN_CASTLE_COURSE);
 
-    //     this.car.setRotation({
-    //         x: 0,
-    //         z: 0
-    //     });
-    // }
+        console.log({x, y, z, w}, this.car.getPosition());
+
+        NetworkPhysics.resetVehicle(this.car, position, quaternion);
+    }
+
+    checkIfFalling = () => {
+        const { y } = this.car.getPosition();
+        if (y < -20) {
+            this.reset();
+        }
+    }
 
     startEngine() {
         this.car.addSound('engine', { loop: true, autoplay: false });
@@ -98,7 +103,7 @@ export default class NetworkCarScript extends BaseScript {
         this.enableInput();
         this.setUpCar(username);
 
-        // this.fixedUpdateInterval = setInterval(this.fixedUpdate, 1000/60);
+        setInterval(this.checkIfFalling, 1000/60);
     }
 
     setUpCar(username) {
@@ -143,18 +148,13 @@ export default class NetworkCarScript extends BaseScript {
                     this.throwBomb();
                 }
                 break;
-            case 'r':
-                // this.flip();
+            case 'h':
+                this.reset();
                 break;
         }
         if (!this.engineStarted) {
             this.startEngine();
         }
-    }
-
-    handleLocalPhysicsUpdate = ({ quaternion, position }) => {
-        this.car.setPosition(position);
-        this.car.setQuaternion(quaternion);
     }
 
     handleRemoteBodyUpdate = ({ data }) => {

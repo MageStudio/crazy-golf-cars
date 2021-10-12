@@ -1,8 +1,13 @@
 # Crazy Golf Cars
 
-## AssetForge notes
+## Description
 
-When importing models:
+A multiplayer game where Golf Carts race to put the golf ball in the hole first. Players can throw bombs at each other. Players can also jump over obstacles.
 
-Course has to be scaled to 1000
-vehicles scaled to 150
+## Controls
+
+!['controls, W A S D to control the car, B to throw bombs and Spacebar to jump'](controls.png "Controls")
+
+`b` will throw a bomb  in the direction you're facing
+`h` will reset your cart back on the track
+`space` will make your cart jump.
