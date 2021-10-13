@@ -10,7 +10,7 @@ export const addVehicle = (element, options = {}) => {
         ...options
     };
 
-    client.emitEvent(PHYSICS_EVENTS.ADD_VEHICLE_EVENT, event);
+    client.emitEvent(PHYSICS_EVENTS.ADD.VEHICLE, event);
 };
 
 const extractConstructorName = element => element.__proto__.constructor.name;
@@ -82,7 +82,7 @@ export const add = (element, options) => {
 export const updateBodyState = (element, state) => {
     const name = element.getName();
 
-    client.emitEvent(PHYSICS_EVENTS.UPDATE_BODY_EVENT, {
+    client.emitEvent(PHYSICS_EVENTS.ELEMENT.UPDATE, {
         uuid: name,
         state
     });
@@ -91,7 +91,7 @@ export const updateBodyState = (element, state) => {
 export const applyImpulse = (element, impulse) => {
     const name = typeof element === 'string' ? element : element.getName();
 
-    client.emitEvent(PHYSICS_EVENTS.APPLY_IMPULSE_EVENT, {
+    client.emitEvent(PHYSICS_EVENTS.ELEMENT.APPLY.IMPULSE, {
         uuid: name,
         impulse
     });
@@ -100,21 +100,21 @@ export const applyImpulse = (element, impulse) => {
 export const setVehiclePosition = (element, position) => {
     const name = element.getName();
 
-    client.emitEvent(PHYSICS_EVENTS.SET_CAR_POSITION_EVENT, {
+    client.emitEvent(PHYSICS_EVENTS.VEHICLE.SET.POSITION, {
         uuid: name,
         position
     });
 };
 
 export const setVehicleQuaternion = (element, { x, y, z, w }) => {
-    client.emitEvent(PHYSICS_EVENTS.SET_CAR_QUATERNION_EVENT, {
+    client.emitEvent(PHYSICS_EVENTS.VEHICLE.SET.QUATERNION, {
         uuid: element.getName(),
         quaternion: { x, y, z, w }
     });
 };
 
 export const resetVehicle = (element, position, quaternion) => {
-    client.emitEvent(PHYSICS_EVENTS.RESET_CAR_EVENT, {
+    client.emitEvent(PHYSICS_EVENTS.VEHICLE.RESET, {
         uuid: element.getName(),
         quaternion: {
             x: quaternion.x,

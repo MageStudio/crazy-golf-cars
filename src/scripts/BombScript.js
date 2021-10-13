@@ -26,7 +26,7 @@ export default class BombScript extends BaseScript {
         this.bomb.setScale({ x: 10, y: 10, z: 10 }); 
 
         NetworkPhysics.add(this.bomb, { mass: 0.1, colliderType: PHYSICS_CONSTANTS.COLLIDER_TYPES.SPHERE, radius: 0.2 })
-        NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
+        NetworkClient.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.handleBodyUpdate);
         
         const velocity = math.scaleVector(direction, 2);
         NetworkPhysics.applyImpulse(this.bomb, velocity);
@@ -35,7 +35,7 @@ export default class BombScript extends BaseScript {
     }
 
     listenToCollisions() {
-        NetworkClient.addEventListener(PHYSICS_EVENTS.COLLISION_DETECTION_EVENT, this.handleCollision);
+        NetworkClient.addEventListener(PHYSICS_EVENTS.ELEMENT.COLLISION, this.handleCollision);
     }
     
     handleBodyUpdate = ({ data }) => {
@@ -70,7 +70,7 @@ export default class BombScript extends BaseScript {
         const { uuid } = data;
 
         if (uuid == this.name) {
-            NetworkClient.removeEventListener(PHYSICS_EVENTS.COLLISION_DETECTION_EVENT, this.handleCollision);
+            NetworkClient.removeEventListener(PHYSICS_EVENTS.ELEMENT.COLLISION, this.handleCollision);
             setTimeout(() => {
                 this.explode();
                 setTimeout(this.destroyBomb, 100)

@@ -123,7 +123,7 @@ export default class NetworkCarScript extends BaseScript {
         const carOptions = getCarOptionsByType(this.type);
 
         NetworkPhysics.addVehicle(this.car, { wheels: Object.keys(this.wheels), ...carOptions });
-        NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleRemoteBodyUpdate);
+        NetworkClient.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.handleRemoteBodyUpdate);
     }
 
     enableInput() {
