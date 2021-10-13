@@ -57,7 +57,7 @@ export default class OpponentCarScript extends BaseScript {
         }, {});
 
         this.wheelsUUIDs = Object.keys(this.wheels);
-        NetworkClient.addEventListener(PHYSICS_EVENTS.UPDATE_BODY_EVENT, this.handleBodyUpdate);
+        NetworkClient.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.handleBodyUpdate);
     }
 
     handleBodyUpdate = ({ data }) => {

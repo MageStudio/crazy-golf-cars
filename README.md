@@ -6,7 +6,7 @@ A multiplayer game where Golf Carts race to put the golf ball in the hole first.
 
 ## Controls
 
-!['controls, W A S D to control the car, B to throw bombs and Spacebar to jump'](controls.png "Controls")
+!['controls, W A S D to control the car, B to throw bombs and Spacebar to jump'](img/controls.png "Controls")
 
 `b` will throw a bomb  in the direction you're facing
 `h` will reset your cart back on the track
