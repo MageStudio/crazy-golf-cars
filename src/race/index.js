@@ -12,7 +12,8 @@ import {
     Audio,
     constants,
     store,
-    Router
+    Router,
+    PHYSICS_EVENTS
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
@@ -22,6 +23,7 @@ import { getModelNameFromVehicleType, TYPES } from '../constants';
 import OpponentNetworkCarScript from '../scripts/OpponentNetworkCarScript';
 import NetworkClient from '../network/client';
 import * as NetworkPhysics from '../network/physics';
+import OpponentNetworkBomb from '../scripts/OpponentNetworkBomb';
 
 export const WHITE = 0xffffff;
 export const SUNLIGHT = 0xffeaa7;
@@ -43,6 +45,12 @@ const SATURATION_OPTIONS = {
 const { MATERIALS } = constants;
 
 export default class Race extends Level {
+
+    constructor(props) {
+        super(props);
+
+        this.networkElements = {};
+    }
 
     addAmbientLight() {
         this.ambientLight = new AmbientLight({ color: WHITE, intensity: 1 });
@@ -142,6 +150,44 @@ export default class Race extends Level {
         PostProcessing.add(constants.EFFECTS.OUTLINE, { defaultThickness: 0.004 });
     }
 
+    listenToPhysicsEvents() {
+        NetworkClient.addEventListener(PHYSICS_EVENTS.ELEMENT.CREATED, this.handleElementCreated.bind(this));
+        NetworkClient.addEventListener(PHYSICS_EVENTS.ELEMENT.DISPOSE, this.handleElementDisposed.bind(this));
+    }
+
+    storeNetworkElements(element) {
+        this.networkElements[element.getName()] = element;
+    }
+
+    getNetworkElement(name) {
+        return this.networkElements[name];
+    }
+
+    handleElementCreated = ({ data }) => {
+        const { uuid, model, position, quaternion } = data;
+
+        if (model === 'bomb') {
+            const bomb = Models.getModel(model, { name: uuid });
+
+            this.storeNetworkElements(bomb);
+
+            bomb.addScript('OpponentNetworkBomb', {
+                name: uuid,
+                position,
+                quaternion
+            });
+        }
+    }
+
+    handleElementDisposed = ({ data }) => {
+        const { uuid } = data;
+        const element = this.getNetworkElement(uuid);
+
+        if (element) {
+            element.dispose();
+        }
+    }
+
     handleKeyDown() {
         if (!this.enginesStarted) {
             this.enginesStarted = true;
@@ -168,6 +214,7 @@ export default class Race extends Level {
         
                 this.prepareCamera(me);
                 this.prepareSceneEffects();
+                this.listenToPhysicsEvents();
             });
     }
 
@@ -181,6 +228,7 @@ export default class Race extends Level {
         Scripts.create('SmoothCarFollow', SmoothCarFollow);
         Scripts.create('NetworkCarScript', NetworkCarScript);
         Scripts.create('OpponentNetworkCarScript', OpponentNetworkCarScript);
+        Scripts.create('OpponentNetworkBomb', OpponentNetworkBomb);
         Scripts.create('BombScript', BombScript);
 
         // const fakePlayers = [{

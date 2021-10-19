@@ -128,4 +128,18 @@ export const resetVehicle = (element, position, quaternion) => {
             z: position.z,
         }
     });
+};
+
+export const disposeElement = element => {
+    client.emitEvent(PHYSICS_EVENTS.ELEMENT.DISPOSE, {
+        uuid: element.getName()
+    });
+};
+
+export const explosion = (element, strength, radius) => {
+    client.emitEvent(PHYSICS_EVENTS.EFFECTS.EXPLOSION, {
+        uuid: element.getName(),
+        strength,
+        radius
+    })
 }
