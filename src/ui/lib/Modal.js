@@ -28,7 +28,7 @@ const Modal = ({
                     <span className='modal-title'>{ title }</span>
                     { dismissable &&
                         <span className='modal-close-btn' onClick={onClose}>
-                            <CloseIcon/>
+                            x
                         </span>
                     }
                 </div>

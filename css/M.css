@@ -210,6 +210,20 @@ canvas {
     top: 0;
 }
 
+.screen-title .panel {
+    /* height: 72%; */
+    padding: 16px;
+    /* position: ABSOLUTE; */
+    width: 520px;
+    margin: auto;
+    margin-top: 6vh;
+    background: #f6e58d;
+    border-radius: 16px;
+    /* border: 15px white; */
+    box-shadow: 4px 4px 0px #95a5a6, -4px -4px 0px #95a5a6, 4px -4px 0px #95a5a6, -4px 4px 0px #95a5a6, inset 4px 4px 0px white, inset -4px 4px 0px white, inset -4px -4px 0px white, inset 4px -4px 0px white, 0px 8px #7f8c8d;
+    min-height: 550px;
+}
+
 .gradient-background {
     background: repeating-linear-gradient(45deg, rgba(241,196,15, .85), rgba(241,196,15,.85) 30px, rgba(243,156,18, .85) 0, rgba(243,156,18, .85) 60px);
 }
@@ -226,51 +240,83 @@ canvas {
     margin-left: 24px;
 }
 
+.game-name-container {
+    
+}
+
 .game-title {
-    padding: 16px;
-    padding-bottom: 42px;
+    display: inline-block;
+    padding: 8px;
+    padding-bottom: 24px;
     background: rgba(255, 255, 255, 1);
-    /* border: 16px solid #2ecc71; */
+    /* border-left: 2px solid #95a5a6; */
+    /* border-bottom: 2px solid #95a5a6; */
+    /* border-top: 2px solid white; */
     border-radius: 64px;
-    font-size: 80px;
-    WIDTH: 420px;
+    font-size: 56px;
+    WIDTH: 336px;
     color: #2ecc71;
     font-family: 'Fredoka One';
     margin: auto;
     text-transform: uppercase;
     text-align: center;
     letter-spacing: 12px;
-    margin-top: 8px;
+    /* margin-top: 8px; */
     text-shadow: 6px 6px #3498db, 12px 12px #9b59b6, 18px 18px #e74c3c;
     box-shadow: 6px 6px #3498db, 12px 12px #9b59b6, 18px 18px #e74c3c;
-    position: absolute;
+    /* position: absolute; */
 }
 
 .game-title:nth-child(2) {
-    position: absolute;
-    left: 100px;
-    top: 216px;
+    /* position: absolute; */
+    /* left: 100px; */
+    /* top: 216px; */
+    /* border-top: 2px solid #95a5a6; */
+    margin-left: 12%;
 }
 
 .game-title:nth-child(3) {
-    left: 198px;
-    top: 356px;
+    /* left: 198px; */
+    /* top: 356px; */
+    margin-left: 22%;
+    /* z-index: 9999; */
+    margin-top: -17px;
+}
+
+.game-title:nth-child(3)::before {
+    content: ' ';
+    transform: rotate(-45deg);
+    height: 56px;
+    width: 36px;
+    background: white;
+    left: 9%;
+    top: 49%;
+    position: absolute;
+    border-radius: 32px;
+    box-shadow: 4px 4px #3498db, 8px 8px #9b59b6, 12px 12px #e74c3c;
 }
 
 .game-title:nth-child(4) {
-    left: 132px;
-    top: 490px;
+    /* left: 132px; */
+    /* top: 490px; */
+    margin-top: -17px;
+    margin-left: 14%;
+    z-index: 9998;
+    /* border-top: 2px solid black; */
 }
 
 .game-title-label {
     color: #2c3e50;
-    font-size: 18px;
+    font-size: 23px;
     display: block;
-    text-align: left;
+    text-align: center;
     width: 100%;
-    padding-left: 42px;
-    position: absolute;
-    top: 180px;
+    /* margin-bottom: 14px; */
+    font-family: "La Belle Aurore";
+    /* padding-left: 42px; */
+    /* position: absolute; */
+    font-weight: bold;
+    /* top: 180px; */
 }
 
 .game-title-random-message {
@@ -279,62 +325,72 @@ canvas {
 }
 
 .game-title-container {
-    width: 52%;
+    width: 100%;
     display: inline-block;
     position: relative;
-    height: 100%;
-    padding-top: 15%;
-    padding-left: 92px;
+    /* height: 100%; */
+    padding-top: 8px;
+    /* padding-left: 92px; */
+    margin-bottom: 56px;
 }
 
 
-.title-right-panel {
-    padding: 0;
-    margin: auto;
-    width: 40%;
-    float: right;
-    height: 100%;
-    position: relative;
+.title-buttons-container {
+    /* padding: 48px 0px; */
+    padding-top: 24px;
+    padding-bottom: 32px;
+    margin: 0px 32px;
+    /* margin: auto; */
+    width: auto;
+    /* float: right; */
+    /* height: 100%; */
+    /* position: relative; */
+    border-radius: 16px;
+    background: rgba(249,202,36, .5);
+    border: 2px solid rgb(249,202,36);
+    box-shadow: inset 0px -16px rgb(240 147 43 / 70%);
 }
 
 .title-buttons-list {
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    height: 50%;
     padding: 0;
     margin: 0;
 }
 
+.title-buttons-row {
+    list-style: none;
+    height: 72px;
+}
+
 .title-buttons-list .button:nth-child(1) {
     margin: auto;
-    position: absolute;
-    /* left: 150px; */
-    top: 0px;
-    display: inherit;
+    /* position: absolute; */
+    /* left: 42%; */
+    /* top: 0px; */
+    display: block;
+    /* margin-bottom: 16px; */
 }
 
 .title-buttons-list .button:nth-child(2) {
     margin: auto;
-    position: absolute;
+    /* position: absolute; */
     /* left: 150px; */
-    top: 100px;
+    /* top: 100px; */
     display: inherit;
 }
 
 .title-buttons-list .button:nth-child(3) {
     margin: auto;
-    position: absolute;
+    /* position: absolute; */
     /* left: 150px; */
-    top: 250px;
+    /* top: 250px; */
     display: inherit;
 }
 
 .title-buttons-container {
-    list-style: none;
-    margin-bottom: 16px;
-    width: max-content;
-    margin: auto;
+    /* list-style: none; */
+    /* margin-bottom: 16px; */
+    /* width: max-content; */
+    /* margin: auto; */
 }
 
 .title-button {
@@ -370,19 +426,19 @@ canvas {
 }
 
 .modal {
+    background: #2980b9;
     width: 500px;
     margin: auto;
     position: relative;
     top: 200px;
-    background: white;
+    /* background: white; */
     border-radius: 8px;
-
     animation: fadeIn 1s, slideIn .8s linear;
 }
 
 .modal-head {
     height: 42px;
-    border-bottom: 1px solid #bdc3c7;
+    /* border-bottom: 2px solid #bdc3c7; */
     border-top-right-radius: 8px;
     border-top-left-radius: 8px;
 }
@@ -396,8 +452,8 @@ canvas {
     float: left;
 }
 
-.modal-head.info { background: #2980b9; }
-.modal-head.info .modal-close-btn, .modal-head.info .modal-title { color: white }
+.modal-head.info {background: #2980b9;box-shadow: inset 2px 2px #3498db, inset -2px 2px #3498db;}
+.modal-head.info .modal-close-btn, .modal-head.info .modal-title {color: rgba(255, 255, 255, .6);}
 
 .modal-head.warning { background: #f39c12; }
 .modal-head.warning .modal-close-btn, .modal-head.warning .modal-title { color: white }
@@ -407,24 +463,50 @@ canvas {
 
 
 .modal-close-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
     cursor: pointer;
-    line-height: 42px;
+    line-height: 22px;
     text-align: center;
     display: block;
-    width: 42px;
-    float: right;
-    font-family: Arial;
+    letter-spacing: -1px;
+    font-weight: bold;
+    font-size: 1em;
+    width: 24px;
+    height: 24px;
+    /* float: right; */
+    /* font-family: Arial; */
+    background: #e74c3c;
+    color: white !important;
+    border-radius: 100%;
+    border: 2px solid #c0392b;
+    box-shadow: inset 1px 1px #e67e22, inset 1px -1px #e67e22, inset -1px -1px #e67e22, inset -1px 1px #e67e22;
 }
+
+span.modal-close-btn {}
+
+span.modal-close-btn {}
 
 .modal-body {
     height: calc(100% - 138px);
+    background: white;
     position: relative;
     display: block;
     padding: 16px;
+    /* border: 2px solid black; */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-top: 2px solid #bdc3c7;
 }
+
+.modal-body {}
 
 .modal-footer {
     height: 64px;
+    background: white;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
 .modal-footer .button {
