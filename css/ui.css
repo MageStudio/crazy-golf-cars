@@ -40,6 +40,22 @@
   cursor: pointer;
 }
 
+.button.medium {
+  padding: 12px 28px;
+  min-width: 208px;
+  border-radius: 16px;
+  border-bottom-width: 8px;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: left;
+}
+
+.button.medium:hover {
+  border-bottom-width: 2px;
+  transform: translateY(6px);
+  cursor: pointer;
+}
+
 .button.large {
   padding: 16px 32px; 
   min-width: 320px;
@@ -62,6 +78,17 @@
   border-bottom-width: 8px;
   color: white;
   text-shadow: -2px -2px 0px #bdc3c7, 2px 2px 1px #27ae60;
+  box-shadow: inset 6px 0px #2ecc71,
+              inset -6px 0px #2ecc71,
+              inset 0px -4px #2ecc71,
+              inset 0px -23px 4px rgb(39 174 96 / 40%);
+}
+
+.primary.small {
+  box-shadow: inset 4px 0px #2ecc71,
+              inset -4px 0px #2ecc71,
+              inset 0px -2px #2ecc71,
+              inset 0px -12px 4px rgb(39 174 96 / 40%);
 }
 
 .secondary {
@@ -70,6 +97,17 @@
   border-bottom-width: 8px;
   color: white;
   text-shadow: -2px -2px 0px #bdc3c7, 2px 2px 1px #f39c12;
+  box-shadow: inset 6px 0px #f1c40f,
+              inset -6px 0px #f1c40f,
+              inset 0px -4px #f1c40f,
+              inset 0px -23px 4px rgb(243 156 18 / 40%);
+}
+
+.secondary.small {
+  box-shadow: inset 4px 0px #f1c40f,
+              inset -4px 0px #f1c40f,
+              inset 0px -2px #f1c40f,
+              inset 0px -12px 4px rgb(243 156 18 / 40%);
 }
 
 .tertiary {
@@ -78,16 +116,27 @@
   border-bottom-width: 8px;
   color: white;
   text-shadow: -2px -2px 0px #bdc3c7, 2px 2px 1px #2980b9;
+  box-shadow: inset 6px 0px #3498db,
+              inset -6px 0px #3498db,
+              inset 0px -4px #3498db,
+              inset 0px -23px 4px rgb(41 128 185 / 40%)
+}
+
+.tertiary.small {
+  box-shadow: inset 4px 0px #3498db,
+              inset -4px 0px #3498db,
+              inset 0px -2px #3498db,
+              inset 0px -12px 4px rgb(41 128 185 / 40%);
 }
 
 .input-container {
   border: 2px solid #2980b9;
-/*   background: #badc58; */
+  /*   background: #badc58; */
   border-radius: 8px;
   padding: 2px 2px 2px 16px;
-
   width: auto;
   border-bottom-width: 4px;
+  box-shadow: inset 0px 3px rgb(52 152 219 / 40%);
 }
 
 .input-container .icon {
@@ -97,13 +146,15 @@
 
 .input {
   font-size: 1.2em;
-  padding: 8px 16px;
+  margin: 4px 0px;
+  padding: 4px 16px;
   width: 85%;
-/*   background: #ecf0f1;
+  /*   background: #ecf0f1;
   border: 1px solid #95a5a6;
   box-shadow:  0px 4px #7f8c8d inset; */
   border: none;
   outline: none;
+  /* box-shadow: inset 0px 3px rgb(52 152 219 / 40%); */
 }
 
 .unordered-list {

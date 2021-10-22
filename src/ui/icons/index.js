@@ -5,6 +5,7 @@ import Fire from './Fire';
 import Enter from './Enter';
 import Close from './Close';
 import Success from './Success';
+import Clear from './Clear';
 
 export {
     User as UserIcon,
@@ -14,4 +15,5 @@ export {
     Enter as EnterIcon,
     Close as CloseIcon,
     Success as SuccessIcon,
+    Clear as ClearIcon
 };

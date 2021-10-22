@@ -52,11 +52,13 @@ const TitleScreen = ({ version, username, onUsernameSet }) => {
 
     return (
         <div className='screen-title gradient-background'>
-            <GameTitle/>
-            <TitleButtons
-                onAboutClick={onAboutClick}
-                onJoinRoomClick={onJoinRoomClick}
-                onCreateRoomClick={onCreateRoomClick} />
+            <div className='panel'>
+                <GameTitle/>
+                <TitleButtons
+                    onAboutClick={onAboutClick}
+                    onJoinRoomClick={onJoinRoomClick}
+                    onCreateRoomClick={onCreateRoomClick} />
+            </div>
 
             <UsernameModal
                 visible={!username}
