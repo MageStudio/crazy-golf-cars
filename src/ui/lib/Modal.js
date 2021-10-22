@@ -1,4 +1,4 @@
-import { CloseIcon } from '../icons';
+import { ClearIcon, CloseIcon } from '../icons';
 
 const Modal = ({
     visible,
@@ -28,7 +28,7 @@ const Modal = ({
                     <span className='modal-title'>{ title }</span>
                     { dismissable &&
                         <span className='modal-close-btn' onClick={onClose}>
-                            x
+                            <ClearIcon size={16}/>
                         </span>
                     }
                 </div>
