@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const env = process.env.NODE_ENV || 'prod';
 
@@ -9,7 +10,10 @@ module.exports = {
     cache:   false,
     devtool: false,
     entry: {
-        'app': './src/index.js'
+        'app': [
+            './src/index.js',
+            './src/style.scss'
+        ]
     },
     output: {
         path: path.resolve(__dirname, 'public'),
@@ -18,8 +22,32 @@ module.exports = {
     module:  {
         rules: [{
             test: /\.js$/,
-            loader: 'babel-loader',
+            use: [
+                { loader: 'babel-loader' }
+            ],
             exclude: [/node_modules/, /static/]
+        },
+        {
+            test: /\.scss$/,
+            use: [
+                {
+                    loader: MiniCssExtractPlugin.loader
+                },
+                {
+                    loader: 'css-loader',
+                    options: { url: false }
+                },
+                {
+                    loader: 'sass-loader',
+                    options: {
+                        sourceMap: true,
+                        sassOptions: {
+                            includePaths: [ path.resolve(__dirname, "node_modules") ],
+                        },
+                    }
+                }
+            ],
+            include: [__dirname + '/src']
         }]
     },
     resolve: {
@@ -35,6 +63,14 @@ module.exports = {
         maxEntrypointSize: 800000,
     },
     plugins: [
+        new MiniCssExtractPlugin({ filename: 'style.css' }),
+        new webpack.LoaderOptionsPlugin({
+            options: {
+                sassLoader: {
+                    includePaths: [path.resolve(__dirname, './node_modules')]
+                }
+            }
+        }),
         new CopyPlugin({
             patterns: [
                 { from: './index.html', to: 'index.html', force: true },

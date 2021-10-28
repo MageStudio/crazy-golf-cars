@@ -1,6 +1,6 @@
 import { store } from 'mage-engine';
 import NetworkClient, { EVENTS, GAME_EVENTS, NETWORK_EVENTS } from '../../network/client';
-import { goToCourse, goToWaitingRoom } from './navigation';
+import { goToCourse, goToWaitingRoom } from './screen';
 import {
     ROOM_JOINED,
     ROOMS_LIST_CHANGED,

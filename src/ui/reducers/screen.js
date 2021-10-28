@@ -1,15 +1,16 @@
-import { NAVIGATION_CHANGED } from "../actions/types";
+import { SCREEN_CHANGED } from "../actions/types";
+import { SCREENS } from '../lib/constants';
 
 const DEFAULT_STATE = {
-    path: 'title'
+    name: SCREENS.TITLE
 };
 
 export default (state = DEFAULT_STATE, action = {}) => {
     switch(action.type) {
-        case NAVIGATION_CHANGED:
+        case SCREEN_CHANGED:
             return {
                 ...state,
-                path: action.path
+                name: action.name
             };
         default:
             return state;

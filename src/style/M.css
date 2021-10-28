@@ -1,8 +1,3 @@
-@font-face {
-    font-family: Chango;
-    src: url('Chango-Regular.ttf');
-}
-
 body {
     overflow: hidden;
     margin: 0;
@@ -391,7 +386,6 @@ canvas {
     display: block;
     background: #1abc9c;
     color: white;
-    font-family: 'Chango';
     font-size: 1.2rem;
     border: none;
     box-shadow: 3px 3px #3498db, 6px 6px #9b59b6, 9px 9px #e74c3c;

@@ -7,10 +7,16 @@ import NetworkClient from './network/client';
 import * as reducers from './ui/reducers';
 
 const assets = {
+    models: {
+        'golf_cart': 'assets/models/golf_cart_white.glb',
+        'police_car': 'assets/models/police_car.glb',
+        'truck': 'assets/models/truck.glb',
+    },
     '/': {
         audio: {
             click: 'assets/audio/click.ogg'
-        }
+        },
+        
     },
     '/race': {
         audio: {
@@ -86,7 +92,9 @@ const config = {
 
     ui: {
         root: Root
-    }
+    },
+
+    selector: 'body'
 };
 
 window.addEventListener('load', () => {
