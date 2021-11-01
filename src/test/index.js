@@ -15,7 +15,7 @@ import SmoothCarFollow from '../camera/SmoothCarFollow';
 import NetworkCarScript from '../scripts/NetworkCarScript';
 import BombScript from '../scripts/BombScript';
 import { getModelNameFromVehicleType, TYPES } from '../constants';
-import NetworkClient, { GAME_EVENTS } from '../network/client';
+import NetworkClient, { RGS } from '../network/client';
 import * as NetworkPhysics from '../network/physics';
 
 export const WHITE = 0xffffff;
@@ -149,8 +149,8 @@ export default class Test extends Level {
                 { y: 4, x: 48, z: 17 }
             ],
         });
+        NetworkClient.sendPlayerReady('test', 'testing');
         this.createWorld();
-
-        NetworkClient.addEventListener(GAME_EVENTS.GAME_STARTED_EVENT, this.handleGameStarted);
+        NetworkClient.addEventListener(RGS.GAME.STARTED, this.handleGameStarted);
     }
 }

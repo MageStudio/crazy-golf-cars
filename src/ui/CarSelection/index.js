@@ -5,6 +5,7 @@ import { connect, GameRunner } from "mage-engine";
 import { cartSelectionDone, nextCartSelection, previousCartSelection } from "../actions/selection";
 import { getCartSpecsByType, getTypeByIndex } from "../../constants";
 import AvatarsList from "../Avatar/AvatarsList";
+import { multiplayer } from "../reducers";
 
 class CarSelection extends Component {
 
@@ -22,7 +23,9 @@ class CarSelection extends Component {
             onNextClick,
             onPreviousClick,
             onReadyClick,
-            selection
+            selection,
+            players,
+            username
         } = this.props;
 
         const cartType = getTypeByIndex(selection.index);
@@ -30,13 +33,14 @@ class CarSelection extends Component {
 
         return (
             <div className='car-selection'>
-                <AvatarsList />
+                <AvatarsList players={players}/>
                 <SpecsPanel
                     speed={speed}
                     control={control}
                     weight={weight}
                     bombs={bombs} />
                 <ReadyBar
+                    username={username}
                     selection={selection}
                     onReadyClick={onReadyClick}
                     onNextClick={onNextClick}

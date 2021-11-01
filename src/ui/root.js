@@ -29,6 +29,12 @@ class Root extends Component {
         removeNetworkClientListeners();
     }
 
+    handleReadyClick = () => {
+        const { username } = this.props;
+        const { room: { name } } = this.props.multiplayer;
+        cartSelectionDone(username, name);
+    }
+
     render() {
         const {
             screen,
@@ -41,8 +47,7 @@ class Root extends Component {
             onUsernameSet,
             selection,
             onNextClick,
-            onPreviousClick,
-            onReadyClick
+            onPreviousClick
         } = this.props;
 
         const { room = {} } = multiplayer;
@@ -53,12 +58,6 @@ class Root extends Component {
             <Game network={network} multiplayer={multiplayer} />
         );
 
-        return <CarSelection
-            selection={selection}
-            onNextClick={onNextClick}
-            onPreviousClick={onPreviousClick}
-            onReadyClick={onReadyClick} />;
-
         switch (screen.name) {
             case SCREENS.TITLE:
                 return <TitleScreen
@@ -68,7 +67,13 @@ class Root extends Component {
             case SCREENS.WAITINGROOM:
                 return <WaitingRoom players={players}/>
             case SCREENS.CAR_SELECTION:
-                return <CarSelection/>
+                return <CarSelection
+                    username={username}
+                    players={players}
+                    selection={selection}
+                    onNextClick={onNextClick}
+                    onPreviousClick={onPreviousClick}
+                    onReadyClick={this.handleReadyClick} />;
         }
     }
 }
@@ -88,7 +93,7 @@ const mapDispatchToProps = dispatch => ({
     onUsernameSet:  username => dispatch(usernameChanged(username)),
     onNextClick: () => dispatch(nextCartSelection()),
     onPreviousClick: () => dispatch(previousCartSelection()),
-    onReadyClick: () => dispatch(cartSelectionDone())
+    // onReadyClick: (username) => cartSelectionDone(username)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);

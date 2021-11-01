@@ -1,4 +1,5 @@
 import { GameRunner } from "mage-engine"
+import client from "../../network/client";
 import { SELECTION_UPDATE } from "./types";
 
 export const nextCartSelection = () => updateCartSelection(1);
@@ -14,6 +15,6 @@ export const updateCartSelection = (direction) => {
     }
 };
 
-export const cartSelectionDone = () => {
-    
+export const cartSelectionDone = (username, roomName) => {
+    client.sendPlayerReady(username, roomName)
 }

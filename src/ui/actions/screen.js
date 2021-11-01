@@ -1,22 +1,23 @@
-import { Router } from "mage-engine";
+import { Router, store } from "mage-engine";
 import { SCREEN_CHANGED } from "./types";
 import { SCREENS } from "../lib/constants";
 
 export const goToCarSelection = () => ({
     type: SCREEN_CHANGED,
-    path: SCREENS.CAR_SELECTION
+    name: SCREENS.CAR_SELECTION
 })
 
 export const goToWaitingRoom = () => ({
     type: SCREEN_CHANGED,
-    path: SCREENS.WAITINGROOM
+    name: SCREENS.WAITINGROOM
 })
 
 export const goToCourse = () => dispatch => {
-    Router.goTo(`/${RACE_PATH}`);
+    // const roomName = store.getState().multiplayer.room.name;
+    Router.goTo('/race');
 
     dispatch({
         type: SCREEN_CHANGED,
-        path: SCREENS.RACE
+        name: SCREENS.RACE
     })
 };

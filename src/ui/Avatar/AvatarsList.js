@@ -1,16 +1,15 @@
 import AvatarCard from "./AvatarCard";
 
-const AvatarsList = () => {
-    return (
-        <ul className='avatars-list'>
-            <li><AvatarCard name='marco' ready /> </li>
-            <li><AvatarCard name='marco' ready /> </li>
-            <li><AvatarCard name='marco' /> </li>
-            <li><AvatarCard name='sdfjlsdkjfglksdjfglks' /> </li>
-            <li><AvatarCard name='marco' /> </li>
-            <li><AvatarCard name='a' ready /> </li>
-        </ul>
-    )
-};
+const AvatarsList = ({ players }) => (
+    <ul className='avatars-list'>
+        {
+            players.map(player =>
+                <li>
+                    <AvatarCard name={player.username} ready={player.ready} />
+                </li>
+            )
+        }
+    </ul>
+);
 
 export default AvatarsList;

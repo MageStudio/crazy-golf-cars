@@ -176,6 +176,8 @@ export default class Race extends Level {
         const { room } = multiplayer;
         const { players = [] } = room;
 
+        console.log('room', room);
+
         Audio.setVolume(.5);
 
         Scripts.create('SmoothCarFollow', SmoothCarFollow);
