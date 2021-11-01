@@ -147,6 +147,8 @@ class MultiplayerClient extends EventDispatcher {
 
         this.socket.on(PHYSICS_EVENTS.ELEMENT.UPDATE, this.getPropagate(PHYSICS_EVENTS.ELEMENT.UPDATE).bind(this));
         this.socket.on(PHYSICS_EVENTS.ELEMENT.COLLISION, this.getPropagate(PHYSICS_EVENTS.ELEMENT.COLLISION).bind(this));
+        this.socket.on(PHYSICS_EVENTS.ELEMENT.CREATED, this.getPropagate(PHYSICS_EVENTS.ELEMENT.CREATED).bind(this));
+        this.socket.on(PHYSICS_EVENTS.ELEMENT.DISPOSE, this.getPropagate(PHYSICS_EVENTS.ELEMENT.DISPOSE).bind(this));
     }
 
     getPropagate = type => data => {

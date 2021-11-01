@@ -60,7 +60,7 @@ export default class SmoothCarFollow extends BaseScript {
             vector.y = y + this.height;
             const desiredPosition = targetPosition.add(vector)
 
-            cameraPosition.lerpVectors(cameraPosition, desiredPosition, .75);
+            cameraPosition.lerpVectors(cameraPosition, desiredPosition, dt);
 
             this.camera.setPosition(cameraPosition);
 

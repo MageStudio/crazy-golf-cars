@@ -3,12 +3,14 @@ import {
     Level,
     Scene,
     Models,
+    Cube,
     AmbientLight,
     HemisphereLight,
     Controls,
     constants,
     PostProcessing,
-    PointLight
+    PointLight,
+    PHYSICS_EVENTS
 } from 'mage-engine';
 
 import SmoothCarFollow from '../camera/SmoothCarFollow';
@@ -131,13 +133,66 @@ export default class Test extends Level {
         this.prepareSceneEffects();
     }
 
+    createTestCubes() {
+        this.cubes = {};
+        for (let i=0; i<5; i++) {
+            const randomPosition = {
+                x: Math.floor(Math.random() * 2) + 46,
+                y: Math.floor(Math.random() * 2) + 4,
+                z: Math.floor(Math.random() * 2) + 38
+            };
+
+            const cube = new Cube(.5, WHITE);
+            cube.setPosition(randomPosition);
+            const name = `test:cube:${i}`
+            cube.setName(name);
+
+            this.cubes[name] = cube;
+            NetworkPhysics.add(cube, { mass: 1 });
+        }
+    }
+
     handleGameStarted = () => {
         this.createCourse()
             .then(() => {
                 this.car = this.createCar();
                 this.prepareCamera(car);
                 this.addSelectiveOutline();
+
+                this.createTestCubes();
             })
+    }
+
+    listenToPhysicsEvents() {
+        NetworkClient.addEventListener(PHYSICS_EVENTS.ELEMENT.CREATED, this.handleElementCreated.bind(this));
+        NetworkClient.addEventListener(PHYSICS_EVENTS.ELEMENT.DISPOSE, this.handleElementDisposed.bind(this));
+        NetworkClient.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.handleElementUpdate.bind(this));
+    }
+
+    handleElementUpdate = ({ data }) => {
+        const { uuid, position, quaternion } = data;
+
+        if (Object.keys(this.cubes).includes(uuid)) {
+            const cube = this.cubes[uuid];
+            cube.setPosition(position);
+            cube.setQuaternion(quaternion);
+        }
+    }
+
+    handleElementCreated = (data) => {
+        console.log(data);
+        /**
+         * when model = bomb
+         * create new model, check that name is not one of ours
+         * attach OpponentNetworkBomb script
+         */
+    }
+
+    handleElementDisposed = data => {
+        /**
+         * check uuid, if it's opponent's bomb, dispose
+         */
+        console.log(data);
     }
 
     onCreate() {
@@ -151,6 +206,9 @@ export default class Test extends Level {
         });
         NetworkClient.sendPlayerReady('test', 'testing');
         this.createWorld();
+
         NetworkClient.addEventListener(RGS.GAME.STARTED, this.handleGameStarted);
+
+        this.listenToPhysicsEvents();
     }
 }

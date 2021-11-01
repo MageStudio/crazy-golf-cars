@@ -2,13 +2,9 @@ import {
     BaseScript,
     Models,
     Input,
-    Scripts,
     PHYSICS_EVENTS,
     INPUT_EVENTS,
-    BUILTIN,
-    THREE,
-    Element,
-    Physics
+    THREE
 } from 'mage-engine';
 import NetworkClient from '../network/client';
 import { TYPES, getCarOptionsByType } from '../constants';
@@ -58,7 +54,9 @@ export default class NetworkCarScript extends BaseScript {
         bomb.addScript('BombScript', {
             name,
             position: this.car.getPosition(),
-            direction: this.car.direction
+            direction: this.car.direction,
+            strength: 4000,
+            radius: 15
         });
     }
 
