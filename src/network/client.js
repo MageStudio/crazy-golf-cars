@@ -2,42 +2,10 @@ import io from 'socket.io-client';
 import { EventDispatcher, PHYSICS_EVENTS } from 'mage-engine';
 import { getModelsEndpoint, SOCKETIO } from './constants';
 
-// const NEW_ROOM_EVENT = 'new_room';
-// const JOIN_ROOM_EVENT = 'join_room';
-// const LEAVE_ROOM_EVENT = 'leave_room';
-
 export const NETWORK_EVENTS = {
     CONNECTED: 'network_connected',
     DISCONNECTED: 'network_disconnected'
 };
-
-// export const GAME_EVENTS = {
-//     ROOM_ALREADY_EXISTS_EVENT: 'room_already_exists',
-//     ROOM_DOES_NOT_EXIST_EVENT: 'room_does_not_exist',
-//     ROOM_DOES_NOT_HAVE_PLAYER_EVENT: 'room_does_not_have_player',
-//     ROOM_ALREADY_JOINED_EVENT: 'room_already_joined',
-//     ROOM_IS_FULL_EVENT: 'room_is_full',
-//     ROOM_CANT_BE_JOINED_LEAVE_FIRST: 'room_cant_be_joined_leave_first',
-//     ROOM_MISSING: 'room_missing',
-
-//     DISCONNECT: 'disconnect',
-
-//     PLAYER_JOINED: 'player_joined',
-//     PLAYER_LEFT: 'player_left',
-
-//     ROOM_JOINED_EVENT: 'room_joined',
-//     ROOM_LEFT_EVENT: 'room_left',
-
-//     ROOMS_LIST_EVENT: 'rooms_list',
-
-//     GAME_STARTED_EVENT: 'game_started',
-//     WAITING_ROOM_EVENT: 'waiting_room',
-// };
-
-// export const ROOM_EVENTS = {
-//     ENTITY_CHANGE_EVENT: 'entity_change',
-//     PLAYER_CHANGE_EVENT: 'player_change'
-// };
 
 export const RGS = {
     CONNECTION: 'connection',
@@ -202,8 +170,6 @@ class MultiplayerClient extends EventDispatcher {
             ...config,
         };
 
-        console.log('creating room');
-
         this.emitEvent(RGS.ROOM.NEW, {
             username,
             room,
@@ -212,7 +178,6 @@ class MultiplayerClient extends EventDispatcher {
     };
 
     joinRoom = (username, room) => {
-        console.log('sending room join');
         this.emitEvent(RGS.ROOM.JOIN, {
             username,
             room
@@ -241,7 +206,6 @@ class MultiplayerClient extends EventDispatcher {
     };
 
     sendPlayerReady = (username, room) => {
-        console.log('sending player ready', username, room);
         this.emitEvent(RGS.PLAYER.READY, {
             username,
             room

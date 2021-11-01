@@ -61,7 +61,6 @@ const disconnected = (reason) => ({
 });
 
 const handleRoomJoined = ({ data }) => {
-    console.log('room joined', data);
     store.dispatch(roomJoined(data));
     store.dispatch(goToCarSelection());
 }
@@ -85,7 +84,6 @@ const handlePlayerReady = ({ data }) => {
 }
 
 const handleGameStarted = ({ data }) => {
-    console.log('game started', data);
     store.dispatch(gameStarted(data));
     store.dispatch(goToCourse());
 };

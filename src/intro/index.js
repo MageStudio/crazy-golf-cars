@@ -48,7 +48,6 @@ export default class Intro extends Level {
 
         this.carts = VEHICLES_LIST.map((key, index) => {
             const type = TYPES[key];
-            console.log(key, type, getModelNameFromVehicleType(type));
             const cart = Models.getModel(getModelNameFromVehicleType(type));
 
             cart.addScript('CartPresentation', { index });
@@ -74,6 +73,5 @@ export default class Intro extends Level {
         this.carts.forEach(cart => {
             cart.getScript('CartPresentation').script.updatePosition(direction);
         });
-        console.log(this.index);
     };
 }

@@ -10,7 +10,6 @@ import { multiplayer } from "../reducers";
 class CarSelection extends Component {
 
     constructor(props) {
-        console.log('inside carselection');
         super(props);
     }
 

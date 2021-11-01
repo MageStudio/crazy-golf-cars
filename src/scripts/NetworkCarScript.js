@@ -72,8 +72,6 @@ export default class NetworkCarScript extends BaseScript {
         const { x, y, z, w } = this.car.getQuaternion().clone();
         const { position, quaternion } = getClosestSpawnPoint(this.car.getPosition(), WOODEN_CASTLE_COURSE);
 
-        console.log({x, y, z, w}, this.car.getPosition());
-
         NetworkPhysics.resetVehicle(this.car, position, quaternion);
     }
 
