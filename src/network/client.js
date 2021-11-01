@@ -36,7 +36,8 @@ export const GAME_EVENTS = {
 
 export const ROOM_EVENTS = {
     ENTITY_CHANGE_EVENT: 'entity_change',
-    PLAYER_CHANGE_EVENT: 'player_change'
+    PLAYER_CHANGE_EVENT: 'player_change',
+    EXPLOSION: 'explosion'
 };
 
 const GAME_EVENTS_LIST = Object.keys(GAME_EVENTS);
@@ -102,6 +103,8 @@ class MultiplayerClient extends EventDispatcher {
         this.socket.on(ROOM_EVENTS.PLAYER_CHANGE_EVENT, this.getPropagate(ROOM_EVENTS.PLAYER_CHANGE_EVENT).bind(this));
         this.socket.on(PHYSICS_EVENTS.ELEMENT.UPDATE, this.getPropagate(PHYSICS_EVENTS.ELEMENT.UPDATE).bind(this));
         this.socket.on(PHYSICS_EVENTS.ELEMENT.COLLISION, this.getPropagate(PHYSICS_EVENTS.ELEMENT.COLLISION).bind(this));
+        this.socket.on(PHYSICS_EVENTS.ELEMENT.CREATED, this.getPropagate(PHYSICS_EVENTS.ELEMENT.CREATED).bind(this));
+        this.socket.on(PHYSICS_EVENTS.ELEMENT.DISPOSE, this.getPropagate(PHYSICS_EVENTS.ELEMENT.DISPOSE).bind(this));
     }
 
     getPropagate = type => data => {
