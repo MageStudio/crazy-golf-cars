@@ -1,0 +1,88 @@
+.car-selection {
+    height: 100vh;
+    width: 100vw;
+    background: repeating-conic-gradient(rgba(241,196,15, .85) 0 9deg, rgba(243,156,18, .85) 9deg 18deg);
+    background-size: 150%;
+
+    & * {
+        z-index: 9999999;
+    }
+}
+
+.specspanel {
+    position: absolute;
+    top: 25vh;
+    left: 8vw;
+    
+    & .bars {
+        background: #ecf0f1;
+        border: 4px solid rgb(52, 73, 94);
+        box-shadow: inset 4px 4px white, inset -4px -4px white;
+        padding: 16px;
+        border-radius: 8px;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+    }
+
+    .bombs {
+
+        &-list {
+            margin: 0;
+            padding: 8px;
+            list-style: none;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-content: center;
+            align-items: center;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: center;
+            border: 4px solid #bdc3c7;
+            box-shadow: inset 4px 4px #ecf0f1, inset -4px -4px #ecf0f1;
+            
+
+            .bomb {
+                display: inline-block;
+            }
+        }
+    }
+
+    & .specs {
+        color: rgba(255,255,255, .7);
+        text-transform: uppercase;
+        background: #34495e;
+        border: 2px solid #34495e;
+        padding: 8px 16px;
+        /* width: 100%; */
+        font-size: 1.2em;
+        line-height: 32px;
+        display: block;
+        text-align: center;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        box-shadow: inset 2px 2px rgba(255, 255, 255, .15), inset -2px 0px rgba(255, 255, 255, .15);
+    }
+}
+
+.ready-bar {
+    position: absolute;
+    top: 80vh;
+    width: calc(100% - 240px);
+    padding: 16px 120px;
+
+    & .prev {
+        float: left;
+    }
+
+    & .next {
+        float: right;
+    }
+
+    & .ready {
+        position: relative;
+        margin-left: calc(50% - 230px);
+        display: inline-block;
+        width: 320px;
+    }
+}

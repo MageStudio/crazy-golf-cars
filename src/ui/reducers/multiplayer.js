@@ -4,6 +4,7 @@ import {
     DISCONNECTED,
     GAME_STARTED,
     PLAYER_JOINED,
+    PLAYER_READY,
     ROOMS_LIST_CHANGED,
     ROOM_JOINED,
     WAITING_ROOM_ENTERED
@@ -54,6 +55,19 @@ export default (state = DEFAULT_STATE, action = {}) => {
             return {
                 ...state,
                 room: action.room
+            };
+        case PLAYER_READY:
+            const players = state.room.players.map(player => {
+                player.ready = player.username === action.username;
+                return player;
+            });
+
+            return {
+                ...state,
+                room: {
+                    ...state.room,
+                    players
+                }
             };
         case GAME_STARTED:
             return {

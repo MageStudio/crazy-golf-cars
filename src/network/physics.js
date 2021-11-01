@@ -1,5 +1,5 @@
-import { physicsUtils, PHYSICS_EVENTS, PHYSICS_CONSTANTS } from "mage-engine";
-import client, { ROOM_EVENTS } from './client';
+import { physicsUtils, PHYSICS_EVENTS, PHYSICS_CONSTANTS, store } from "mage-engine";
+import client from './client';
 
 export const addVehicle = (element, options = {}) => {
     const name = element.getName();
@@ -58,7 +58,11 @@ export const addModel = (model, options = {}) => {
         ...options
     };
 
-    return client.createModel(payload);
+    const { multiplayer } = store.getState();
+    const { room } = multiplayer;
+    const { name: roomName } = room;
+
+    return client.createModel(payload, roomName);
 }
 
 export const add = (element, options) => {

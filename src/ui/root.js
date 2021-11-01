@@ -1,15 +1,20 @@
 import { Component } from 'inferno';
-import { connect } from 'mage-engine';
+import { connect, GameRunner } from 'mage-engine';
 import {
     removeNetworkClientListeners,
     setNetworkClientListeners
 } from './actions/multiplayer';
 import { usernameChanged } from './actions/player';
-import Game from './Game';
 
+import { SCREENS } from './lib/constants'
+
+import Game from './Game';
+import CarSelection from './CarSelection';
 import LoadingScreen from './LoadingScreen';
 import TitleScreen from './TitleScreen';
 import WaitingRoom from './WaitingRoom';
+import { cartSelectionDone, nextCartSelection, previousCartSelection } from './actions/selection';
+import selection from './reducers/selection';
 
 class Root extends Component {
     constructor(props) {
@@ -24,16 +29,25 @@ class Root extends Component {
         removeNetworkClientListeners();
     }
 
+    handleReadyClick = () => {
+        const { username } = this.props;
+        const { room: { name } } = this.props.multiplayer;
+        cartSelectionDone(username, name);
+    }
+
     render() {
         const {
-            navigation,
+            screen,
             multiplayer,
             network,
             loadingScreenVisible,
             version,
             location,
             username,
-            onUsernameSet
+            onUsernameSet,
+            selection,
+            onNextClick,
+            onPreviousClick
         } = this.props;
 
         const { room = {} } = multiplayer;
@@ -44,30 +58,42 @@ class Root extends Component {
             <Game network={network} multiplayer={multiplayer} />
         );
 
-        switch (navigation.path) {
-            case 'title':
+        switch (screen.name) {
+            case SCREENS.TITLE:
                 return <TitleScreen
                     onUsernameSet={onUsernameSet}
                     username={username}
                     version={version} />
-            case 'waitingRoom':
+            case SCREENS.WAITINGROOM:
                 return <WaitingRoom players={players}/>
+            case SCREENS.CAR_SELECTION:
+                return <CarSelection
+                    username={username}
+                    players={players}
+                    selection={selection}
+                    onNextClick={onNextClick}
+                    onPreviousClick={onPreviousClick}
+                    onReadyClick={this.handleReadyClick} />;
         }
     }
 }
 
-const mapStateToProps = ({ ui, navigation, info, location, player, multiplayer, network }) => ({
+const mapStateToProps = ({ ui, screen, info, location, player, multiplayer, network, selection }) => ({
     loadingScreenVisible: ui.loadingScreenVisible,
-    navigation,
+    screen,
     version: info.mage,
     location,
     multiplayer,
     network,
-    ...player
+    ...player,
+    selection
 });
 
 const mapDispatchToProps = dispatch => ({
-    onUsernameSet:  username => dispatch(usernameChanged(username))
+    onUsernameSet:  username => dispatch(usernameChanged(username)),
+    onNextClick: () => dispatch(nextCartSelection()),
+    onPreviousClick: () => dispatch(previousCartSelection()),
+    // onReadyClick: (username) => cartSelectionDone(username)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);

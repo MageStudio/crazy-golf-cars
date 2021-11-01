@@ -1,6 +1,6 @@
 import { store } from 'mage-engine';
-import NetworkClient, { EVENTS, GAME_EVENTS, NETWORK_EVENTS } from '../../network/client';
-import { goToCourse, goToWaitingRoom } from './navigation';
+import NetworkClient, { EVENTS, GAME_EVENTS, NETWORK_EVENTS, RGS } from '../../network/client';
+import { goToCarSelection, goToCourse, goToWaitingRoom } from './screen';
 import {
     ROOM_JOINED,
     ROOMS_LIST_CHANGED,
@@ -8,7 +8,8 @@ import {
     PLAYER_JOINED,
     GAME_STARTED,
     CONNECTED,
-    DISCONNECTED
+    DISCONNECTED,
+    PLAYER_READY
 } from './types';
 
 export const ROOM_STATES = {
@@ -39,6 +40,11 @@ const playerJoined = ({ room }) => ({
     room
 });
 
+const playerReady = username => ({
+    type: PLAYER_READY,
+    username
+})
+
 const gameStarted = ({ room }) => ({
     type: GAME_STARTED,
     state: ROOM_STATES.STARTED,
@@ -56,6 +62,7 @@ const disconnected = (reason) => ({
 
 const handleRoomJoined = ({ data }) => {
     store.dispatch(roomJoined(data));
+    store.dispatch(goToCarSelection());
 }
 
 const handleWaitingRoom = ({ data }) => {
@@ -69,6 +76,11 @@ const handleRoomsList = ({ data }) => {
 
 const handlePlayerJoined = ({ data }) => {
     store.dispatch(playerJoined(data));
+}
+
+const handlePlayerReady = ({ data }) => {
+    const { username } = data;
+    store.dispatch(playerReady(username));
 }
 
 const handleGameStarted = ({ data }) => {
@@ -88,20 +100,26 @@ export const setNetworkClientListeners = () => {
     NetworkClient.addEventListener(NETWORK_EVENTS.CONNECTED, handleConnection);
     NetworkClient.addEventListener(NETWORK_EVENTS.DISCONNECTED, handleDisconnection);
 
-    NetworkClient.addEventListener(GAME_EVENTS.ROOMS_LIST_EVENT, handleRoomsList);
-    NetworkClient.addEventListener(GAME_EVENTS.ROOM_JOINED_EVENT, handleRoomJoined);
-    NetworkClient.addEventListener(GAME_EVENTS.WAITING_ROOM_EVENT, handleWaitingRoom);
-    NetworkClient.addEventListener(GAME_EVENTS.PLAYER_JOINED, handlePlayerJoined);
-    NetworkClient.addEventListener(GAME_EVENTS.GAME_STARTED_EVENT, handleGameStarted);
+    NetworkClient.addEventListener(RGS.GAME.ROOMS.LIST, handleRoomsList);
+    NetworkClient.addEventListener(RGS.GAME.STARTED, handleGameStarted);
+
+    NetworkClient.addEventListener(RGS.ROOM.JOINED, handleRoomJoined);
+    NetworkClient.addEventListener(RGS.ROOM.WAITING, handleWaitingRoom);
+
+    NetworkClient.addEventListener(RGS.PLAYER.JOINED, handlePlayerJoined);
+    NetworkClient.addEventListener(RGS.PLAYER.READY, handlePlayerReady);
 };
 
 export const removeNetworkClientListeners = () => {
     NetworkClient.removeEventListener(NETWORK_EVENTS.CONNECTED, handleConnection);
     NetworkClient.removeEventListener(NETWORK_EVENTS.DISCONNECTED, handleDisconnection);
 
-    NetworkClient.removeEventListener(GAME_EVENTS.ROOMS_LIST_EVENT, handleRoomsList);
-    NetworkClient.removeEventListener(GAME_EVENTS.ROOM_JOINED_EVENT, handleRoomJoined);
-    NetworkClient.removeEventListener(GAME_EVENTS.WAITING_ROOM_EVENT, handleWaitingRoom);
-    NetworkClient.removeEventListener(GAME_EVENTS.PLAYER_JOINED, handlePlayerJoined);
-    NetworkClient.removeEventListener(GAME_EVENTS.GAME_STARTED_EVENT, handleGameStarted);
+    NetworkClient.removeEventListener(RGS.GAME.ROOMS.LIST, handleRoomsList);
+    NetworkClient.removeEventListener(RGS.GAME.STARTED, handleGameStarted);
+
+    NetworkClient.removeEventListener(RGS.ROOM.JOINED, handleRoomJoined);
+    NetworkClient.removeEventListener(RGS.ROOM.WAITING, handleWaitingRoom);
+
+    NetworkClient.removeEventListener(RGS.PLAYER.JOINED, handlePlayerJoined);
+    NetworkClient.removeEventListener(RGS.PLAYER.READY, handlePlayerReady);
 };

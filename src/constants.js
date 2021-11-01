@@ -1,6 +1,8 @@
+export const MAX_BOMBS = 8;
+
 export const TYPES = {
-    BASE: 'base',
     GOLF_CART: 'golf_cart',
+    BASE: 'base',
     TRUCK: 'truck'
 };
 
@@ -35,6 +37,13 @@ const BASE_CAR_OPTIONS = {
     }
 };
 
+const BASE_CAR_SPECS = {
+    speed: 70,
+    control: 60,
+    weight: 50,
+    bombs: 4
+};
+
 const GOLF_CART_OPTIONS = {
     mass: 1000,
     name: 'golf',
@@ -65,6 +74,13 @@ const GOLF_CART_OPTIONS = {
         compression: 4.4,//30,
         restLength: .9
     }
+};
+
+const GOLF_CART_SPECS = {
+    speed: 70,
+    control: 60,
+    weight: 50,
+    bombs: 4
 };
 
 const TRUCK_OPTIONS = {
@@ -98,6 +114,17 @@ const TRUCK_OPTIONS = {
     }
 };
 
+const TRUCK_SPECS = {
+    speed: 40,
+    control: 50,
+    weight: 85,
+    bombs: 8
+};
+
+export const VEHICLES_LIST = Object.keys(TYPES);
+
+export const getTypeByIndex = index => TYPES[VEHICLES_LIST[index]];
+
 export const getModelNameFromVehicleType = (type = TYPES.BASE) => ({
     [TYPES.BASE]: 'police_car',
     [TYPES.GOLF_CART]: 'golf_cart',
@@ -109,3 +136,9 @@ export const getCarOptionsByType = (type = TYPES.BASE) => ({
     [TYPES.GOLF_CART]: GOLF_CART_OPTIONS,
     [TYPES.TRUCK]: TRUCK_OPTIONS
 }[type] || BASE_CAR_OPTIONS);
+
+export const getCartSpecsByType = type => ({
+    [TYPES.BASE]: BASE_CAR_SPECS,
+    [TYPES.GOLF_CART]: GOLF_CART_SPECS,
+    [TYPES.TRUCK]: TRUCK_SPECS
+}[type] || BASE_CAR_SPECS);
