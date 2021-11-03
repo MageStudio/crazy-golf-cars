@@ -1,6 +1,7 @@
 import { useState } from 'xferno';
 import Modal from '../lib/Modal';
 import { UserIcon } from '../icons';
+import { playBackgroundElevatorMusic } from '../sounds';
 
 const UsernameModal = ({ onConfirm, ...rest }) => {
     const [username, setUsername] = useState('');
@@ -16,6 +17,7 @@ const UsernameModal = ({ onConfirm, ...rest }) => {
     const handleModalConfirm = () => {
         if (!username) return;
 
+        playBackgroundElevatorMusic();
         onConfirm(username);
     }
 
