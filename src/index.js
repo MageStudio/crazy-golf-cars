@@ -14,8 +14,9 @@ const assets = {
     },
     '/': {
         audio: {
-            click: 'assets/audio/click.ogg',
-            elevator: 'assets/audio/elevator.mp3'
+            click: 'assets/audio/click_standard.mp3',
+            elevator: 'assets/audio/elevator.mp3',
+            confirmation: 'assets/audio/confirmation.ogg'
         },
         
     },
