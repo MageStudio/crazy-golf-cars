@@ -11,3 +11,4 @@ export const SOCKETIO =`${BASE}${RGS.path}`;
 export const API = `${BASE}/api`;
 
 export const getModelsEndpoint = (room) => `${API}/models/${NAMESPACE}/${room}`;
+export const getRoomsEndpoint = () => `${API}/rooms/${NAMESPACE}`;

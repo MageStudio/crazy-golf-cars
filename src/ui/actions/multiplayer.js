@@ -71,6 +71,7 @@ const handleWaitingRoom = ({ data }) => {
 }
 
 const handleRoomsList = ({ data }) => {
+    console.log(data);
     store.dispatch(roomsList(data));
 };
 
