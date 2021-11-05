@@ -41,7 +41,7 @@ const TitleScreen = ({ version, username, onUsernameSet }) => {
     const onCreateRoomModalClose = () => setCreateRoomModalVisible(false);
 
     const handleRoomCreation = roomName => {
-        NetworkClient.createRoom(username, roomName, {});
+        NetworkClient.createRoom(username, roomName, { minPlayers: 1 });
         onCreateRoomModalClose();
     };
 
@@ -50,7 +50,7 @@ const TitleScreen = ({ version, username, onUsernameSet }) => {
         onJoinRoomModalClose();
     }
 
-    return (
+    return ( 
         <div className='screen-title gradient-background'>
             <div className='panel'>
                 <GameTitle/>

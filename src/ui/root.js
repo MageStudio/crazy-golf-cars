@@ -15,6 +15,7 @@ import TitleScreen from './TitleScreen';
 import WaitingRoom from './WaitingRoom';
 import { cartSelectionDone, nextCartSelection, previousCartSelection } from './actions/selection';
 import selection from './reducers/selection';
+import { playConfirmationSound } from './sounds';
 
 class Root extends Component {
     constructor(props) {
@@ -32,6 +33,7 @@ class Root extends Component {
     handleReadyClick = () => {
         const { username } = this.props;
         const { room: { name } } = this.props.multiplayer;
+        playConfirmationSound();
         cartSelectionDone(username, name);
     }
 

@@ -61,7 +61,6 @@ export default class Intro extends Level {
     onCreate() {
         Scene.setClearColor(WHITE, 0);
         Scene.setBackground(null);
-
         Scripts.create('CartPresentation', CartPresentation);
         // Scene.getCamera().setPosition({ z: -1 });
         // Controls.setOrbitControl();
