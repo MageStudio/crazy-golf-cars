@@ -4,7 +4,8 @@ import {
     Input,
     PHYSICS_EVENTS,
     INPUT_EVENTS,
-    THREE
+    THREE,
+    Cylinder
 } from 'mage-engine';
 import NetworkClient from '../network/client';
 import { TYPES, getCarOptionsByType } from '../constants';
@@ -39,9 +40,13 @@ export default class NetworkCarScript extends BaseScript {
     }
 
     createWheel(index, username) {
-        const name = `${username}:wheel:${index}`
+        const name = `${username}:wheel:${index}`;
+        const wheel = Models.getModel('wheel', { name });
+
+        wheel.setScale({ x: 0.7, y: 0.7, z: 0.7 });
+
         return {
-            wheel:  Models.getModel('wheel', { name }),
+            wheel,
             name
         }
     }

@@ -8,7 +8,7 @@ import * as reducers from './ui/reducers';
 
 const assets = {
     models: {
-        'golf_cart': 'assets/models/golf_cart_white.glb',
+        'golf_cart': 'assets/models/golf_cart.glb',
         'police_car': 'assets/models/police_car.glb',
         'truck': 'assets/models/truck.glb',
     },
@@ -25,7 +25,7 @@ const assets = {
             engine: 'assets/audio/engine.mp3'
         },
         models: {
-            'golf_cart': 'assets/models/golf_cart_white.glb',
+            'golf_cart': 'assets/models/golf_cart.glb',
             'car': 'assets/models/buggy.gltf',
             'wheel': 'assets/models/wheel.gltf',
             'wheel_new': 'assets/models/wheel_new.glb',
@@ -45,7 +45,7 @@ const assets = {
             explosion: 'assets/audio/explosion.wav'
         },
         models: {
-            'golf_cart': 'assets/models/golf_cart_white.glb',
+            'golf_cart': 'assets/models/golf_cart.glb',
             'car': 'assets/models/buggy.gltf',
             'wheel': 'assets/models/wheel.gltf',
             'wheel_new': 'assets/models/wheel_new.glb',
