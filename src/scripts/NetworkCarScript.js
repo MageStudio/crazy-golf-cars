@@ -5,7 +5,8 @@ import {
     PHYSICS_EVENTS,
     INPUT_EVENTS,
     THREE,
-    Cylinder
+    Vector3,
+    Quaternion
 } from 'mage-engine';
 import NetworkClient from '../network/client';
 import { TYPES, getCarOptionsByType } from '../constants';
@@ -21,7 +22,7 @@ export default class NetworkCarScript extends BaseScript {
         this.bombCounter = 0;
         this.wheelsUUIDs = [];
 
-        this.remoteQuaternion = null;
+        this.remoteQuaternion = new THREE.Quaternion();
         this.remotePosition = new THREE.Vector3();
         this.remoteSpeed = 0;
         this.remoteDirection = new THREE.Vector3(0, 0, 0);
@@ -116,7 +117,12 @@ export default class NetworkCarScript extends BaseScript {
         ];
 
         this.wheels = wheels.reduce((acc, { name, wheel }) => {
-            acc[name] = wheel;
+            acc[name] = {
+                wheel,
+                remotePosition: new THREE.Vector3(),
+                remoteQuaternion: new THREE.Quaternion(),
+                name
+            }
             return acc;
         }, {});
 
@@ -162,16 +168,15 @@ export default class NetworkCarScript extends BaseScript {
         const { uuid, position, quaternion, direction, speed } = data;
         if (uuid === this.username) {
             this.remoteDirection.set(direction.x, direction.y, direction.z);
-            this.remotePosition = new THREE.Vector3(position.x, position.y, position.z);
-            this.remoteQuaternion = new THREE.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+            this.remotePosition.set(position.x, position.y, position.z);
+            this.remoteQuaternion.set(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
             this.remoteSpeed = Math.max(0, speed);
 
             this.car.speed = this.remoteSpeed;
             this.car.direction = direction;
         } else if (this.wheelsUUIDs.includes(uuid)) {
-            const wheel = this.wheels[uuid];
-            wheel.setPosition(position);
-            wheel.setQuaternion(quaternion);
+            this.wheels[uuid].remotePosition.set(position.x, position.y, position.z);
+            this.wheels[uuid].remoteQuaternion.set(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
         }
     }
 
@@ -192,21 +197,34 @@ export default class NetworkCarScript extends BaseScript {
         NetworkPhysics.updateBodyState(this.car, this.state);
     }
 
-    interpolate() {
+    interpolate(dt) {
         const carPosition = this.car.getPosition();
         const carQuaternion = this.car.getQuaternion();
 
-        carPosition.lerpVectors(carPosition, this.remotePosition || carPosition, 1);
-        carQuaternion.slerp(this.remoteQuaternion || carQuaternion, 1);
+        carPosition.lerpVectors(carPosition, this.remotePosition || carPosition, 15 * dt);
+        carQuaternion.slerp(this.remoteQuaternion || carQuaternion, 15 * dt);
 
         this.car.setPosition(carPosition);
         this.car.setQuaternion(carQuaternion);
+
+        for (let uuid in this.wheels) {
+            const { wheel, remotePosition, remoteQuaternion } = this.wheels[uuid];
+
+            const wheelPosition = wheel.getPosition();
+            const wheelQuaternion = wheel.getQuaternion();
+
+            wheelPosition.lerpVectors(wheelPosition, remotePosition || wheelPosition, 15 * dt);
+            wheelQuaternion.slerp(remoteQuaternion || wheelQuaternion, 15 * dt);
+
+            wheel.setPosition(wheelPosition);
+            wheel.setQuaternion(wheelQuaternion);
+        }
     }
 
-    update = () => {
+    update = (dt) => {
         this.updateSound();
         this.handleInput();
         this.dispatchCarStateChange();
-        this.interpolate();
+        this.interpolate(dt);
     }
 }
