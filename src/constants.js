@@ -17,13 +17,13 @@ const BASE_CAR_OPTIONS = {
     maxBreakingForce: 100,
     wheelsOptions: {
         back: {
-            axisPosition: -0.9,
+            axisPosition: -0.7,
             radius: .5,
             halfTrack: .6,
             axisHeight: .1
         },
         front: {
-            axisPosition: 1.1,
+            axisPosition: 1.5,
             radius: .5,
             halfTrack: .6,
             axisHeight: .1
@@ -45,34 +45,34 @@ const BASE_CAR_SPECS = {
 };
 
 const GOLF_CART_OPTIONS = {
-    mass: 1000,
+    mass: 500,
     name: 'golf',
     // debug: true,
-    friction: 700,
+    friction: 300,
     steeringIncrement: .017,
     steeringClamp: .4,
     rollInfluence: 0.01,
-    maxEngineForce: 1500,
+    maxEngineForce: 500,
     maxBreakingForce: 100,
     wheelsOptions: {
         back: {
-            axisPosition: -1,
-            radius: .5,
-            halfTrack: 1,
-            axisHeight: -.6
+            axisPosition: -.6,
+            radius: .3,
+            halfTrack: .5,
+            axisHeight: -.07
         },
         front: {
-            axisPosition: 2.1,
-            radius: .5,
-            halfTrack: 1,
-            axisHeight: -.6
+            axisPosition: 1.2,
+            radius: .3,
+            halfTrack: .5,
+            axisHeight: -.1
         }
     },
     suspensions: {
         stiffness: 30.0,
         damping: 2.3,//10.3,
         compression: 4.4,//30,
-        restLength: .9
+        restLength: .8
     }
 };
 

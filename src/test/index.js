@@ -89,13 +89,13 @@ export default class Test extends Level {
     createCourse = () => {
         this.course =  Models.getModel('course', { name: 'course' });
 
-        this.course.setMaterialFromName(MATERIALS.TOON, {
-            light: {
-                color: BACKGROUND,
-                position: this.hemisphereLight.getPosition()
-            },
-            emissive: 0xeeeeee
-        });
+        // this.course.setMaterialFromName(MATERIALS.TOON, {
+        //     light: {
+        //         color: BACKGROUND,
+        //         position: this.hemisphereLight.getPosition()
+        //     },
+        //     emissive: 0xeeeeee
+        // });
 
         return NetworkPhysics.addModel(this.course, { mass: 0 });
     }
@@ -108,7 +108,7 @@ export default class Test extends Level {
         // window.camera = Scene.getCamera();
 
         Scene.getCamera()
-            .addScript('SmoothCarFollow', { target, distance: 8, height: 5 });
+            .addScript('SmoothCarFollow', { target, distance: 5, height: 3 });
     }
 
     prepareSceneEffects() {
@@ -117,7 +117,7 @@ export default class Test extends Level {
     }
 
     addSelectiveOutline() {
-        const outline = PostProcessing.add(constants.EFFECTS.OUTLINE, { defaultThickness: 0.004 });
+        // const outline = PostProcessing.add(constants.EFFECTS.OUTLINE, { defaultThickness: 0.004 });
         // outline.setVisibleEdgeColor(constants.COLORS.BLACK);
         // outline.setHiddenEdgeColor(constants.COLORS.BLACK);
     }
