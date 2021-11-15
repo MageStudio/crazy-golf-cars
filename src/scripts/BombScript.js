@@ -14,6 +14,9 @@ export default class BombScript extends BaseScript {
 
     constructor() {
         super('BombScript');
+
+        this.remoteQuaternion = new THREE.Quaternion();
+        this.remotePosition = new THREE.Vector3();
     }
 
     start(bomb, { name, position, direction, strength }) {
@@ -21,9 +24,13 @@ export default class BombScript extends BaseScript {
         this.name = name;
         this.strength = strength;
         const { x, y, z } = position;
+        const startingPosition = { x, y: y + 2, z };
 
-        this.bomb.setPosition({ x, y: y + 2, z });
-        this.bomb.setScale({ x: 8, y: 8, z: 8 }); 
+        this.bomb.setPosition(startingPosition);
+        this.bomb.setScale({ x: 8, y: 8, z: 8 });
+
+        this.remoteQuaternion.set(0, 0, 0, 1);
+        this.remotePosition.set(startingPosition.x, startingPosition.y, startingPosition.z);
 
         this.prepareBombPhysics(direction);
 
@@ -48,6 +55,7 @@ export default class BombScript extends BaseScript {
         const { uuid, position, quaternion } = data;
 
         if (uuid === this.name) {
+            this.remotePosition.set(position.x, position.y, position.z);
             this.bomb.setPosition(position);
             this.bomb.setQuaternion(quaternion);
         }
@@ -63,7 +71,7 @@ export default class BombScript extends BaseScript {
     playExplosionParticles = () => {
         Particles
             .addParticleEmitter(PARTICLES.EXPLOSION, { texture: 'dot', size: 1 })
-            .setPosition(this.bomb.getPosition())
+            .setPosition(this.remotePosition)
             .start('once');
     }
 
@@ -89,4 +97,20 @@ export default class BombScript extends BaseScript {
             }, 1000);
         }
     };
+
+    interpolate = dt => {
+        const bombPosition = this.bomb.getPosition();
+        const bombQuaternion = this.bomb.getQuaternion();
+        const lerpFactor = 1 - Math.pow(0.1, dt);
+
+        bombPosition.lerpVectors(bombPosition, this.remotePosition, lerpFactor);
+        bombQuaternion.slerp(this.remoteQuaternion, lerpFactor);
+
+        this.bomb.setPosition(bombPosition);
+        this.bomb.setQuaternion(bombQuaternion);
+    }
+
+    // update = dt => {
+    //     this.interpolate(dt);
+    // }
 }

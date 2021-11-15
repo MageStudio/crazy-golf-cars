@@ -24,10 +24,11 @@ export default class NetworkCarScript extends BaseScript {
 
         this.remoteQuaternion = new THREE.Quaternion();
         this.remotePosition = new THREE.Vector3();
-        this.remoteSpeed = 0;
         this.remoteDirection = new THREE.Vector3(0, 0, 0);
 
-        this.speed = undefined;
+        this.remotePositionSequence = [];
+
+        this.remoteSpeed = 0;
         this.maxSpeed = 200;
         this.direction = undefined;
         this.engineStarted = false;
@@ -101,6 +102,7 @@ export default class NetworkCarScript extends BaseScript {
 
         this.car.setPosition(initialPosition);
         this.remotePosition.set(initialPosition.x, initialPosition.y, initialPosition.z);
+        this.remoteQuaternion.set(0, 0, 0, 1);
 
         this.enableInput();
         this.setUpCar(username);
@@ -119,8 +121,8 @@ export default class NetworkCarScript extends BaseScript {
         this.wheels = wheels.reduce((acc, { name, wheel }) => {
             acc[name] = {
                 wheel,
-                remotePosition: new THREE.Vector3(),
-                remoteQuaternion: new THREE.Quaternion(),
+                remotePosition: this.remotePosition.clone(),
+                remoteQuaternion: this.remoteQuaternion.clone(),
                 name
             }
             return acc;
@@ -170,9 +172,8 @@ export default class NetworkCarScript extends BaseScript {
             this.remoteDirection.set(direction.x, direction.y, direction.z);
             this.remotePosition.set(position.x, position.y, position.z);
             this.remoteQuaternion.set(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
-            this.remoteSpeed = Math.max(0, speed);
+            this.remoteSpeed = Math.floor(Math.max(0, speed));
 
-            this.car.speed = this.remoteSpeed;
             this.car.direction = direction;
         } else if (this.wheelsUUIDs.includes(uuid)) {
             this.wheels[uuid].remotePosition.set(position.x, position.y, position.z);
@@ -184,11 +185,11 @@ export default class NetworkCarScript extends BaseScript {
         const max = 1200;
         const min = -1200;
 
-        return (Math.abs(this.car.speed) * (max * 2) / this.maxSpeed) + min;
+        return (Math.abs(this.remoteSpeed) * (max * 2) / this.maxSpeed) + min;
     }
 
     updateSound() {
-        if (this.car.sound && this.car.speed) {
+        if (this.car.sound && this.remoteSpeed) {
             this.car.sound.detune(this.getDetuneFromSpeed());
         }
     }
@@ -200,9 +201,20 @@ export default class NetworkCarScript extends BaseScript {
     interpolate(dt) {
         const carPosition = this.car.getPosition();
         const carQuaternion = this.car.getQuaternion();
+        const remotePositionClone = this.remotePosition.clone();
+        const remoteQuaternionClone = this.remoteQuaternion.clone();
+        
+        const power = Math.pow(0.05, dt);
+        const lerpFactor = 1 - power;
 
-        carPosition.lerpVectors(carPosition, this.remotePosition || carPosition, 15 * dt);
-        carQuaternion.slerp(this.remoteQuaternion || carQuaternion, 15 * dt);
+        // console.log(dt, power, 1 - power);
+
+        // const newPosition = carPosition.add(this.remoteDirection.multiplyScalar(this.remoteSpeed /3.6* dt));
+
+        // console.log(newPosition, this.remotePosition);
+
+        carPosition.lerpVectors(carPosition, remotePositionClone, lerpFactor);
+        carQuaternion.slerp(remoteQuaternionClone, lerpFactor);
 
         this.car.setPosition(carPosition);
         this.car.setQuaternion(carQuaternion);
@@ -212,9 +224,11 @@ export default class NetworkCarScript extends BaseScript {
 
             const wheelPosition = wheel.getPosition();
             const wheelQuaternion = wheel.getQuaternion();
+            const wheelRemotePositionClone = remotePosition.clone();
+            const wheelRemoteQuaternionClone = remoteQuaternion.clone();
 
-            wheelPosition.lerpVectors(wheelPosition, remotePosition || wheelPosition, 15 * dt);
-            wheelQuaternion.slerp(remoteQuaternion || wheelQuaternion, 15 * dt);
+            wheelPosition.lerpVectors(wheelPosition, wheelRemotePositionClone, lerpFactor);
+            wheelQuaternion.slerp(wheelRemoteQuaternionClone, lerpFactor);
 
             wheel.setPosition(wheelPosition);
             wheel.setQuaternion(wheelQuaternion);
