@@ -103,7 +103,8 @@ export default class NetworkCarScript extends BaseScript {
 
         this.car.setPosition(initialPosition);
         this.remotePosition.set(initialPosition.x, initialPosition.y, initialPosition.z);
-        this.remotePositionSequence.push(this.remotePosition.clone());
+        this.remotePositionSequence.push([+new Date(), this.remotePosition.clone()]);
+        this.stateCount = 0;
 
         this.remoteQuaternion.set(0, 0, 0, 1);
         this.remoteQuaternionSequence.push(this.remoteQuaternion.clone());
@@ -173,10 +174,12 @@ export default class NetworkCarScript extends BaseScript {
     handleRemoteBodyUpdate = ({ data }) => {
         const { uuid, position, quaternion, direction, speed } = data;
         if (uuid === this.username) {
+            const timestamp = +new Date();
             this.remoteDirection.set(direction.x, direction.y, direction.z);
 
             this.remotePosition.set(position.x, position.y, position.z);
-            this.remotePositionSequence.push(this.remotePosition.clone());
+            //this.remotePositionSequence.push([timestamp, this.remotePosition.clone()]);
+            this.bufferState(timestamp, this.remotePosition.clone());
 
             this.remoteQuaternion.set(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
             this.remoteQuaternionSequence.push(this.remoteQuaternion.clone());
@@ -207,25 +210,61 @@ export default class NetworkCarScript extends BaseScript {
         NetworkPhysics.updateBodyState(this.car, this.state);
     }
 
+    bufferState(timestamp, position){
+        // shift buffer contents to accommodate new state
+        for( let i = this.remotePositionSequence.length - 1; i > 0; i-- )  {
+            this.remotePositionSequence[ i ] = this.remotePositionSequence[ i - 1 ];
+        }  // save state to slot 0
+        this.remotePositionSequence[ 0 ] = [timestamp, position];  // increment state count
+        this.stateCount = Math.min( this.stateCount + 1, this.remotePositionSequence.length );
+    }
+
+    unityInterpolation() {
+        if( this.stateCount == 0 ) return; // no states to interpolate
+
+        const currentTime = +new Date();
+        const interpolationTime = currentTime - 100;
+        console.log(this.remotePositionSequence, interpolationTime);
+        if( this.remotePositionSequence[0][0] > interpolationTime ) {
+            for( let i = 0; i < this.stateCount; i++ ) {
+                 if( this.remotePositionSequence[ i ][0] <= interpolationTime || i == this.stateCount - 1 ) {
+                    const lhs = this.remotePositionSequence[ i ];
+                    const rhs = this.remotePositionSequence[ Math.max( i - 1, 0 ) ];
+                    const length = rhs[0] - lhs[0];
+                    const t = 0;
+
+                    if( length > 0.0001 ) {
+                        t = ((interpolationTime - lhs[0]) / length );
+                    }
+                    console.log('interpolating', lhs[1], rhs[1], t);
+                    const newPosition = (new THREE.Vector3()).lerpVectors(lhs[1], rhs[1], t);
+                    this.car.setPosition(newPosition);
+                    break;
+                }
+            }
+        }
+    }
+
     interpolate(dt) {
         const carPosition = this.car.getPosition();
         const carQuaternion = this.car.getQuaternion();
-        const nextPosition = this.remotePositionSequence[0] || this.remotePosition.clone();
+        // const nextPosition = this.remotePositionSequence[0] || this.remotePosition.clone();
         const nextQuaternion = this.remoteQuaternionSequence[0] || this.remoteQuaternion.clone();
 
-        console.log(nextPosition);
+        //console.log(nextPosition);
         
         const power = Math.pow(0.001, dt);
         const lerpFactor = 1 - power;
 
-        carPosition.lerpVectors(carPosition, nextPosition, 0.9 * dt);
-        carQuaternion.slerp(nextQuaternion, 0.9 * dt);
+        // carPosition.lerpVectors(carPosition, nextPosition, 0.9 * dt);
+        carQuaternion.slerp(nextQuaternion, lerpFactor);
 
-        this.car.setPosition(carPosition);
+        // this.car.setPosition(carPosition);
         this.car.setQuaternion(carQuaternion);
 
-       this.remotePositionSequence = this.remotePositionSequence.slice(1);
-       this.remoteQuaternionSequence = this.remoteQuaternionSequence.slice(1);
+        // this.remotePositionSequence = this.remotePositionSequence.slice(1);
+        this.unityInterpolation();
+        this.remoteQuaternionSequence = this.remoteQuaternionSequence.slice(1);
 
         for (let uuid in this.wheels) {
             const { wheel, remotePosition, remoteQuaternion } = this.wheels[uuid];
