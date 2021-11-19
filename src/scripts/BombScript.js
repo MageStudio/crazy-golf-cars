@@ -97,20 +97,4 @@ export default class BombScript extends BaseScript {
             }, 1000);
         }
     };
-
-    interpolate = dt => {
-        const bombPosition = this.bomb.getPosition();
-        const bombQuaternion = this.bomb.getQuaternion();
-        const lerpFactor = 1 - Math.pow(0.1, dt);
-
-        bombPosition.lerpVectors(bombPosition, this.remotePosition, lerpFactor);
-        bombQuaternion.slerp(this.remoteQuaternion, lerpFactor);
-
-        this.bomb.setPosition(bombPosition);
-        this.bomb.setQuaternion(bombQuaternion);
-    }
-
-    // update = dt => {
-    //     this.interpolate(dt);
-    // }
 }
