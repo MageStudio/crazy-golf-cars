@@ -19,7 +19,6 @@ export default class NetworkCarScript extends RemoteCar {
         this.bombCounter = 0;
         this.wheelsUUIDs = [];
         this.remoteDirection = new THREE.Vector3(0, 0, 0);
-        this.remoteSpeed = 0;
         this.maxSpeed = 200;
         this.direction = undefined;
         this.engineStarted = false;
@@ -115,11 +114,11 @@ export default class NetworkCarScript extends RemoteCar {
         const max = 1200;
         const min = -1200;
 
-        return (Math.abs(this.remoteSpeed) * (max * 2) / this.maxSpeed) + min;
+        return (Math.abs(this.car.speed) * (max * 2) / this.maxSpeed) + min;
     }
 
     updateSound() {
-        if (this.car.sound && this.remoteSpeed) {
+        if (this.car.sound && this.car.speed) {
             this.car.sound.detune(this.getDetuneFromSpeed());
         }
     }
