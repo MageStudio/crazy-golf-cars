@@ -41,7 +41,7 @@ const TitleScreen = ({ version, username, onUsernameSet }) => {
     const onCreateRoomModalClose = () => setCreateRoomModalVisible(false);
 
     const handleRoomCreation = roomName => {
-        NetworkClient.createRoom(username, roomName, { minPlayers: 1 });
+        NetworkClient.createRoom(username, roomName, { minPlayers: 2  });
         onCreateRoomModalClose();
     };
 

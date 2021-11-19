@@ -49,23 +49,23 @@ const GOLF_CART_OPTIONS = {
     name: 'golf',
     // debug: true,
     friction: 300,
-    steeringIncrement: .017,
-    steeringClamp: .4,
+    steeringIncrement: .012,
+    steeringClamp: .2,
     rollInfluence: 0.01,
     maxEngineForce: 500,
-    maxBreakingForce: 100,
+    maxBreakingForce: 300,
     wheelsOptions: {
         back: {
             axisPosition: -.6,
             radius: .3,
             halfTrack: .5,
-            axisHeight: -.07
+            axisHeight: -.2
         },
         front: {
             axisPosition: 1.2,
             radius: .3,
             halfTrack: .5,
-            axisHeight: -.1
+            axisHeight: -.2
         }
     },
     suspensions: {

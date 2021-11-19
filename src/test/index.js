@@ -113,7 +113,7 @@ export default class Test extends Level {
 
     prepareSceneEffects() {
         Scene.setClearColor(BACKGROUND);
-        PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
+        // PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
     }
 
     addSelectiveOutline() {
