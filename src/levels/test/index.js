@@ -29,17 +29,15 @@ export const DARKER_GROUND = 0X78e08f;
 export const GROUND = 0xb8e994;
 export const BACKGROUND = 0xdff9fb;//0xddf3f5;
 
-const FOG_DENSITY = 0.007;
-
 const DOF_OPTIONS = {
     focus: 1.0,
     aperture: 0.0001,
-    maxblur: 0.02
+    maxblur: 0.01
 };
 
-const SATURATION_OPTIONS = {
-    saturation: 0.5
-};
+// const SATURATION_OPTIONS = {
+//     saturation: 0.2
+// };
 
 const { MATERIALS, EFFECTS } = constants;
 
@@ -89,8 +87,6 @@ export default class Test extends Level {
         // Controls.setOrbitControl();
 
         Scene.getCamera().setPosition({ y: 10, x: 25, z: 25 });
-        // Scene.getCamera().lookAt({ x: 0, y: 0, z: 0 });
-        // window.camera = Scene.getCamera();
 
         Scene.getCamera()
             .addScript('SmoothCarFollow', { target, distance: 3, height: 4 });
@@ -102,13 +98,7 @@ export default class Test extends Level {
         Scene.setRendererOutputEncoding(THREE.sRGBEncoding);
 
         PostProcessing.add(EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
-        PostProcessing.add(EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
-    }
-
-    addSelectiveOutline() {
-        // const outline = PostProcessing.add(constants.EFFECTS.OUTLINE, { defaultThickness: 0.004 });
-        // outline.setVisibleEdgeColor(constants.COLORS.BLACK);
-        // outline.setHiddenEdgeColor(constants.COLORS.BLACK);
+        // PostProcessing.add(EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
     }
 
     createWorld() {
