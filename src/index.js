@@ -55,7 +55,7 @@ const assets = {
             'bomb': 'assets/models/bomb.glb',
             'police_car': 'assets/models/police_car.glb',
             'truck': 'assets/models/truck.glb',
-            'course': 'assets/models/course_light_color.glb',
+            'course': 'assets/models/course_simplebake.glb',
         },
         textures: {
             'dot': 'assets/textures/dot.png',
@@ -74,9 +74,9 @@ const config = {
     },
 
     lights: {
-        shadows: true,
+        shadows: false,
         shadowType: SHADOW_TYPES.SOFT,
-        textureAnisotropy: 16
+        textureAnisotropy: 1
     },
 
     physics: {
@@ -92,7 +92,7 @@ const config = {
     camera: {
         fov: 75,
         near: 0.1,
-        far: 100,
+        far: 300,
     },
 
     ui: {

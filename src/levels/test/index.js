@@ -38,43 +38,21 @@ const DOF_OPTIONS = {
 };
 
 const SATURATION_OPTIONS = {
-    saturation: 0.3
+    saturation: 0.5
 };
 
-const { MATERIALS } = constants;
+const { MATERIALS, EFFECTS } = constants;
 
 export default class Test extends Level {
-
-    addAmbientLight() {
-        this.ambientLight = new AmbientLight({ color: WHITE, intensity: 1 });
-    }
 
     addSunLight() {
         this.hemisphereLight = new HemisphereLight({
             color: {
-                sky: WHITE,
-                ground: 0xdddddd
+                sky: SUNLIGHT,
+                ground: 0xeeeeee//0xFFF0CC
             },
-            intensity: .6
+            intensity: 3
         });
-
-        // this.pointLight = new PointLight({
-        //     color: WHITE,
-        //     intensity: 1,
-        //     decay: 0
-        // });
-
-        // 
-
-        this.sun = new SunLight({
-            color: SUNLIGHT,
-            intensity: .9,
-            mapSize: 2048,
-            far: 600,
-            bias: -0.004
-        })
-        this.sun.setPosition({ y: 100, x: 100, z: 100 });
-        // window.pointLight = this.pointLight;
     }
 
     createCar() {
@@ -98,11 +76,11 @@ export default class Test extends Level {
     createCourse = () => {
         this.course =  Models.getModel('course', { name: 'course' });
 
-        this.course.setMaterialFromName(MATERIALS.STANDARD, {
-            metalness: 0.2,
-            roughness: 1.0,
-            flatShading: false
-        });
+        // this.course.setMaterialFromName(MATERIALS.STANDARD, {
+        //     metalness: 0.2,
+        //     roughness: 1.0,
+        //     flatShading: false
+        // });
 
         return NetworkPhysics.addModel(this.course, { mass: 0 });
     }
@@ -119,10 +97,12 @@ export default class Test extends Level {
     }
 
     prepareSceneEffects() {
-        Scene.setClearColor(BACKGROUND);
-        Scene.setBackground(BACKGROUND);
-        PostProcessing.add(constants.EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
-        PostProcessing.add(constants.EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
+        Scene.setClearColor(SUNLIGHT);
+        Scene.setBackground(SUNLIGHT);
+        Scene.setRendererOutputEncoding(THREE.sRGBEncoding);
+
+        PostProcessing.add(EFFECTS.DEPTH_OF_FIELD, DOF_OPTIONS);
+        PostProcessing.add(EFFECTS.HUE_SATURATION, SATURATION_OPTIONS);
     }
 
     addSelectiveOutline() {
@@ -132,8 +112,6 @@ export default class Test extends Level {
     }
 
     createWorld() {
-        console.log('creating world');
-        this.addAmbientLight();
         this.addSunLight();
 
         Scripts.create('NetworkCar', NetworkCar);
@@ -207,6 +185,11 @@ export default class Test extends Level {
     }
 
     onCreate() {
+        if (typeof __THREE_DEVTOOLS__ !== 'undefined') {
+            __THREE_DEVTOOLS__.dispatchEvent(new CustomEvent('observe', { detail: Scene.getScene() }));
+            __THREE_DEVTOOLS__.dispatchEvent(new CustomEvent('observe', { detail: Scene.getRenderer() }));
+        }
+
         console.log('launching test level');
         NetworkClient.createRoom('test', 'testing', {
             physics: true,
@@ -221,5 +204,7 @@ export default class Test extends Level {
 
         this.createWorld();
         this.listenToPhysicsEvents();
+
+        window.level = this;
     }
 }
