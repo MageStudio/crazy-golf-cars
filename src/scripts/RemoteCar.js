@@ -99,7 +99,7 @@ export default class RemoteCar extends BaseScript {
 
     updateStates() {
         const currentTime = +new Date();
-        const interpolationTime = currentTime - 150;
+        const interpolationTime = currentTime - 50;
 
         this.interpolate(this.remoteCarStates, this.car, interpolationTime);;
 

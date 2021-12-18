@@ -2,7 +2,7 @@
 
 :materials
 
-[name:bricks;color:RGBA(1.000, 0.392, 0.306, 1.000);scale:(1.0, 1.0);shader:Default;valueA:0.35;valueB:0;]
+[name:bricks;color:RGBA(0.942, 0.719, 0.479, 1.000);scale:(1.0, 1.0);shader:Default;valueA:0.35;valueB:0;]
 [name:foliage;color:RGBA(0.050, 0.554, 0.179, 1.000);scale:(1.0, 1.0);shader:Default;valueA:0.35;valueB:0;]
 [name:border;color:RGBA(0.561, 0.569, 0.600, 1.000);scale:(1.0, 1.0);shader:Default;valueA:0.5;valueB:0;]
 [name:window;color:RGBA(0.737, 0.886, 1.000, 1.000);scale:(1.0, 1.0);shader:Default;valueA:0.5;valueB:0;]
@@ -143,10 +143,10 @@
 [name:;collection:Golf;type:straight_hole;position:(14.2500, -0.7000, 4.1300);rotation:(0.0000, 0.0000, 0.0000);scale:(1.0000, 1.0000, 1.5400);group:;locked:False;hidden:False;materials:bricks+foliage;]
 [name:;collection:Golf;type:straight_narrowSlope;position:(13.9000, 0.1000, 16.8000);rotation:(0.0000, 90.0000, 0.0000);scale:(1.0000, 1.0000, 2.4000);group:;locked:False;hidden:False;materials:bricks+foliage;]
 [name:;collection:Golf;type:straight_mid;position:(12.2500, 0.1000, 14.9000);rotation:(0.0000, 0.0000, 0.0000);scale:(1.0000, 1.0000, 2.8000);group:;locked:False;hidden:False;materials:bricks+foliage;]
-[name:;collection:Golf;type:straight_bump;position:(12.2500, 0.1000, 12.4000);rotation:(0.0000, 0.0000, 0.0000);scale:(1.0000, 1.0000, 2.2000);group:;locked:False;hidden:False;materials:bricks+foliage;]
 [name:;collection:Golf;type:bend_large;position:(4.8000, 0.0000, -4.8000);rotation:(0.0000, 180.0000, 0.0000);scale:(1.0000, 1.0000, 1.0000);group:;locked:False;hidden:False;materials:bricks+foliage;]
 [name:;collection:Golf;type:straight_mid;position:(4.8000, 0.0000, -3.6500);rotation:(0.0000, 0.0000, 0.0000);scale:(1.0000, 1.0000, 1.3000);group:;locked:False;hidden:False;materials:bricks+foliage;]
 [name:;collection:hexagonal_kenney;type:water;position:(6.7000, -1.5000, 12.2000);rotation:(0.0000, 90.0000, 0.0000);scale:(3.0001, 3.0000, 3.0001);group:;locked:False;hidden:False;materials:water;]
 [name:;collection:hexagonal_kenney;type:water_island;position:(9.4000, -1.3000, 13.7000);rotation:(0.0000, 90.0000, 0.0000);scale:(3.0000, 3.0000, 3.0000);group:;locked:False;hidden:False;materials:water+sand+dirt;]
 [name:;collection:hexagonal_kenney;type:water_rocks;position:(9.3000, -1.3000, 10.7000);rotation:(0.0000, 90.0000, 0.0000);scale:(3.0000, 3.0000, 3.0000);group:;locked:False;hidden:False;materials:water+stone;]
 [name:;collection:Golf;type:straight;position:(5.5000, -0.4000, 12.1000);rotation:(0.0000, 90.0000, 0.0000);scale:(1.0000, 1.0000, 1.0000);group:;locked:False;hidden:False;materials:bricks+foliage;]
+[name:;collection:Golf;type:straight_bump;position:(12.2500, 0.1000, 12.4000);rotation:(0.0000, 0.0000, 0.0000);scale:(1.0000, 1.0000, 2.2000);group:;locked:False;hidden:False;materials:bricks+foliage;]

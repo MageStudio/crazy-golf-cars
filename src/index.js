@@ -1,10 +1,12 @@
-import { Router, store } from 'mage-engine';
-import Race from './race';
-import Test from './test';
-import Intro from './intro';
+import { Router, store, constants } from 'mage-engine';
+import Race from './levels/race';
+import Test from './levels/test';
+import Intro from './levels/intro';
 import Root from './ui/root';
 import NetworkClient from './network/client';
 import * as reducers from './ui/reducers';
+
+const { SHADOW_TYPES } = constants;
 
 const assets = {
     models: {
@@ -33,7 +35,7 @@ const assets = {
             'bomb': 'assets/models/bomb.glb',
             'police_car': 'assets/models/police_car.glb',
             'truck': 'assets/models/truck.glb',
-            'course': 'assets/models/course_blender_no_bake.glb',
+            'course': 'assets/models/course_light_color.glb',
         },
         textures: {
             'dot': 'assets/textures/dot.png'
@@ -53,7 +55,7 @@ const assets = {
             'bomb': 'assets/models/bomb.glb',
             'police_car': 'assets/models/police_car.glb',
             'truck': 'assets/models/truck.glb',
-            'course': 'assets/models/course_blender_no_bake.glb',
+            'course': 'assets/models/course_simplebake.glb',
         },
         textures: {
             'dot': 'assets/textures/dot.png',
@@ -72,8 +74,9 @@ const config = {
     },
 
     lights: {
-        shadows: true,
-        textureAnisotropy: 2
+        shadows: false,
+        shadowType: SHADOW_TYPES.SOFT,
+        textureAnisotropy: 1
     },
 
     physics: {
@@ -89,7 +92,7 @@ const config = {
     camera: {
         fov: 75,
         near: 0.1,
-        far: 200,
+        far: 300,
     },
 
     ui: {
