@@ -80,6 +80,7 @@ export default class Test extends Level {
         //     flatShading: false
         // });
 
+        this.course.enablePhysics({ mass: 0 });
         return NetworkPhysics.addModel(this.course, { mass: 0 });
     }
 
@@ -136,7 +137,6 @@ export default class Test extends Level {
                 console.log('created course');
                 this.car = this.createCar();
                 this.prepareCamera(car);
-                this.addSelectiveOutline();
 
                 this.createTestCubes();
             })
@@ -158,8 +158,13 @@ export default class Test extends Level {
         }
     }
 
-    handleElementCreated = (data) => {
+    handleElementCreated = ({ data }) => {
         console.log(data);
+        const { type } = data;
+        if (type === 'VEHICLE') {
+            const { script } = this.car.getScript('NetworkCar');
+            script.startLocalCarSimulation();
+        }
         /**
          * when model = bomb
          * create new model, check that name is not one of ours

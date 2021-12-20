@@ -80,9 +80,10 @@ const config = {
     },
 
     physics: {
-        enabled: false,
+        enabled: true,
         path: 'ammo.js',
-        gravity: { x: 0, y: -9.8, z: 0}
+        gravity: { x: 0, y: -9.8, z: 0 },
+        fixedUpdate: 60
     },
 
     tween: {

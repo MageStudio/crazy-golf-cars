@@ -83,11 +83,19 @@ export default class RemoteCar extends BaseScript {
             this.remoteDirection.set(direction.x, direction.y, direction.z);
             this.car.speed = Math.floor(Math.max(0, speed));
             this.car.direction = direction;
-            updateRemoteStatesBuffer(this.remoteCarStates, new RemoteState(
-                timestamp,
-                new Vector3(position.x, position.y, position.z),
-                new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
-            ));
+
+            const remotePosition = new Vector3(position.x, position.y, position.z);
+            const diff = remotePosition.sub(this.car.getPosition()).length();
+
+            if (diff > 1) {
+                this.car.setPosition(position);
+                this.car.setQuaternion(quaternion);
+                // updateRemoteStatesBuffer(this.remoteCarStates, new RemoteState(
+                //     timestamp,
+                //     new Vector3(position.x, position.y, position.z),
+                //     new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
+                // ));
+            }
         } else if (this.wheelsUUIDs.includes(uuid)) {
             updateRemoteStatesBuffer(this.wheels[uuid].wheelRemoteStates, new RemoteState(
                 timestamp,

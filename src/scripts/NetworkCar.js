@@ -2,7 +2,8 @@ import {
     Models,
     Input,
     INPUT_EVENTS,
-    THREE
+    THREE,
+    PHYSICS_EVENTS
 } from 'mage-engine';
 
 import { TYPES, getCarOptionsByType } from '../constants';
@@ -10,6 +11,9 @@ import * as NetworkPhysics from '../network/physics';
 import { getClosestSpawnPoint } from '../lib/spawnPoints';
 import { WOODEN_CASTLE_COURSE } from '../lib/constants';
 import RemoteCar from './RemoteCar';
+import RemoteState, { updateRemoteStatesBuffer } from '../network/RemoteState';
+
+const { Vector3, Quaternion } = THREE;
 
 export default class NetworkCar extends RemoteCar {
 
@@ -22,6 +26,8 @@ export default class NetworkCar extends RemoteCar {
         this.maxSpeed = 200;
         this.direction = undefined;
         this.engineStarted = false;
+
+        this.localCarStates = [];
 
         this.state = {
             acceleration: false,
@@ -73,10 +79,24 @@ export default class NetworkCar extends RemoteCar {
         this.username = username;
         this.car.setPosition(initialPosition);
 
-        NetworkPhysics.addVehicle(this.car, { wheels: Object.keys(this.wheels), ...getCarOptionsByType(this.type) });
+        this.carOptions = {
+            wheels: Object.keys(this.wheels),
+            ...getCarOptionsByType(this.type),
+            applyPhysicsUpdate: false
+        }
+        this.wheelElements = Object.values(this.wheels).map(({ wheel }) => wheel); 
+
+        NetworkPhysics.addVehicle(this.car, this.carOptions);
+        // this.car.addScript('BaseCar',  { ...carOptions, wheels: wheelElements } )
+        this.car.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.onClientPhysicsUpdate);
 
         this.enableInput();
         setInterval(this.fixedUpdate.bind(this), 1000/60);
+    }
+
+    startLocalCarSimulation() {
+        console.log('starting local car');
+        this.car.addScript('BaseCar',  { ...this.carOptions, wheels: this.wheelElements } )
     }
 
     enableInput() {
@@ -128,12 +148,26 @@ export default class NetworkCar extends RemoteCar {
     }
 
     fixedUpdate = () => {
-        this.dispatchCarStateChange();
         this.checkIfFalling();
+    }
+
+    onClientPhysicsUpdate = ({ position, quaternion, direction, speed }) => {
+        // console.log('local', position, quaternion);
+        this.car.direction = direction;
+        this.car.speed = speed;
+        // this.car.setPosition(position);
+        // this.car.setQuaternion(quaternion);
+        const timestamp = +new Date();
+        updateRemoteStatesBuffer(this.remoteCarStates, new RemoteState(
+            timestamp,
+            new Vector3(position.x, position.y, position.z),
+            new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
+        ));
     }
 
     update = () => {
         super.update();
+        this.dispatchCarStateChange();
         this.updateSound();
         this.handleInput();
     }
