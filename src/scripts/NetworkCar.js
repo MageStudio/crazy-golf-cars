@@ -3,7 +3,8 @@ import {
     Input,
     INPUT_EVENTS,
     THREE,
-    PHYSICS_EVENTS
+    PHYSICS_EVENTS,
+    Physics
 } from 'mage-engine';
 
 import { TYPES, getCarOptionsByType } from '../constants';
@@ -88,7 +89,8 @@ export default class NetworkCar extends RemoteCar {
 
         NetworkPhysics.addVehicle(this.car, this.carOptions);
         // this.car.addScript('BaseCar',  { ...carOptions, wheels: wheelElements } )
-        this.car.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.onClientPhysicsUpdate);
+        this.car.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.handleLocalCarUpdate);
+        this.wheelElements.forEach(wheel => wheel.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.handleRemoteWheelUpdate(wheel)))
 
         this.enableInput();
         setInterval(this.fixedUpdate.bind(this), 1000/60);
@@ -151,12 +153,10 @@ export default class NetworkCar extends RemoteCar {
         this.checkIfFalling();
     }
 
-    onClientPhysicsUpdate = ({ position, quaternion, direction, speed }) => {
-        // console.log('local', position, quaternion);
+    handleLocalCarUpdate = ({ position, quaternion, direction, speed }) => {
         this.car.direction = direction;
         this.car.speed = speed;
-        // this.car.setPosition(position);
-        // this.car.setQuaternion(quaternion);
+
         const timestamp = +new Date();
         updateRemoteStatesBuffer(this.remoteCarStates, new RemoteState(
             timestamp,
@@ -165,7 +165,36 @@ export default class NetworkCar extends RemoteCar {
         ));
     }
 
-    update = () => {
+    handleRemoteWheelUpdate = wheel => ({ position, quaternion }) => {
+        const timestamp = +new Date();
+        updateRemoteStatesBuffer(this.wheels[wheel.getName()].wheelRemoteStates, new RemoteState(
+            timestamp,
+            new Vector3(position.x, position.y, position.z),
+            new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
+        ));
+    }
+
+    reconcileCarWithRemoteState = (position, quaternion) => {
+        const targetPosition = this.car.getPosition().lerp(position, 0.1);
+        Physics.resetVehicle(this.car, targetPosition, quaternion);
+    }
+
+    handleRemoteCarUpdate = (position, quaternion, direction, speed) => {
+        this.remoteDirection.set(direction.x, direction.y, direction.z);
+        this.car.speed = Math.floor(Math.max(0, speed));
+        this.car.direction = direction;
+
+        const remotePosition = new Vector3(position.x, position.y, position.z);
+        const remoteQuaternion = new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+
+        if (this.car.getPosition().distanceTo(remotePosition) > .1) {
+            this.reconcileCarWithRemoteState(remotePosition, quaternion);
+        }
+    }
+
+    handleRemoteWheelUpdate() {}
+
+    update = dt => {
         super.update();
         this.dispatchCarStateChange();
         this.updateSound();

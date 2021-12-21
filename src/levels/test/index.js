@@ -136,6 +136,7 @@ export default class Test extends Level {
             .then(() => {
                 console.log('created course');
                 this.car = this.createCar();
+                window.car = this.car;
                 this.prepareCamera(car);
 
                 this.createTestCubes();

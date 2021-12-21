@@ -2,7 +2,8 @@ import {
     BaseScript,
     Models,
     PHYSICS_EVENTS,
-    THREE
+    THREE,
+    Physics
 } from "mage-engine";
 import NetworkClient from '../network/client';
 import RemoteState, { updateRemoteStatesBuffer } from "../network/RemoteState";
@@ -75,33 +76,34 @@ export default class RemoteCar extends BaseScript {
         NetworkClient.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.handleRemoteBodyUpdate);
     }
 
+    handleRemoteCarUpdate = (position, quaternion, direction, speed, timestamp) => {
+        this.remoteDirection.set(direction.x, direction.y, direction.z);
+        this.car.speed = Math.floor(Math.max(0, speed));
+        this.car.direction = direction;
+          
+        updateRemoteStatesBuffer(this.remoteCarStates, new RemoteState(
+            timestamp,
+            new Vector3(position.x, position.y, position.z),
+            new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
+        ));
+    }
+
+    handleRemoteWheelUpdate = (uuid, position, quaternion, timestamp) => {
+        updateRemoteStatesBuffer(this.wheels[uuid].wheelRemoteStates, new RemoteState(
+            timestamp,
+            new Vector3(position.x, position.y, position.z),
+            new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
+        ));
+    }
+
     handleRemoteBodyUpdate = ({ data }) => {
         const { uuid, position, quaternion, direction, speed } = data;
         const timestamp = +new Date();
 
         if (uuid === this.username) {
-            this.remoteDirection.set(direction.x, direction.y, direction.z);
-            this.car.speed = Math.floor(Math.max(0, speed));
-            this.car.direction = direction;
-
-            const remotePosition = new Vector3(position.x, position.y, position.z);
-            const diff = remotePosition.sub(this.car.getPosition()).length();
-
-            if (diff > 1) {
-                this.car.setPosition(position);
-                this.car.setQuaternion(quaternion);
-                // updateRemoteStatesBuffer(this.remoteCarStates, new RemoteState(
-                //     timestamp,
-                //     new Vector3(position.x, position.y, position.z),
-                //     new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
-                // ));
-            }
+            this.handleRemoteCarUpdate(position, quaternion, direction, speed, timestamp);
         } else if (this.wheelsUUIDs.includes(uuid)) {
-            updateRemoteStatesBuffer(this.wheels[uuid].wheelRemoteStates, new RemoteState(
-                timestamp,
-                new Vector3(position.x, position.y, position.z),
-                new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
-            ));
+            this.handleRemoteWheelUpdate(uuid, position, quaternion);
         }
     }
 
