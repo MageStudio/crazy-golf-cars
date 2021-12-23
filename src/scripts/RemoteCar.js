@@ -139,12 +139,16 @@ export default class RemoteCar extends BaseScript {
                     const newPosition = (new Vector3()).lerpVectors(lhs.getPosition(), rhs.getPosition(), t);
                     const newQuaternion = (lhs.getQuaternion().clone()).slerp(rhs.getQuaternion(), t);
                     
-                    target.setPosition(newPosition);
-                    target.setQuaternion(newQuaternion);
+                    this.applyInterpolatedState(target, newPosition, newQuaternion);
                     break;
                 }
             }
         }
+    }
+
+    applyInterpolatedState = (target, position, quaternion) => {
+        target.setPosition(position);
+        target.setQuaternion(quaternion);
     }
 
     update() {
