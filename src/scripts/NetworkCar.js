@@ -90,7 +90,7 @@ export default class NetworkCar extends RemoteCar {
         NetworkPhysics.addVehicle(this.car, this.carOptions);
         // this.car.addScript('BaseCar',  { ...carOptions, wheels: wheelElements } )
         this.car.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.handleLocalCarUpdate);
-        this.wheelElements.forEach(wheel => wheel.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.handleRemoteWheelUpdate(wheel)))
+        this.wheelElements.forEach(wheel => wheel.addEventListener(PHYSICS_EVENTS.ELEMENT.UPDATE, this.handleLocalWheelUpdate(wheel)))
 
         this.enableInput();
         setInterval(this.fixedUpdate.bind(this), 1000/60);
@@ -165,7 +165,7 @@ export default class NetworkCar extends RemoteCar {
         ));
     }
 
-    handleRemoteWheelUpdate = wheel => ({ position, quaternion }) => {
+    handleLocalWheelUpdate = wheel => ({ position, quaternion }) => {
         const timestamp = +new Date();
         updateRemoteStatesBuffer(this.wheels[wheel.getName()].wheelRemoteStates, new RemoteState(
             timestamp,
