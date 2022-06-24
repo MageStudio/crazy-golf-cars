@@ -176,9 +176,9 @@ export default class NetworkCar extends RemoteCar {
 
     reconcileCarWithRemoteState = (position, quaternion) => {
         const targetPosition = this.car.getPosition().lerp(position, .1);
-        const targetQuaternion = this.car.getQuaternion().slerp(quaternion, .1);
+        // const targetQuaternion = this.car.getQuaternion().slerp(quaternion, .1);
 
-        Physics.resetVehicle(this.car, targetPosition, targetQuaternion);
+        Physics.resetVehicle(this.car, targetPosition, quaternion);
     }
 
     handleRemoteCarUpdate = (position, quaternion, direction, speed) => {
@@ -189,7 +189,7 @@ export default class NetworkCar extends RemoteCar {
         const remotePosition = new Vector3(position.x, position.y, position.z);
         const remoteQuaternion = new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
 
-        if (this.car.getPosition().distanceTo(remotePosition) > .1 || this.car.getQuaternion().angleTo(remoteQuaternion) > 0.017) {
+        if (this.car.getPosition().distanceTo(remotePosition) > .1) {
             this.reconcileCarWithRemoteState(remotePosition, remoteQuaternion);
         }
     }
